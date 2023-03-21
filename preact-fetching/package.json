@@ -10,6 +10,17 @@
   "engines": {
     "node": ">=10"
   },
+  "keywords": [
+    "hooks",
+    "preact",
+    "fetch",
+    "synchronization"
+  ],
+  "types": "dist/index.d.ts",
+  "repository": {
+    "url": "https://github.com/VigilioYonatan/-vigilio-preact-fetching",
+    "type": "git"
+  },
   "scripts": {
     "start": "tsdx watch",
     "build": "tsdx build",
