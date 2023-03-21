@@ -44,16 +44,16 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "name": "@vigilio/preact-fetching",
+  "name": "@vigilio/react-fetching",
   "author": "Vigilio",
-  "module": "dist/preact-fetching.esm.js",
+  "module": "dist/react-fetching.esm.js",
   "size-limit": [
     {
-      "path": "dist/preact-fetching.cjs.production.min.js",
+      "path": "dist/react-fetching.cjs.production.min.js",
       "limit": "10 KB"
     },
     {
-      "path": "dist/preact-fetching.esm.js",
+      "path": "dist/react-fetching.esm.js",
       "limit": "10 KB"
     }
   ],
