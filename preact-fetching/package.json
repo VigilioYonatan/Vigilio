@@ -44,7 +44,7 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "name": "preact-fetching",
+  "name": "@vigilio/preact-fetching",
   "author": "Vigilio",
   "module": "dist/preact-fetching.esm.js",
   "size-limit": [
