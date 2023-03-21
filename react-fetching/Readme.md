@@ -1,4 +1,4 @@
-# @Vigilio/Preact-fetching
+# @Vigilio/React-fetching
 
 A simple React Hooks library for data fetching.
 
@@ -60,58 +60,58 @@ const {
 
 ```tsx
 interface Body {
-    name: string;
+  name: string;
 }
 
 async function addUser(url: string, body: Body) {
-    const  data  = await fetch(url, {
-        method: "POST",
-        body: JSON.stringify(body),
-        headers: {
-            "Content-Type": "application/json",
-        },
-    });
-    return data;
+  const data = await fetch(url, {
+    method: 'POST',
+    body: JSON.stringify(body),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  return data;
 }
 
 const { mutate, isLoading, isSuccess, ...rest } = useMutation(
-    "/users",
-    addUser
+  '/users',
+  addUser
 );
-const [name, setName] = useState("");
+const [name, setName] = useState('');
 
 // mutate
 function handleSubmit(e: JSXInternal.TargetedEvent) {
-    e.preventDefault();
+  e.preventDefault();
 
-    //mutate(body,options) :
-    mutate(
-        { nombre },
-        {
-            onSuccess: (data) => {
-                console.log(data);
-                // you can pass for props  showUser to update users GET 
-                //  when add a user for example
-                showUser.refetching()
-            },
-            onError: (error) => {
-                console.log(error);
-            },
-        }
-    );
+  //mutate(body,options) :
+  mutate(
+    { nombre },
+    {
+      onSuccess: data => {
+        console.log(data);
+        // you can pass for props  showUser to update users GET
+        //  when add a user for example
+        showUser.refetching();
+      },
+      onError: error => {
+        console.log(error);
+      },
+    }
+  );
 }
 
 <form onSubmit={handleSubmit}>
-    <div className="">
-        <label htmlFor="">name</label>
-        <input
-            type="text"
-            value={nombre}
-            placeholder="name"
-            onChange={(e) => setName(e.currentTarget.value)}
-        />
-    </div>
-    <button type="submit">{isLoading ? "loading" : "send"}</button>
+  <div className="">
+    <label htmlFor="">name</label>
+    <input
+      type="text"
+      value={nombre}
+      placeholder="name"
+      onChange={e => setName(e.currentTarget.value)}
+    />
+  </div>
+  <button type="submit">{isLoading ? 'loading' : 'send'}</button>
 </form>;
 ```
 
@@ -119,18 +119,18 @@ You can use Mutate async if you prefer
 
 ```ts
 const { mutateAsync, isLoading, isSuccess, ...rest } = useMutation(
-    "/users",
-    addUser
+  '/users',
+  addUser
 );
 // mutateAsync
 async function handleSubmit(e: JSXInternal.TargetedEvent) {
-    e.preventDefault();
-    try {
-        const data = await mutateAsync({ nombre });
-        // 
-    } catch (err) {
-        // your error response
-    }
+  e.preventDefault();
+  try {
+    const data = await mutateAsync({ nombre });
+    //
+  } catch (err) {
+    // your error response
+  }
 }
 ```
 
@@ -139,57 +139,62 @@ async function handleSubmit(e: JSXInternal.TargetedEvent) {
 ```ts
 // mutate options
 {
-    onSuccess?: (data) => {}; 
-    onError?: (error) => {}; 
+    onSuccess?: (data) => {};
+    onError?: (error) => {};
     transformData?: (data) => Data; // you cand modify response data
 }
 ```
+
 ### USING AXIOS
+
 ```ts
-const baseurl = axios.create({ baseURL: "http://yourhost/api" });
+const baseurl = axios.create({ baseURL: 'http://yourhost/api' });
 
-interface Api{ id: number; name: string }
-
-async function showUsers(url: string) {
-    const { data } = await baseurl.get<Api[]>(url);
-    return data;
+interface Api {
+  id: number;
+  name: string;
 }
 
- const {isLoading,data,...rest} = useQuery("/users", showUsers)
+async function showUsers(url: string) {
+  const { data } = await baseurl.get<Api[]>(url);
+  return data;
+}
 
- //....
+const { isLoading, data, ...rest } = useQuery('/users', showUsers);
+
+//....
 ```
+
 ## MORE EXAMPLES
 
 Dinamic Params
+
 ```tsx
 interface UserTypeApi {
-    id: number;
-    nombre: string;
+  id: number;
+  nombre: string;
 }
 async function showById(url: string) {
-    const { data } = await baseurl.get<UserTypeApi>(url);
-    return data;
+  const { data } = await baseurl.get<UserTypeApi>(url);
+  return data;
 }
 export function UserPageById() {
+  const { id } = useParams() as { id: string };
 
-    const { id } = useParams() as { id: string };
-    
-    const { isLoading, data, isSuccess, isError, error } = useQuery(
-        `/users/${id}`,
-        showById
-    );
-    let component = null;
-    if (isLoading) {
-        component = <h2>Cargandoo...</h2>;
-    }
-    if (isSuccess) {
-        component = <p>{JSON.stringify(data)}</p>;
-    }
-    if (isError) {
-        component = <p>{JSON.stringify(error)}</p>;
-    }
-    return <div>{component}</div>;
+  const { isLoading, data, isSuccess, isError, error } = useQuery(
+    `/users/${id}`,
+    showById
+  );
+  let component = null;
+  if (isLoading) {
+    component = <h2>Cargandoo...</h2>;
+  }
+  if (isSuccess) {
+    component = <p>{JSON.stringify(data)}</p>;
+  }
+  if (isError) {
+    component = <p>{JSON.stringify(error)}</p>;
+  }
+  return <div>{component}</div>;
 }
-
 ```
