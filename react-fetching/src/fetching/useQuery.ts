@@ -5,7 +5,7 @@ export interface OptionsQuery<Data> {
   placeholderData?: Data | null;
   transformData?: ((data: Data) => Data) | null;
 }
-type UseQuery<Data, Error> = {
+export type UseQuery<Data, Error> = {
   data: Data | null;
   isLoading: boolean | null;
   isFetching: boolean | null;

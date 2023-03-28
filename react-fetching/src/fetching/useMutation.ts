@@ -10,7 +10,7 @@ export interface MoreOptions<Data, Error> {
   transformData?: (data: Data) => Data;
 }
 
-type UseMutation<Data, Body, Error> = {
+export type UseMutation<Data, Body, Error> = {
   mutate: (body: Body, moreOption?: MoreOptions<Data, Error> | null) => void;
   mutateAsync: (body: Body) => Promise<Data | undefined>;
   data: Data | null;
