@@ -18,7 +18,7 @@
   ],
   "types": "dist/index.d.ts",
   "repository": {
-    "url": "https://github.com/VigilioYonatan/-Vigilio/tree/main/react-fetching",
+    "url": "https://github.com/VigilioYonatan/Vigilio/tree/main/preact-fetching",
     "type": "git"
   },
   "scripts": {
