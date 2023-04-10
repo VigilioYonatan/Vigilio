@@ -1,0 +1,40 @@
+{
+    "name": "@vigilio/preact-fetching",
+    "version": "1.0.0",
+    "description": "this is a library to fetch in preact",
+    "main": "./dist/cjs/index.js",
+    "module": "./dist/esm/index.js",
+    "types": "./dist/esm/index.d.ts",
+    "peerDependencies": {
+        "preact": ">=10"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/gapon2401/my-react-typescript-package.git"
+    },
+    "files": [
+        "dist",
+        "LICENSE",
+        "README.md"
+    ],
+    "keywords": [
+        "preact",
+        "typescript",
+        "preact-fetching",
+        "react-query",
+        "swr",
+        "syncronize"
+    ],
+    "scripts": {
+        "build:esm": "tsc",
+        "build:cjs": "tsc --module commonjs --outDir dist/cjs",
+        "build": "yarn build:esm && yarn build:cjs"
+    },
+    "author": "Vigilio",
+    "license": "ISC",
+    "devDependencies": {
+        "preact": "^10.13.2",
+        "tslib": "^2.5.0",
+        "typescript": "^5.0.4"
+    }
+}
