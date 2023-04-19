@@ -28,8 +28,8 @@ export function FormControl<T extends object>(
         name,
         rules = {},
         custom = false,
-        className = "",
         children,
+        className = "",
         title,
         style = {},
         ...rest
@@ -59,7 +59,6 @@ export function FormControl<T extends object>(
                         ...formState,
                     },
                 };
-                const viewProps = { className };
                 return (
                     <FormControlContext.Provider
                         value={{
@@ -68,7 +67,7 @@ export function FormControl<T extends object>(
                             title,
                         }}
                     >
-                        <View {...viewProps} style={style}>
+                        <View className={className} style={style}>
                             {custom ? children(properties) : children}
                         </View>
                     </FormControlContext.Provider>

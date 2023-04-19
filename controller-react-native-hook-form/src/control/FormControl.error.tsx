@@ -10,9 +10,8 @@ export function FormControlError({
     className?: string;
 }) {
     const { error } = useContext(FormControlContext);
-    const props = { className };
     return (
-        <Text {...props} style={style}>
+        <Text className={className} style={style}>
             {error && error.message}
         </Text>
     );

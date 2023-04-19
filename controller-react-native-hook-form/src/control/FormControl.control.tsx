@@ -10,15 +10,15 @@ type FormControlControlProps = {
 
 export function FormControlControl({
     style = {},
-    customError = {},
     className = "",
+    customError = {},
 }: FormControlControlProps) {
     const { properties, error } = useContext(FormControlContext);
     const { value, onChange, id, transformer, ...rest } = properties;
-    (rest as any).className = className;
     return (
         <TextInput
             {...rest}
+            className={className}
             value={(value as string).toString()}
             onChangeText={(value) =>
                 onChange(transformer ? transformer(value) : value)

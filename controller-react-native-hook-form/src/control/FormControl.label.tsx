@@ -10,9 +10,8 @@ export function FormControlLabel({
     className?: string;
 }) {
     const { title } = useContext(FormControlContext);
-    const props = { className };
     return (
-        <Text {...props} style={style}>
+        <Text className={className} style={style}>
             {title}
         </Text>
     );
