@@ -1,13 +1,14 @@
 {
     "name": "@vigilio/controller-react-native-hook-form",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "this is a library to reduce code when u use react hook form",
     "main": "./dist/cjs/index.js",
     "module": "./dist/esm/index.js",
     "types": "./dist/esm/index.d.ts",
     "peerDependencies": {
         "react": ">=18",
-        "react-native": ">=0.71.6"
+        "react-native": ">=0.71.6",
+        "react-hook-form": ">=7.4.0"
     },
     "repository": {
         "type": "git",
@@ -38,9 +39,5 @@
         "react-dom": "^18.2.0",
         "tslib": "^2.5.0",
         "typescript": "^5.0.4"
-    },
-    "dependencies": {
-        "react-hook-form": "^7.43.9",
-        "react-native": "^0.71.6"
     }
 }
