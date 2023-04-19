@@ -18,6 +18,7 @@ export const FormControlContext = createGenericContext();
 export function FormControl<T extends object>(
     props: FormControlComponent<T> & {
         style?: StyleProp<ViewStyle>;
+        className?: string;
         custom?: true;
         children: any;
     }
@@ -27,6 +28,7 @@ export function FormControl<T extends object>(
         name,
         rules = {},
         custom = false,
+        className = "",
         children,
         title,
         style = {},
@@ -57,6 +59,7 @@ export function FormControl<T extends object>(
                         ...formState,
                     },
                 };
+                const viewProps = { className };
                 return (
                     <FormControlContext.Provider
                         value={{
@@ -65,7 +68,7 @@ export function FormControl<T extends object>(
                             title,
                         }}
                     >
-                        <View style={style}>
+                        <View {...viewProps} style={style}>
                             {custom ? children(properties) : children}
                         </View>
                     </FormControlContext.Provider>

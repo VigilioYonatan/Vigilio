@@ -4,10 +4,16 @@ import { StyleProp, Text, TextStyle } from "react-native";
 
 export function FormControlError({
     style = {},
+    className = "",
 }: {
     style?: StyleProp<TextStyle>;
+    className?: string;
 }) {
     const { error } = useContext(FormControlContext);
-
-    return <Text style={style}>{error && error.message}</Text>;
+    const props = { className };
+    return (
+        <Text {...props} style={style}>
+            {error && error.message}
+        </Text>
+    );
 }
