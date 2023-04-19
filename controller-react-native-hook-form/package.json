@@ -1,0 +1,46 @@
+{
+    "name": "@vigilio/controller-react-native-hook-form",
+    "version": "1.0.0",
+    "description": "this is a library to reduce code when u use react hook form",
+    "main": "./dist/cjs/index.js",
+    "module": "./dist/esm/index.js",
+    "types": "./dist/esm/index.d.ts",
+    "peerDependencies": {
+        "react": ">=18",
+        "react-native": ">=0.71.6"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/VigilioYonatan/Vigilio/tree/main/preact-fetching"
+    },
+    "files": [
+        "dist",
+        "LICENSE",
+        "README.md"
+    ],
+    "keywords": [
+        "react native",
+        "typescript",
+        "react hook form",
+        "form"
+    ],
+    "scripts": {
+        "build:esm": "tsc",
+        "build:cjs": "tsc --module commonjs --outDir dist/cjs",
+        "build": "yarn build:esm && yarn build:cjs"
+    },
+    "author": "Vigilio",
+    "license": "ISC",
+    "devDependencies": {
+        "@types/react": "^18.0.37",
+        "@types/react-dom": "^18.0.11",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
+        "tslib": "^2.5.0",
+        "typescript": "^5.0.4"
+    },
+    "dependencies": {
+        "react-hook-form": "^7.43.9",
+        "react-native": "^0.71.6"
+    }
+}
