@@ -188,3 +188,33 @@ const FormControlCustom = (props) => {
     );
 };
 ```
+
+- With tailwindcss natilwind
+  
+
+```jsx
+export function ControlCustomTailwind<T extends object>(props: FormControlComponent<T>) {
+  return (
+    <FormController {...props} custom>
+      {
+        (({props: properties, renderMethods}: FormControlPropsTotal<T>) => {
+          return (
+            <>
+              <Text className="">{props.title}</Text>
+              <TextInput
+                className=""
+                {...properties}
+                onChangeText={value => properties.onChange(value)}
+              />
+              <Text className="">
+                {renderMethods.error && renderMethods.error.message}
+              </Text>
+            </>
+          );
+        }) as any
+      }
+    </FormController>
+  );
+}
+
+```
