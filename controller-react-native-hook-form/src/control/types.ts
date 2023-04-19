@@ -12,6 +12,7 @@ export type FormControlsProps<T extends object> = {
     name: Path<T>;
     title: string;
     rules?: RegisterOptions;
+    transformer?: (value: string) => any;
     // type: InputHTMLAttributes<HTMLInputElement>['type'];
 } & TextInputProps;
 export type FormControlsCustom<T extends object> = {

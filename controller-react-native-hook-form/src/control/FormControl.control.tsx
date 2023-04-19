@@ -1,7 +1,6 @@
 import { useContext } from "react";
 import { FormControlContext } from "./FormControl";
-import { StyleProp, TextInput, TextInputProps, TextStyle } from "react-native";
-import { chooseValueKeyboard } from "../helpers/chooseValue";
+import { StyleProp, TextInput, TextStyle } from "react-native";
 
 type FormControlControlProps = {
     style?: StyleProp<TextStyle>;
@@ -18,7 +17,11 @@ export function FormControlControl({
         <TextInput
             {...properties}
             onChangeText={(value) =>
-                properties.onChange(chooseValueKeyboard(properties, value))
+                properties.onChange(
+                    properties.transformer
+                        ? properties.transformer(value)
+                        : value
+                )
             }
             style={customError && error ? customError : style}
         />
