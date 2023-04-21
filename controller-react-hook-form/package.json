@@ -12,7 +12,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/VigilioYonatan/Vigilio/blob/main/controller-react-native-hook-form/README.md"
+        "url": "https://github.com/VigilioYonatan/Vigilio/blob/main/controller-react-hook-form/README.md"
     },
     "files": [
         "dist",
