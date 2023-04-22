@@ -15,7 +15,7 @@ export function FormControlControl({
     return (
         <input
             {...rest}
-            className={className + " " + error ? customError : ""}
+            className={`${className} ${error ? customError : ""}`}
             value={(value as string).toString()}
             onChange={(e) =>
                 onChange(
