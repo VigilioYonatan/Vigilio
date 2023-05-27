@@ -32,9 +32,6 @@
     },
     "author": "Vigilio",
     "license": "ISC",
-    "dependencies": {
-        "vue": "^3.2.47"
-    },
     "devDependencies": {
         "tslib": "^2.5.0",
         "typescript": "^5.0.4"
