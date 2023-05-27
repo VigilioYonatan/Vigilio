@@ -3,7 +3,7 @@
     "exclude": ["dist", "node_modules"],
     "compilerOptions": {
         "module": "esnext",
-        "lib": ["ES2020", "DOM", "DOM.Iterable", "ESNext"],
+        "lib": ["DOM", "DOM.Iterable", "ESNext"],
         "importHelpers": true,
         "declaration": true,
         "sourceMap": true,
@@ -14,7 +14,6 @@
         "noUnusedLocals": true,
         "noUnusedParameters": true,
         "moduleResolution": "node",
-        "noEmit": true,
         "jsx": "preserve",
         "esModuleInterop": true,
         "skipLibCheck": true,
