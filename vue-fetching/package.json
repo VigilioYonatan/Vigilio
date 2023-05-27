@@ -1,6 +1,6 @@
 {
     "name": "@vigilio/vue-fetching",
-    "version": "1.0.25",
+    "version": "1.1.0",
     "description": "this is a library to fetch in vue",
     "main": "./dist/cjs/index.js",
     "module": "./dist/esm/index.js",
@@ -33,7 +33,7 @@
     "author": "Vigilio",
     "license": "ISC",
     "devDependencies": {
-        "tslib": "^2.5.0",
+        "tslib": "^2.5.2",
         "typescript": "^5.0.4"
     },
     "dependencies": {
