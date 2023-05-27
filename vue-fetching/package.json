@@ -1,0 +1,42 @@
+{
+    "name": "@vigilio/vue-fetching",
+    "version": "1.0.21",
+    "description": "this is a library to fetch in vue",
+    "main": "./dist/cjs/index.js",
+    "module": "./dist/esm/index.js",
+    "types": "./dist/esm/index.d.ts",
+    "peerDependencies": {
+        "vue": ">=3.2"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/VigilioYonatan/Vigilio/blob/main/vue-fetchingREADME.md"
+    },
+    "files": [
+        "dist",
+        "LICENSE",
+        "README.md"
+    ],
+    "keywords": [
+        "preact",
+        "typescript",
+        "preact-fetching",
+        "react-query",
+        "swr",
+        "syncronize"
+    ],
+    "scripts": {
+        "build:esm": "tsc",
+        "build:cjs": "tsc --module commonjs --outDir dist/cjs",
+        "build": "pnpm build:esm && pnpm build:cjs"
+    },
+    "author": "Vigilio",
+    "license": "ISC",
+    "dependencies": {
+        "vue": "^3.2.47"
+    },
+    "devDependencies": {
+        "tslib": "^2.5.0",
+        "typescript": "^5.0.4"
+    }
+}
