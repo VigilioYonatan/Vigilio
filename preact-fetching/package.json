@@ -1,7 +1,10 @@
 {
     "name": "@vigilio/preact-fetching",
-    "version": "2.0.3",
+    "version": "2.0.4",
     "description": "this is a library to fetch in preact",
+    "main": "./dist/bundle.js",
+    "module": "./dist/bundle.js",
+    "types": "./dist/index.d.ts",
     "type": "module",
     "peerDependencies": {
         "preact": ">=10"
