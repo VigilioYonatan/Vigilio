@@ -1,111 +1,186 @@
-import { Ref, UnwrapRef, reactive, toRefs } from "vue";
-
-export interface OptionsQuery {
-    skipFetching: boolean;
+import { reactive, UnwrapRef, toRefs, Ref, onMounted } from "vue";
+import { delayFetch, timer } from "./helpers";
+export interface OptionsQuery<Data, Error> {
+    skipFetching?: boolean;
+    placeholderData?: Data | null;
+    staleTime?: number | null;
+    refetchIntervalInBackground?: boolean;
+    refetchOnReconnect?: boolean;
+    delay?: number | null;
+    retry?: number | null;
+    retryDelay?: number | null;
+    transformData?: ((data: Data) => Data) | null;
+    onError?: ((error: Error) => void) | null;
+    onSuccess?: ((data: Data) => void) | null;
+    clean?: boolean;
 }
-
-export interface MoreOptions<Data, Error> {
-    onSuccess?: (data: Data) => void;
-    onError?: (data: Error) => void;
-    transformData?: (data: Data) => Data;
-}
-type FetchPropsProps<Data, Error> = {
-    data: UnwrapRef<Data> | Data | null;
-    isLoading: boolean | null;
-    isSuccess: boolean | null;
-    // isFetching: boolean | null;
-    isSkip: boolean;
-    isError: boolean | null;
-    error: Error | null;
-};
-export type UseMutation<Data, Body, Error> = {
+export type UseQuery<Data, Error> = {
     [K in keyof FetchPropsProps<Data, Error>]: Ref<
         FetchPropsProps<Data, Error>[K]
     >;
 } & {
-    mutate: (body: Body, moreOption?: MoreOptions<Data, Error> | null) => void;
-    mutateAsync: (body: Body) => Promise<Data | undefined>;
-    disabledSkip: () => void;
+    refetch: (clean?: boolean) => void;
 };
 
-function useMutation<Data, Body, Error>(
+type FetchPropsProps<Data, Error> = {
+    data: UnwrapRef<Data> | Data | null;
+    isLoading: boolean | null;
+    isSuccess: boolean | null;
+    isFetching: boolean | null;
+    isSkip: boolean;
+    isError: boolean | null;
+    error: Error | null;
+    errorTimes: number;
+};
+function useQuery<Data, Error>(
     url: string,
-    fetching: (url: string, body: Body) => Promise<Data>,
-    options: OptionsQuery | null = null
-): UseMutation<Data, Body, Error> {
-    let opciones: OptionsQuery = {
+    fetching: (url: string) => Promise<Data>,
+    options: OptionsQuery<Data, Error> | null = null
+): UseQuery<Data, Error> {
+    let opciones: Required<OptionsQuery<Data, Error>> = {
         skipFetching: false,
+        placeholderData: null,
+        transformData: null,
+        staleTime: null,
+        refetchIntervalInBackground: false,
+        onError: null,
+        onSuccess: null,
+        refetchOnReconnect: false,
+        delay: null,
+        retry: 3,
+        retryDelay: null,
+        clean: true,
     };
+
     if (options) {
         opciones = { ...opciones, ...options };
     }
-    const { skipFetching } = opciones;
-
+    const {
+        skipFetching,
+        placeholderData,
+        staleTime,
+        refetchIntervalInBackground,
+        refetchOnReconnect,
+        delay,
+        retry,
+        retryDelay,
+        clean,
+        transformData,
+        onError,
+        onSuccess,
+    } = opciones;
     const fetchProps: FetchPropsProps<Data, Error> = reactive({
-        data: null,
+        data: placeholderData,
         isLoading: null,
         isSuccess: null,
+        isFetching: null,
+        isSkip: skipFetching,
         isError: null,
         error: null,
-        isSkip: skipFetching,
+        errorTimes: 0,
     });
 
-    async function fetch(
-        body: Body,
-        moreOption: MoreOptions<Data, Error> | null
-    ) {
-        if (fetchProps.isSkip) return;
-        fetchProps.isLoading = true;
+    async function fetchEndpoint() {
+        if (fetchProps.isFetching === false) {
+            fetchProps.isFetching = true;
+        } else {
+            fetchProps.isLoading = true;
+        }
+
+        if (delay) {
+            await delayFetch(timer(delay));
+        }
+        if (fetchProps.errorTimes !== 0) {
+            await delayFetch(timer(retryDelay ?? 3));
+        }
+
         try {
-            const result = await fetching(url, body);
-            fetchProps.data = result;
+            const data = await fetching(url);
+            fetchProps.isFetching = false;
             fetchProps.isLoading = false;
-            fetchProps.isError = false;
             fetchProps.isSuccess = true;
-
-            if (moreOption && moreOption.onSuccess) {
-                moreOption.onSuccess(result);
+            fetchProps.isError = false;
+            let transform: Data = data;
+            if (transformData) {
+                transform = transformData(data);
             }
-            if (moreOption && moreOption.transformData) {
-                const transformData = moreOption.transformData(result);
-                fetchProps.data = transformData;
-                return transformData;
+            if (onSuccess) {
+                onSuccess(transform);
             }
 
-            return result;
-        } catch (error) {
-            fetchProps.isLoading = false;
-            fetchProps.isSuccess = false;
+            fetchProps.data = transform;
+        } catch (error: unknown) {
+            fetchProps.errorTimes += 1;
+            if (retry && fetchProps.errorTimes < retry) {
+                fetchEndpoint();
+                return;
+            }
+
             fetchProps.isError = true;
+            fetchProps.isLoading = false;
+            fetchProps.isFetching = false;
+            fetchProps.isSuccess = false;
             fetchProps.error = error as Error;
-
-            if (moreOption && moreOption.onError) {
-                moreOption.onError(error as Error);
+            if (onError) {
+                onError(error as Error);
             }
-            throw error;
         }
     }
 
-    function disabledSkip() {
-        if (!fetchProps.isSkip) return;
-        fetchProps.isSkip = false;
+    onMounted(() => {
+        if (fetchProps.isSkip) return;
+        if (!staleTime) {
+            fetchEndpoint();
+            return;
+        }
+        fetchEndpoint();
+        const interval = setInterval(() => {
+            refetch(clean);
+        }, timer(staleTime));
+        return () => clearInterval(interval);
+    });
+    onMounted(() => {
+        if (
+            !refetchIntervalInBackground &&
+            fetchProps.isLoading &&
+            fetchProps.isFetching
+        )
+            return;
+
+        const evt = () => {
+            if (
+                document.visibilityState === "visible" &&
+                refetchIntervalInBackground
+            ) {
+                refetch(clean);
+            }
+        };
+        document.addEventListener("visibilitychange", evt);
+    });
+    onMounted(() => {
+        if (
+            !refetchOnReconnect &&
+            fetchProps.isLoading &&
+            fetchProps.isFetching
+        )
+            return;
+        window.addEventListener("online", () => {
+            refetch(clean);
+        });
+    });
+    function restart() {
+        fetchProps.isError = null;
+        fetchProps.isSuccess = null;
+        fetchProps.data = placeholderData;
+        fetchProps.error = null;
+    }
+    function refetch(clean: boolean = true) {
+        if (clean) {
+            restart();
+        }
+        fetchEndpoint();
     }
 
-    function mutate(
-        body: Body,
-        moreOption: MoreOptions<Data, Error> | null = null
-    ) {
-        fetch(body, moreOption);
-    }
-    async function mutateAsync(body: Body) {
-        const result = await fetch(body, null);
-        return result;
-    }
-    return {
-        ...toRefs(fetchProps),
-        mutate,
-        mutateAsync,
-        disabledSkip,
-    };
+    return { ...(toRefs(fetchProps) as any), refetch };
 }
-export default useMutation;
+export default useQuery;
