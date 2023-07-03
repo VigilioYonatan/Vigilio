@@ -1,25 +1,24 @@
-import { terser } from "rollup-plugin-terser";
-import vue from "rollup-plugin-vue";
+import preact from "rollup-plugin-preact";
 import typescript from "rollup-plugin-typescript2";
-
+import { terser } from "rollup-plugin-terser";
 export default {
     // Otras opciones de configuración de Rollup...
     input: "src/index.ts",
     output: {
         file: "dist/bundle.js", // Ruta al archivo de salida del paquete
-        format: "cjs", // Formato del paquete (puedes cambiarlo según tus necesidades)
-        name: "@vigilio/preact-fetching", // Nombre de tu biblioteca Vue
+        format: "umd",
+        name: "@vigilio/preact-fetching",
         globals: {
-            vue: "Vue", // Mapeo de las dependencias externas (en este caso, Vue)
+            preact: "preact", // Mapeo de las dependencias externas (en este caso, Preact)
         },
     },
     plugins: [
         // Otros plugins...
-        vue(),
+        preact(),
         terser(),
         typescript({
             tsconfig: "tsconfig.json", // Ruta al archivo tsconfig.json
         }),
     ],
-    external: ["vue"], // Indica que Vue es una dependencia externa
+    external: ["preact"], // Indica que Vue es una dependencia externa
 };
