@@ -35,16 +35,18 @@ const options ={
 
 const showUser = useQuery("/users", getUsers,options);
 
-const {
-       data, // data response
-       isLoading, // isLoading state  when make the request for the first time
-       isFetching, // isFetching state when make the request secondary - no similar isLoading
-       isSuccess, // state if data was correctly
-       isError, // state if data not was correctly
-       error, // error response
-       isSkip, // if skip fetch
-       refetching, //method to  refetch request
-   } = showUser;
+const options = {
+    skipFetching: false, // skip fetch ->default false
+    placeholderData: null, //placeholder  ->default null
+    transformData: null, //transform success data ->default null
+    staleTime: null, // if you want refetch for a seconds 1 = 1000 ms
+    refetchIntervalInBackground: false, // when the client change the page, it will refetch
+    onError: null, // callback when the fetch is not success (err)=>{} //default null
+    onSuccess: null, // callback when the fetch is  success (data)=>{} //default null
+    refetchOnReconnect: false, // when the net back it fetching // default false
+    delay: null, // delay to consume fetch //default null
+    clean: true, // it no clean when refetch data //default clean
+};
 ```
 
 ### useMutation: to consume data fetching POST-PUT-DELETE-PATCH
@@ -164,7 +166,7 @@ interface UserTypeApi {
     nombre: string;
 }
 async function showById(url: string) {
-    const { data } = await baseurl.get< UserTypeApi > (url);
+    const { data } = (await baseurl.get) < UserTypeApi > url;
     return data;
 }
 const { id } = useRoute().params;
