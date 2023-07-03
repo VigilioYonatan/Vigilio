@@ -1,6 +1,6 @@
 {
     "name": "@vigilio/preact-fetching",
-    "version": "1.0.21",
+    "version": "2.0.0",
     "description": "this is a library to fetch in preact",
     "main": "./dist/cjs/index.js",
     "module": "./dist/esm/index.js",
@@ -28,7 +28,7 @@
     "scripts": {
         "build:esm": "tsc",
         "build:cjs": "tsc --module commonjs --outDir dist/cjs",
-        "build": "yarn build:esm && yarn build:cjs"
+        "build": "pnpm build:esm && pnpm build:cjs"
     },
     "author": "Vigilio",
     "license": "ISC",

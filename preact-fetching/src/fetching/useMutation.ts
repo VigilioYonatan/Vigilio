@@ -1,7 +1,9 @@
 import { useState } from "preact/hooks";
+import { delayFetch, timer } from "./helpers";
 
 export interface OptionsQuery {
-    skipFetching: boolean;
+    skipFetching?: boolean;
+    delay?: number | null;
 }
 
 export interface MoreOptions<Data, Error> {
@@ -9,16 +11,22 @@ export interface MoreOptions<Data, Error> {
     onError?: (data: Error) => void;
     transformData?: (data: Data) => Data;
 }
-
-export type UseMutation<Data, Body, Error> = {
-    mutate: (body: Body, moreOption?: MoreOptions<Data, Error> | null) => void;
-    mutateAsync: (body: Body) => Promise<Data | undefined>;
+export type FetchPropsProps<Data, Error> = {
     data: Data | null;
     isLoading: boolean | null;
     isSuccess: boolean | null;
-    error: Error | null;
+    isSkip: boolean;
     isError: boolean | null;
-    isSkip: boolean | null;
+    error: Error | null;
+};
+export type UseMutation<Data, Body, Error> = {
+    [K in keyof FetchPropsProps<Data, Error>]: FetchPropsProps<Data, Error>[K];
+} & {
+    mutate: (
+        body: Body,
+        moreOption?: MoreOptions<Data, Error> | null
+    ) => Promise<void>;
+    mutateAsync: (body: Body) => Promise<Data | undefined>;
     disabledSkip: () => void;
 };
 
@@ -27,50 +35,60 @@ function useMutation<Data, Body, Error>(
     fetching: (url: string, body: Body) => Promise<Data>,
     options: OptionsQuery | null = null
 ): UseMutation<Data, Body, Error> {
-    let opciones: OptionsQuery = {
+    let opciones: Required<OptionsQuery> = {
         skipFetching: false,
+        delay: null,
     };
     if (options) {
         opciones = { ...opciones, ...options };
     }
-    const { skipFetching } = opciones;
-    const [data, setData] = useState<Data | null>(null);
-    const [isLoading, setIsLoading] = useState<boolean | null>(null);
-    const [isSuccess, setIsSuccess] = useState<boolean | null>(null);
-    const [isError, setIsError] = useState<boolean | null>(null);
-    const [error, setError] = useState<null | Error>(null);
-    const [isSkip, setIsSkip] = useState<boolean>(skipFetching);
+    const { skipFetching, delay } = opciones;
+
+    const [fetchProps, setFetchProps] = useState<FetchPropsProps<Data, Error>>({
+        data: null,
+        isLoading: null,
+        isSuccess: null,
+        isError: null,
+        error: null,
+        isSkip: skipFetching,
+    });
 
     async function fetch(
         body: Body,
         moreOption: MoreOptions<Data, Error> | null
     ) {
-        if (isSkip) return;
-        setIsLoading(true);
+        if (fetchProps.isSkip) return;
+        setFetchProps({ ...fetchProps, isLoading: true });
+        if (delay) {
+            await delayFetch(timer(delay));
+        }
+
         try {
-            const datas = await fetching(url, body);
+            const data = await fetching(url, body);
 
-            setData(datas);
-            setIsLoading(false);
-            setIsError(false);
-            setIsSuccess(true);
-            if (moreOption && moreOption.onSuccess) {
-                moreOption.onSuccess(datas);
-            }
+            let transform: Data = data;
             if (moreOption && moreOption.transformData) {
-                const transformData = moreOption.transformData(datas);
-                setData(transformData);
-                return transformData;
+                transform = moreOption.transformData(data);
             }
-
-            return datas;
+            if (moreOption && moreOption.onSuccess) {
+                moreOption.onSuccess(transform);
+            }
+            setFetchProps({
+                ...fetchProps,
+                isLoading: false,
+                isSuccess: true,
+                isError: false,
+                data: transform,
+            });
+            return transform;
         } catch (error) {
-            setIsLoading(false);
-            setIsSuccess(false);
-            setIsError(true);
-
-            setError(error as Error);
-
+            setFetchProps({
+                ...fetchProps,
+                isLoading: false,
+                isSuccess: false,
+                isError: true,
+                error: error as Error,
+            });
             if (moreOption && moreOption.onError) {
                 moreOption.onError(error as Error);
             }
@@ -79,29 +97,24 @@ function useMutation<Data, Body, Error>(
     }
 
     function disabledSkip() {
-        if (!isSkip) return;
-        setIsSkip(false);
+        if (!fetchProps.isSkip) return;
+        fetchProps.isSkip = false;
     }
 
-    function mutate(
+    async function mutate(
         body: Body,
         moreOption: MoreOptions<Data, Error> | null = null
     ) {
-        fetch(body, moreOption);
+        await fetch(body, moreOption);
     }
     async function mutateAsync(body: Body) {
         const result = await fetch(body, null);
         return result;
     }
     return {
+        ...fetchProps,
         mutate,
         mutateAsync,
-        data,
-        isLoading,
-        isSuccess,
-        error,
-        isError,
-        isSkip,
         disabledSkip,
     };
 }
