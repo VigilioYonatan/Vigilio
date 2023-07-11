@@ -1,178 +1,214 @@
-# @Vigilio/vue-fetching
+# @Vigilio/vue-table
 
-A simple vue Hooks library for data fetching.
+A simple vue Hooks library for table.
 
 ### Getting Started
 
-### useQuery: to consume data fetching GET
+## useTable
+
+API REFERENCE
+
+```ts
+{
+      const {  table: {
+            Thead,
+            TBody: {
+                Row,
+                Cell,
+            },
+        },
+        updateData,
+        pagination: {
+            onNextPage,
+            onBackPage,
+            onchangeLimit,
+            onChangePage,
+            backInitialPage,
+            paginator,
+            onFinalPage,
+            pagination,
+            totalPages,
+            page,
+            currentPage,
+        },
+        sort: {
+            sort,
+            sorting,
+        },
+    }}=useTable({
+    columns: columns,
+    pagination: { limit: 10, offset: 0 },
+});
+```
 
 ```vue
 <script lang="ts" setup>
-function getUsers = async(url:string) => {
-  const response = await fetch("http://yourhost/api" + url);
-  const result:Datatype = await response.json();
-  return result;
-}
-const { isLoading, data, isSuccess,isError,...rest} = useQuery("/users", getUsers);
-</script>
+import { Columns } from "@vigilio/vue-table";
 
-<template>
-    <p v-if="isLoading">Loading...</p>
-    <p v-if="isError">error...{{ JSON.stringify(rest, error) }}</p>
-    <p v-if="isSuccess">{{ JSON.stringify(data, null, 3) }}</p>
-</template>
-```
-
--   Api reference
-
-```ts
-
-const options ={
-   skipFetching: boolean; // skip the fetch
-   placeholderData; //  before consume fetch show placeholder
-   transformData:; // custome response data
-}
-
-const showUser = useQuery("/users", getUsers,options);
-
-const options = {
-    skipFetching: false, // skip fetch ->default false
-    placeholderData: null, //placeholder  ->default null
-    transformData: null, //transform success data ->default null
-    staleTime: null, // if you want refetch for a seconds 1 = 1000 ms
-    refetchIntervalInBackground: false, // when the client change the page, it will refetch
-    onError: null, // callback when the fetch is not success (err)=>{} //default null
-    onSuccess: null, // callback when the fetch is  success (data)=>{} //default null
-    refetchOnReconnect: false, // when the net back it fetching // default false
-    delay: null, // delay to consume fetch //default null
-    clean: true, // it no clean when refetch data //default clean
-};
-```
-
-### useMutation: to consume data fetching POST-PUT-DELETE-PATCH
-
-```vue
-<script>
-interface Body {
-    name: string;
-}
-async function addUser(url: string, body: Body) {
-    const data = await fetch(url, {
-        method: "POST", // method
-        body: JSON.stringify(body),
-        headers: {
-            "Content-Type": "application/json",
+const columns: Columns<{ name: string }, "index" | "acciones"> = [
+    {
+        key: "index",
+        header: () => {
+            return h("div", { class: "flex items-center" }, [
+                h("input", {
+                    id: "checkbox-table-search-1",
+                    type: "checkbox",
+                }),
+                h(
+                    "label",
+                    {
+                        for: "checkbox-table-search-1",
+                    },
+                    "checkbox"
+                ),
+            ]);
         },
-    });
-    return data;
-}
+        cell: () => {
+            return h("div", { class: "flex items-center" }, [
+                h("input", {
+                    id: "checkbox-table-search-1",
+                    type: "checkbox",
+                }),
+            ]);
+        },
+    },
+    {
+        key: "name",
+        cell: (props, index) => props.name.toUpperCase() + " " + (index + 1),
+        header: (props) => h("span", null, props + "^"),
+    },
 
-const { mutate, isLoading, isSuccess, ...rest } = useMutation(
-    "/users",
-    addUser
-);
-const name = ref("");
-// mutate
-function onSubmit() {
-    //mutate(body,options) :
-    mutate(
-        { name }, // inputs fields
-        {
-            onSuccess: (data) => {
-                console.log(data);
-            },
-            onError: (error) => {
-                console.log(error);
-            },
+    {
+        key: "acciones",
+        cell: () => {
+            function clicked() {
+                console.log("hola mierda");
+            }
+            return h("div", null, [
+                h("button", { class: "" }, "Editar"),
+                h(
+                    "button",
+                    {
+                        onClick: clicked,
+                    },
+                    "Eliminar"
+                ),
+            ]);
+        },
+    },
+];
+const { pagination, sort, table, updateData } = useTable({
+    columns: columns,
+    pagination: { limit: 10, offset: 0 },
+});
+// You can use @vigilio/vue-fetching
+const { refetch, isLoading } = useQuery(
+    "/product",
+    async function (url) {
+        const data = new URLSearchParams();
+        data.append("offset", String(pagination.pagination.offset));
+        data.append("limit", String(pagination.pagination.limit));
+        for (const [key, value] of Object.entries(sort.sort)) {
+            data.append(key, value);
         }
-    );
-}
+        const response = await fetch(`http://localhost:4000${url}?${data}`);
+        const result = await response.json();
+        return result;
+    },
+    {
+        onSuccess(data) {
+            updateData(data.results, { total: data.count });
+        },
+    }
+);
+
+watch(
+    [pagination.page, () => pagination.pagination.limit, sort.sort],
+    () => {
+        refetch();
+    },
+    { deep: true }
+);
 </script>
 <template>
-    <template>
-        <form @submit.prevent="onSubmit" novalidate>
+    <h1>@VIGILIO/TABLE</h1>
+    <div>
+        <table>
+            <thead>
+                <tr>
+                    <th scope="col" v-for="{ value } in table.Thead()">
+                        <div v-html="value"></div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <p v-if="isLoading">Cargandoo...</p>
+
+                <tr
+                    v-else
+                    v-for="{ ...data } in table.TBody.Row()"
+                    :key="data.index"
+                >
+                    <td
+                        class="px-6 py-4"
+                        v-for="{ key, value } in table.TBody.Cell(data)"
+                        :key="key"
+                    >
+                        <div v-html="value"></div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <nav>
+            <ul>
+                <li>
+                    <button
+                        type="button"
+                        @click="() => pagination.onBackPage()"
+                    >
+                        {{ "<" }}
+                    </button>
+                </li>
+
+                <div>
+                    <li
+                        :key="page"
+                        v-for="{ isActualPage, page } in pagination.paginator()"
+                    >
+                        <span v-if="isActualPage">
+                            {{ page }}
+                        </span>
+                        <button
+                            v-else
+                            @click="() => pagination.onChangePage(page)"
+                        >
+                            {{ page }}
+                        </button>
+                    </li>
+                </div>
+
+                <li>
+                    <button @click="pagination.onNextPage" type="button">
+                        {{ ">" }}
+                    </button>
+                </li>
+            </ul>
             <div class="">
-                <label for="name">Nombre</label>
+                <label class="text-white" for=""> Limite </label>
                 <input
                     type="text"
-                    id="name"
-                    v-model="name"
-                    placeholder="your name"
+                    placeholder="Max Limit"
+                    class="w-[30px]"
+                    @input="
+                        (e) => {
+                            pagination.onchangeLimit(
+                                Number((e.target as HTMLInputElement).value)
+                            );
+                        }
+                    "
                 />
             </div>
-            <button type="submit">Enviar</button>
-        </form>
-    </template>
+        </nav>
+    </div>
 </template>
-```
-
-You can use Mutate async if you prefer
-
-```ts
-const { mutateAsync, isLoading, isSuccess, ...rest } = useMutation(
-    "/users",
-    addUser
-);
-// mutateAsync
-async function handleSubmit() {
-    try {
-        const data = await mutateAsync({ nombre });
-        //
-    } catch (err) {
-        // your error response
-    }
-}
-```
-
--   Api reference
-
-```ts
-// mutate options
-{
-    onSuccess?: (data) => {};
-    onError?: (error) => {};
-    transformData?: (data) => Data; // you cand modify response data
-}
-```
-
-### USING AXIOS
-
-```ts
-const baseurl = axios.create({ baseURL: "http://yourhost/api" });
-
-interface Api {
-    id: number;
-    name: string;
-}
-
-async function showUsers(url: string) {
-    const { data } = await baseurl.get<Api[]>(url);
-    return data;
-}
-
-const { isLoading, data, ...rest } = useQuery("/users", showUsers);
-
-//....
-```
-
-## MORE EXAMPLES
-
-Dinamic Params usando vue-router
-
-```vue
-<script langs="ts" setup>
-interface UserTypeApi {
-    id: number;
-    nombre: string;
-}
-async function showById(url: string) {
-    const { data } = (await baseurl.get) < UserTypeApi > url;
-    return data;
-}
-const { id } = useRoute().params;
-const { isLoading, data, isSuccess, isError, error } = useQuery(
-    `/users/${id}`,
-    showById
-);
-</script>
 ```
