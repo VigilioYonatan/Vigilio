@@ -49,7 +49,9 @@ function useTable<T extends object, K extends string>(
         () => Math.floor(pagination.offset / pagination.limit) + 1
     );
 
-    const totalPages = Math.ceil(pagination.total / pagination.limit);
+    const totalPages = computed(() =>
+        Math.ceil(pagination.total / pagination.limit)
+    );
 
     function updateData(datas: T[], paginate?: Pagination) {
         (data as any).value = datas;
@@ -76,7 +78,8 @@ function useTable<T extends object, K extends string>(
         page.value = pag;
     }
     function onFinalPage() {
-        pagination.offset = totalPages;
+        pagination.offset = (totalPages.value - 1) * pagination.limit;
+        page.value = totalPages.value;
     }
     function backInitialPage() {
         pagination.offset = (page.value - 1) * pagination.limit;
@@ -84,13 +87,13 @@ function useTable<T extends object, K extends string>(
     }
 
     function paginator() {
-        return Array.from({ length: totalPages }).map((_, i) => {
+        return Array.from({ length: totalPages.value }).map((_, i) => {
             const startPage = Math.max(
                 1,
                 page.value - Math.floor(pagination.limit / 2)
             );
             const endPage = Math.min(
-                totalPages,
+                totalPages.value,
                 startPage + pagination.limit - 1
             );
 
