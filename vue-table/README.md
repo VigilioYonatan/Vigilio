@@ -2,6 +2,11 @@
 
 A simple vue Hooks library for table.
 
+```bash
+npm add -D tslib
+
+```
+
 ### Getting Started
 
 ## useTable

@@ -54,7 +54,6 @@ function useTable<T extends object, K extends string>(
     function updateData(datas: T[], paginate?: Pagination) {
         (data as any).value = datas;
         if (paginate) {
-            // pagination.  = { ...pagination, ...paginate };
             Object.assign(pagination, { ...paginate });
         }
     }
