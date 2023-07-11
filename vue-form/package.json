@@ -1,0 +1,36 @@
+{
+    "name": "@vigilio/vue-form",
+    "version": "1.0.0",
+    "description": "Now you can use this vue form library",
+    "main": "./dist/cjs/index.js",
+    "module": "./dist/esm/index.js",
+    "types": "./dist/esm/index.d.ts",
+    "peerDependencies": {
+        "vue": ">=3.2"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/VigilioYonatan/Vigilio/tree/main/vue-form#readme"
+    },
+    "files": [
+        "dist",
+        "LICENSE",
+        "README.md"
+    ],
+    "keywords": [
+        "vue",
+        "typescript",
+        "vue-form"
+    ],
+    "scripts": {
+        "build:esm": "tsc",
+        "build:cjs": "tsc --module commonjs --outDir dist/cjs",
+        "build": "pnpm build:esm && pnpm build:cjs"
+    },
+    "author": "Vigilio",
+    "license": "ISC",
+    "devDependencies": {
+        "tslib": "^2.6.0",
+        "typescript": "^5.0.4"
+    }
+}

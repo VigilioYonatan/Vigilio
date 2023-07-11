@@ -1,0 +1,26 @@
+{
+    "include": ["src"],
+    "exclude": ["dist", "node_modules"],
+    "compilerOptions": {
+        "module": "esnext",
+        "lib": ["DOM", "DOM.Iterable", "ESNext"],
+        "target": "ES2016",
+        "importHelpers": true,
+        "declaration": true,
+        "sourceMap": true,
+        "rootDir": "./src",
+        "outDir": "./dist/esm",
+        "strict": true,
+        "noFallthroughCasesInSwitch": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "moduleResolution": "node",
+        "jsx": "preserve",
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "paths": {
+            "tslib": ["./node_modules/tslib/tslib.d.ts"]
+        }
+    }
+}
