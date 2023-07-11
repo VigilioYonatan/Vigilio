@@ -1,16 +1,16 @@
 {
-    "name": "@vigilio/preact-fetching",
-    "version": "2.0.4",
-    "description": "this is a library to fetch in preact",
+    "name": "@vigilio/react-table",
+    "version": "1.0.0",
+    "description": "this is a table library to react",
     "main": "./dist/cjs/index.js",
     "module": "./dist/esm/index.js",
     "types": "./dist/esm/index.d.ts",
     "peerDependencies": {
-        "preact": ">=10"
+        "react": ">=10"
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/VigilioYonatan/Vigilio/tree/main/preact-fetching"
+        "url": "https://github.com/VigilioYonatan/Vigilio/blob/main/react-fetching/Readme.md"
     },
     "files": [
         "dist",
@@ -18,12 +18,9 @@
         "README.md"
     ],
     "keywords": [
-        "preact",
+        "react",
         "typescript",
-        "preact-fetching",
-        "react-query",
-        "swr",
-        "syncronize"
+        "react-table"
     ],
     "scripts": {
         "build:esm": "tsc",
@@ -33,8 +30,9 @@
     "author": "Vigilio",
     "license": "ISC",
     "devDependencies": {
-        "preact": "^10.13.2",
+        "@types/react": "^18.2.14",
+        "react": "^18.2.0",
         "tslib": "^2.6.0",
-        "typescript": "^5.0.4"
+        "typescript": "^5.1.6"
     }
 }
