@@ -1,11 +1,14 @@
 {
     "name": "@vigilio/express",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "",
-    "main": "./build/index.js",
-    "types": "./build/index.d.ts",
+    "main": "./dist/cjs/index.js",
+    "module": "./dist/esm/index.js",
+    "types": "./dist/esm/index.d.ts",
     "scripts": {
-        "build": "tsc"
+        "build:esm": "tsc",
+        "build:cjs": "tsc --module commonjs --outDir dist/cjs",
+        "build": "pnpm build:esm && pnpm build:cjs"
     },
     "peerDependencies": {
         "express": ">=4"
