@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "description": "",
     "main": "./build/index.js",
-    "types": "./build/esm/index.d.ts",
+    "types": "./build/index.d.ts",
     "scripts": {
         "build": "tsc"
     },
