@@ -1,19 +1,16 @@
 {
     "name": "@vigilio/express",
-    "version": "1.0.8",
+    "version": "1.0.9",
     "description": "express decorators api",
-    "main": "./dist/cjs/index.js",
-    "module": "./dist/esm/index.js",
-    "types": "./dist/esm/index.d.ts",
     "exports": {
         ".": {
+            "types": "./dist/esm/index.d.ts",
             "import": "./dist/esm/index.js",
             "require": "./dist/cjs/index.js"
         },
         "./helpers/*": {
-            "types": "./dist/esm/helpers/*.d.ts",
-            "import": "./dist/esm/helpers/*.js",
-            "require": "./dist/cjs/helpers/*.js"
+            "import": "./dist/esm/helpers/index.js",
+            "require": "./dist/cjs/helpers/index.js"
         }
     },
     "scripts": {
