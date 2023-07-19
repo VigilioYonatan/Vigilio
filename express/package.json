@@ -1,10 +1,17 @@
 {
     "name": "@vigilio/express",
-    "version": "1.0.6",
-    "description": "",
+    "version": "1.0.7",
+    "description": "express decorators api",
     "main": "./dist/cjs/index.js",
     "module": "./dist/esm/index.js",
     "types": "./dist/esm/index.d.ts",
+    "exports": {
+        ".": {
+            "import": "./dist/esm/index.js",
+            "require": "./dist/cjs/index.js"
+        },
+        "./helpers/*": "./dist/esm/helpers/*"
+    },
     "scripts": {
         "build:esm": "tsc",
         "build:cjs": "tsc --module commonjs --outDir dist/cjs",
