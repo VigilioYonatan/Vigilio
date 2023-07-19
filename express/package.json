@@ -13,6 +13,10 @@
         "./helpers": {
             "import": "./dist/esm/helpers/index.js",
             "require": "./dist/cjs/helpers/index.js"
+        },
+        "./handler": {
+            "import": "./dist/esm/handler/index.js",
+            "require": "./dist/cjs/handler/index.js"
         }
     },
     "scripts": {
