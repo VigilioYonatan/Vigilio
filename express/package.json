@@ -1,6 +1,6 @@
 {
     "name": "@vigilio/express",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "main": "dist/cjs/index.js",
     "module": "dist/esm/index.js",
     "types": "dist/esm/index.d.ts",
@@ -10,7 +10,7 @@
             "import": "./dist/esm/index.js",
             "require": "./dist/cjs/index.js"
         },
-        "./helpers/*": {
+        "./helpers": {
             "import": "./dist/esm/helpers/index.js",
             "require": "./dist/cjs/helpers/index.js"
         }
