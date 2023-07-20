@@ -18,5 +18,5 @@
         "strictPropertyInitialization": false,
         "declaration": true
     },
-    "include": ["src"]
+    "include": ["src", "./src/app.d.ts"]
 }
