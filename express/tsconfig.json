@@ -16,8 +16,7 @@
         "noUnusedParameters": true /* Raise an error when a function parameter isn't read. */,
         "skipLibCheck": true /* Skip type checking all .d.ts files. */,
         "strictPropertyInitialization": false,
-        "declaration": true,
-        "declarationDir": "./dist/types"
+        "declaration": true
     },
     "include": ["src", "./src/app.d.ts"]
 }
