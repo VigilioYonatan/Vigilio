@@ -1,6 +1,6 @@
 {
     "name": "@vigilio/express",
-    "version": "1.1.5",
+    "version": "1.1.6",
     "main": "dist/cjs/index.js",
     "module": "dist/esm/index.js",
     "types": "dist/esm/index.d.ts",
@@ -19,12 +19,13 @@
             "types": "./dist/esm/handler/index.d.ts",
             "import": "./dist/esm/handler/index.js",
             "require": "./dist/cjs/handler/index.js"
-        }
+        },
+        "./types": "./dist/types/index.d.ts"
     },
     "scripts": {
         "build:esm": "tsc",
         "build:cjs": "tsc --module commonjs --outDir dist/cjs",
-        "build": "pnpm build:esm && pnpm build:cjs"
+        "build": "rimraf dist && pnpm build:esm && pnpm build:cjs"
     },
     "peerDependencies": {
         "express": ">=4"
