@@ -2,6 +2,7 @@
 
 const path = require("node:path");
 const fs = require("node:fs");
+const process = require("process");
 const { capitalize } = require("./helpers");
 
 function create(mode, name, createDir) {
@@ -20,10 +21,7 @@ function create(mode, name, createDir) {
     }
 
     let dir = path.resolve(
-        __dirname,
-        "..",
-        "..",
-        "..",
+        process.cwd(),
         "src",
         "services",
         trimName,
@@ -32,7 +30,7 @@ function create(mode, name, createDir) {
     for (const pro of process.argv) {
         if (pro.startsWith("--path=")) {
             const pathDir = pro.replace("--path=", "").split(".");
-            dir = path.resolve(__dirname, "..", "..", "..", "src", ...pathDir);
+            dir = path.resolve(process.cwd(), "src", ...pathDir);
         }
     }
 
