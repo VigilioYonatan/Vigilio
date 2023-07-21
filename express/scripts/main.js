@@ -22,6 +22,8 @@ function create(mode, name, createDir) {
     let dir = path.resolve(
         __dirname,
         "..",
+        "..",
+        "..",
         "src",
         "services",
         trimName,
@@ -30,7 +32,7 @@ function create(mode, name, createDir) {
     for (const pro of process.argv) {
         if (pro.startsWith("--path=")) {
             const pathDir = pro.replace("--path=", "").split(".");
-            dir = path.resolve(__dirname, "..", "src", ...pathDir);
+            dir = path.resolve(__dirname, "..", "..", "..", "src", ...pathDir);
         }
     }
 
