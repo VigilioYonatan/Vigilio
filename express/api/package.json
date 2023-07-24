@@ -12,14 +12,15 @@
         "rome:check": "rome check ./src"
     },
     "keywords": [
-        "@vigilio/express"
+        "@vigilio/express",
+        "@vigilio/express-api"
     ],
-    "author": "",
+    "author": "Vigilio",
     "license": "ISC",
     "dependencies": {
         "@decorators/di": "^2.0.0",
         "@decorators/express": "^2.9.4",
-        "@vigilio/express": "^1.2.7",
+        "@vigilio/express-core": "^1.0.0",
         "bcryptjs": "^2.4.3",
         "cors": "^2.8.5",
         "dotenv": "^16.3.1",
