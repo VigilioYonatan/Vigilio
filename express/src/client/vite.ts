@@ -64,7 +64,12 @@ async function cssTag(entry: string, host: string) {
 function getManifest() {
     const fs = require("fs");
     const path = require("path");
-    const manifestPath = path.resolve(process.cwd(), "public", "manifest.json");
+    const manifestPath = path.resolve(
+        process.cwd(),
+        "public",
+        "dist",
+        "manifest.json"
+    );
     const content = fs.readFileSync(manifestPath, "utf-8");
     return JSON.parse(content);
 }
