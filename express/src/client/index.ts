@@ -5,7 +5,7 @@ interface Client {
     port?: number;
     host?: string;
 }
-export function client(props: Client | undefined) {
+export function client(props?: Client) {
     const {
         file = "main.ts",
         port = 3000,
