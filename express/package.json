@@ -1,6 +1,6 @@
 {
     "name": "@vigilio/express-core",
-    "version": "1.0.32",
+    "version": "1.0.34",
     "main": "dist/cjs/index.js",
     "module": "dist/esm/index.js",
     "types": "dist/esm/index.d.ts",
@@ -43,7 +43,8 @@
     "scripts": {
         "build:esm": "tsc",
         "build:cjs": "tsc --module commonjs --outDir dist/cjs",
-        "build": "rimraf dist && pnpm build:esm && pnpm build:cjs"
+        "build": "rimraf dist && pnpm build:esm && pnpm build:cjs",
+        "public": "pnpm build && npm publish"
     },
     "peerDependencies": {
         "express": ">=4"

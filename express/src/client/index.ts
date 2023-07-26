@@ -7,13 +7,13 @@ interface Client {
 }
 export function client(props?: Client) {
     const {
-        file = "main.ts",
-        port = 3000,
+        file = "ts/main.ts",
+        port = Number(process.env.VITE_PORT) || 3000,
         host = "http://localhost:4000",
     } = props || {
         file: "ts/main.ts",
         host: "http://localhost:4000",
-        port: 3000,
+        port: Number(process.env.VITE_PORT) || 3000,
     };
     return async (_req: Request, res: Response, next: NextFunction) => {
         const vites = await vite(file, "http://localhost:" + port);

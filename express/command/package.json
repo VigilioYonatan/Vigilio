@@ -1,0 +1,16 @@
+{
+    "name": "@vigilio/express",
+    "version": "1.4.0",
+    "type": "module",
+    "description": "create web apps with @vigilio/express now",
+    "bin": "./bin/cli.js",
+    "scripts": {
+        "public": "npm public"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "inquirer": "^9.2.8"
+    }
+}
