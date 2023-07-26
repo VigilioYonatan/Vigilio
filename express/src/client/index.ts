@@ -10,7 +10,11 @@ export function client(props?: Client) {
         file = "main.ts",
         port = 3000,
         host = "http://localhost:4000",
-    } = props || { file: "main.ts", host: "http://localhost:4000", port: 3000 };
+    } = props || {
+        file: "ts/main.ts",
+        host: "http://localhost:4000",
+        port: 3000,
+    };
     return async (_req: Request, res: Response, next: NextFunction) => {
         const vites = await vite(file, "http://localhost:" + port);
         const route = (uri: string) => `${host}${uri}`;
