@@ -64,7 +64,12 @@ async function cssTag(entry: string, host: string) {
 function getManifest() {
     const fs = require("fs");
     const path = require("path");
-    const manifestPath = path.resolve(process.cwd(), "public", "manifest.json");
+    const manifestPath = path.resolve(
+        process.cwd(),
+        "public",
+        "dist",
+        "manifest.json"
+    );
     const content = fs.readFileSync(manifestPath, "utf-8");
     return JSON.parse(content);
 }
@@ -76,7 +81,7 @@ function assetUrl(entry: string) {
 }
 
 function importsUrls(entry: string) {
-    const urls = [];
+    const urls: string[] = [];
     const manifest = getManifest();
 
     if (manifest[entry]["imports"] && manifest[entry]["imports"].length > 0) {
@@ -88,7 +93,7 @@ function importsUrls(entry: string) {
 }
 
 function cssUrls(entry: string) {
-    const urls = [];
+    const urls: string[] = [];
     const manifest = getManifest();
 
     if (manifest[entry]["css"] && manifest[entry]["css"].length > 0) {
