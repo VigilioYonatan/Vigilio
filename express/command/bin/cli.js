@@ -27,10 +27,14 @@ inquirer
                             case "vanilla":
                                 command = await getRepository(
                                     null,
-                                    `git clone --depth 1 https://github.com/VigilioYonatan/viigilio-express ${projectName}`
+                                    `git clone --depth 1 https://github.com/VigilioYonatan/vigilio-express ${projectName}`
                                 );
                                 break;
                             case "vue":
+                                command = await getRepository(
+                                    null,
+                                    `git clone --depth 1 https://github.com/VigilioYonatan/vigilio-express/tree/vue-ts ${projectName}`
+                                );
                                 break;
                             case "react":
                                 break;
