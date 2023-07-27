@@ -23,18 +23,20 @@ inquirer
                     })
                     .then(async (result) => {
                         let command = null;
+                        let change = null;
                         switch (result.opcion) {
                             case "vanilla":
                                 command = await getRepository(
                                     null,
-                                    `git clone --depth 1 https://github.com/VigilioYonatan/vigilio-express ${projectName}`
+                                    `git clone --depth 1 https://github.com/VigilioYonatan/vigilio-express ${projectName} `
                                 );
                                 break;
                             case "vue":
                                 command = await getRepository(
                                     null,
-                                    `git clone --depth 1 https://github.com/VigilioYonatan/vigilio-express/tree/vue-ts ${projectName}`
+                                    `git clone  https://github.com/VigilioYonatan/vigilio-express.git ${projectName}`
                                 );
+                                change = "vue-ts";
                                 break;
                             case "react":
                                 break;
@@ -50,9 +52,12 @@ inquirer
                         if (!printCommmand) process.exit(-1);
                         console.log("Installing package dependencies");
                         const printCommmand2 = runCommand(
-                            `cd ${projectName} && ${pack.package} install`
+                            `cd ${projectName} && ${
+                                change ? `git checkout ${change} &&` : ""
+                            } ${pack.package} install`
                         );
                         if (!printCommmand2) process.exit(-1);
+                        runCommand("rimraf .git/");
                         console.log("Finished project");
                     });
             });
