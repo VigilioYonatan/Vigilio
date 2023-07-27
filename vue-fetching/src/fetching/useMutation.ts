@@ -1,92 +1,72 @@
-import { reactive, UnwrapRef, toRefs, Ref, onMounted } from "vue";
+import { Ref, UnwrapRef, reactive, toRefs } from "vue";
 import { delayFetch, timer } from "./helpers";
-export interface OptionsQuery<Data, Error> {
+
+export interface OptionsQuery {
     skipFetching?: boolean;
-    placeholderData?: Data | null;
-    staleTime?: number | null;
-    refetchIntervalInBackground?: boolean;
-    refetchOnReconnect?: boolean;
     delay?: number | null;
     retry?: number | null;
     retryDelay?: number | null;
-    transformData?: ((data: Data) => Data) | null;
-    onError?: ((error: Error) => void) | null;
-    onSuccess?: ((data: Data) => void) | null;
-    clean?: boolean;
 }
-export type UseQuery<Data, Error> = {
-    [K in keyof FetchPropsProps<Data, Error>]: Ref<
-        FetchPropsProps<Data, Error>[K]
-    >;
-} & {
-    refetch: (clean?: boolean) => void;
-};
 
-type FetchPropsProps<Data, Error> = {
+export interface MoreOptions<Data, Error> {
+    onSuccess?: (data: Data) => void;
+    onError?: (data: Error) => void;
+    transformData?: (data: Data) => Data;
+}
+export type FetchPropsProps<Data, Error> = {
     data: UnwrapRef<Data> | Data | null;
     isLoading: boolean | null;
     isSuccess: boolean | null;
-    isFetching: boolean | null;
     isSkip: boolean;
     isError: boolean | null;
     error: Error | null;
     errorTimes: number;
 };
-function useQuery<Data, Error>(
+export type UseMutation<Data, Body, Error> = {
+    [K in keyof FetchPropsProps<Data, Error>]: Ref<
+        FetchPropsProps<Data, Error>[K]
+    >;
+} & {
+    mutate: (
+        body: Body,
+        moreOption?: MoreOptions<Data, Error> | null
+    ) => Promise<void>;
+    mutateAsync: (body: Body) => Promise<Data | undefined>;
+    disabledSkip: () => void;
+};
+
+function useMutation<Data, Body, Error>(
     url: string,
-    fetching: (url: string) => Promise<Data>,
-    options: OptionsQuery<Data, Error> | null = null
-): UseQuery<Data, Error> {
-    let opciones: Required<OptionsQuery<Data, Error>> = {
+    fetching: (url: string, body: Body) => Promise<Data>,
+    options: OptionsQuery | null = null
+): UseMutation<Data, Body, Error> {
+    let opciones: Required<OptionsQuery> = {
         skipFetching: false,
-        placeholderData: null,
-        transformData: null,
-        staleTime: null,
-        refetchIntervalInBackground: false,
-        onError: null,
-        onSuccess: null,
-        refetchOnReconnect: false,
         delay: null,
         retry: 3,
         retryDelay: null,
-        clean: true,
     };
-
     if (options) {
         opciones = { ...opciones, ...options };
     }
-    const {
-        skipFetching,
-        placeholderData,
-        staleTime,
-        refetchIntervalInBackground,
-        refetchOnReconnect,
-        delay,
-        retry,
-        retryDelay,
-        clean,
-        transformData,
-        onError,
-        onSuccess,
-    } = opciones;
+    const { skipFetching, delay, retry, retryDelay } = opciones;
+
     const fetchProps: FetchPropsProps<Data, Error> = reactive({
-        data: placeholderData,
+        data: null,
         isLoading: null,
         isSuccess: null,
-        isFetching: null,
-        isSkip: skipFetching,
         isError: null,
         error: null,
+        isSkip: skipFetching,
         errorTimes: 0,
     });
 
-    async function fetchEndpoint() {
-        if (fetchProps.isFetching === false) {
-            fetchProps.isFetching = true;
-        } else {
-            fetchProps.isLoading = true;
-        }
-
+    async function fetch(
+        body: Body,
+        moreOption: MoreOptions<Data, Error> | null
+    ) {
+        if (fetchProps.isSkip) return;
+        fetchProps.isLoading = true;
         if (delay) {
             await delayFetch(timer(delay));
         }
@@ -95,92 +75,56 @@ function useQuery<Data, Error>(
         }
 
         try {
-            const data = await fetching(url);
-            fetchProps.isFetching = false;
+            const data = await fetching(url, body);
             fetchProps.isLoading = false;
             fetchProps.isSuccess = true;
             fetchProps.isError = false;
             let transform: Data = data;
-            if (transformData) {
-                transform = transformData(data);
+            if (moreOption && moreOption.transformData) {
+                transform = moreOption.transformData(data);
             }
-            if (onSuccess) {
-                onSuccess(transform);
+            if (moreOption && moreOption.onSuccess) {
+                moreOption.onSuccess(transform);
             }
-
             fetchProps.data = transform;
-        } catch (error: unknown) {
+            return transform;
+        } catch (error) {
             fetchProps.errorTimes += 1;
             if (retry && fetchProps.errorTimes < retry) {
-                fetchEndpoint();
+                fetch(body, moreOption);
                 return;
             }
-
             fetchProps.isError = true;
             fetchProps.isLoading = false;
-            fetchProps.isFetching = false;
             fetchProps.isSuccess = false;
             fetchProps.error = error as Error;
-            if (onError) {
-                onError(error as Error);
+            if (moreOption && moreOption.onError) {
+                moreOption.onError(error as Error);
             }
+            throw error;
         }
     }
 
-    onMounted(() => {
-        if (fetchProps.isSkip) return;
-        if (!staleTime) {
-            fetchEndpoint();
-            return;
-        }
-        fetchEndpoint();
-        const interval = setInterval(() => {
-            refetch(clean);
-        }, timer(staleTime));
-        return () => clearInterval(interval);
-    });
-    onMounted(() => {
-        if (
-            !refetchIntervalInBackground &&
-            fetchProps.isLoading &&
-            fetchProps.isFetching
-        )
-            return;
-
-        const evt = () => {
-            if (
-                document.visibilityState === "visible" &&
-                refetchIntervalInBackground
-            ) {
-                refetch(clean);
-            }
-        };
-        document.addEventListener("visibilitychange", evt);
-    });
-    onMounted(() => {
-        if (
-            !refetchOnReconnect &&
-            fetchProps.isLoading &&
-            fetchProps.isFetching
-        )
-            return;
-        window.addEventListener("online", () => {
-            refetch(clean);
-        });
-    });
-    function restart() {
-        fetchProps.isError = null;
-        fetchProps.isSuccess = null;
-        fetchProps.data = placeholderData;
-        fetchProps.error = null;
-    }
-    function refetch(clean: boolean = true) {
-        if (clean) {
-            restart();
-        }
-        fetchEndpoint();
+    function disabledSkip() {
+        if (!fetchProps.isSkip) return;
+        fetchProps.isSkip = false;
     }
 
-    return { ...(toRefs(fetchProps) as any), refetch };
+    async function mutate(
+        body: Body,
+        moreOption: MoreOptions<Data, Error> | null = null
+    ) {
+        await fetch(body, moreOption);
+    }
+    async function mutateAsync(body: Body) {
+        const result = await fetch(body, null);
+        return result;
+    }
+    return {
+        ...(toRefs(fetchProps) as any),
+        mutate,
+        mutateAsync,
+        disabledSkip,
+    };
 }
-export default useQuery;
+export default useMutation;
