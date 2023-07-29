@@ -23,7 +23,7 @@ inquirer
                     })
                     .then((result) => {
                         let pack = null;
-                        switch (result) {
+                        switch (result.type) {
                             case "fullstack":
                                 pack = `git clone --depth 1 https://github.com/VigilioYonatan/express-api ${projectName}`;
                                 break;
