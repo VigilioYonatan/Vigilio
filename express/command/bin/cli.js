@@ -41,6 +41,8 @@ inquirer
                         console.log(`Installing packages ${pack.package}`);
                         const installPackage = runCommand(installPackageNpm);
                         if (!installPackage) process.exit(-1);
+                        runCommand("rimraf .git/");
+
                         console.log("Congratulations...");
                     });
             });
