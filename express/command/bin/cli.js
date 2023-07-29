@@ -25,10 +25,11 @@ inquirer
                         let packs = null;
                         switch (result.type) {
                             case "fullstack":
-                                packs = `git clone --depth 1 https://github.com/VigilioYonatan/express-api ${projectName}`;
+                                packs = `git clone --depth 1 https://github.com/VigilioYonatan/vigilio-express ${projectName}`;
                                 break;
                             case "api":
-                                packs = `git clone --depth 1 https://github.com/VigilioYonatan/vigilio-express ${projectName}`;
+                                packs = `git clone --depth 1 https://github.com/VigilioYonatan/express-api ${projectName}`;
+
                                 break;
                             default:
                                 break;
