@@ -3,6 +3,7 @@ export interface UseFormProps<T> {
         [Key in keyof T]: T[Key];
     }>;
     type?: "normal" | "blur" | "initial" | "submit";
+    resolver?: (name: keyof T, value: any) => Promise<void>;
 }
 export type Control<T extends object> = (
     name: keyof T,

@@ -98,19 +98,19 @@ function useForm<T extends Object>(props?: UseFormProps<T>) {
             }
             setValue(name, value);
             if (type === "submit" && !formState.isSubmmit) return;
-            validate(name, (opciones as any)[name]);
+            await validate(name, (opciones as any)[name]);
         }
-        function onChange(e: Event) {
+        async function onChange(e: Event) {
             const val = (e.target as HTMLInputElement).value as string;
             setValueInput(name, val);
             let valor = onChangeCustom!(e);
             setValue(name, valor);
             if (type === "submit" && !formState.isSubmmit) return;
-            validate(name, (opciones as any)[name]);
+            await validate(name, (opciones as any)[name]);
         }
-        function onBlur(_e: Event) {
+        async function onBlur(_e: Event) {
             if (type === "blur") {
-                validate(name, (opciones as any)[name]);
+                await validate(name, (opciones as any)[name]);
             }
         }
         let returnControl: any = {
@@ -141,7 +141,7 @@ function useForm<T extends Object>(props?: UseFormProps<T>) {
     });
 
     function handleSubmit(cb: (data: T) => void) {
-        return (e: Event) => {
+        return async (e: Event) => {
             e?.preventDefault();
             formState.isSubmmit = true;
             for (const [name, _val] of Object.entries(values)) {
@@ -150,6 +150,8 @@ function useForm<T extends Object>(props?: UseFormProps<T>) {
             if (Object.keys(errores).length) {
                 formState.isErrors = true;
                 return;
+            } else {
+                formState.isErrors = false;
             }
 
             cb(values as T);
@@ -162,6 +164,18 @@ function useForm<T extends Object>(props?: UseFormProps<T>) {
         delete (errores as any)[name];
     }
     async function validate(name: keyof T, options: UseFormOptions<T>) {
+        clearError(name);
+        if (props && props?.resolver) {
+            try {
+                await props.resolver(name as keyof T, (values as any)[name]);
+            } catch (error) {
+                setError(name, {
+                    message: (error as Error).message,
+                    type: "custom",
+                });
+            }
+            return;
+        }
         const {
             required = false,
             max,
@@ -170,7 +184,6 @@ function useForm<T extends Object>(props?: UseFormProps<T>) {
             pattern,
             custom,
         } = options;
-        clearError(name);
         const value = (values as any)[name];
         const resp = requiredValidate(required, value);
 
