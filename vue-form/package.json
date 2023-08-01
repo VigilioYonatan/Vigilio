@@ -11,15 +11,22 @@
             "require": "./dist/cjs/index.js"
         },
         "./package.json": "./package.json",
-        "./resolvers": {
-            "import": "./dist/esm/resolvers/index.js",
-            "require": "./dist/cjs/resolvers/index.js"
+        "./resolvers/zod": {
+            "import": "./dist/esm/resolvers/zod.js",
+            "require": "./dist/cjs/resolvers/zod.js"
+        },
+        "./resolvers/valibot": {
+            "import": "./dist/esm/resolvers/valibot.js",
+            "require": "./dist/cjs/resolvers/valibot.js"
         }
     },
     "typesVersions": {
         "*": {
-            "resolvers": [
-                "./dist/esm/resolvers/index.d.ts"
+            "resolvers/zod": [
+                "./dist/esm/resolvers/zod.d.ts"
+            ],
+            "resolvers/valibot": [
+                "./dist/esm/resolvers/valibot.d.ts"
             ]
         }
     },
