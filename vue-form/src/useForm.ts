@@ -145,7 +145,7 @@ function useForm<T extends Object>(props?: UseFormProps<T>) {
             e?.preventDefault();
             formState.isSubmmit = true;
             for (const [name, _val] of Object.entries(values)) {
-                validate(name as keyof T, (opciones as any)[name]);
+                await validate(name as keyof T, (opciones as any)[name]);
             }
             if (Object.keys(errores).length) {
                 formState.isErrors = true;
