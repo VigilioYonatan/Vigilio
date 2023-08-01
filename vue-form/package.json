@@ -1,6 +1,6 @@
 {
     "name": "@vigilio/vue-form",
-    "version": "1.1.1",
+    "version": "1.1.2",
     "description": "Now you can use this vue form library",
     "main": "./dist/cjs/index.js",
     "module": "./dist/esm/index.js",
@@ -46,13 +46,5 @@
         "build": "pnpm build:esm && pnpm build:cjs"
     },
     "author": "Vigilio",
-    "license": "ISC",
-    "devDependencies": {
-        "tslib": "^2.6.0",
-        "typescript": "^5.0.4"
-    },
-    "dependencies": {
-        "valibot": "^0.8.0",
-        "zod": "^3.21.4"
-    }
+    "license": "ISC"
 }
