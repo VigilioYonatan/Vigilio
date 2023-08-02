@@ -271,6 +271,15 @@ function useForm<T extends Object>(props?: UseFormProps<T>) {
             setError(key as keyof T, value);
         }
     }
+    function onReset(name: keyof T, clean: boolean = false) {
+        if (!clean) {
+            setValue(name, (defaultValues as any)[name] || "");
+            setValueInput(name, (defaultValues as any)[name] || "");
+            return;
+        }
+        setValue(name, "" as T[keyof T]);
+        setValueInput(name, "");
+    }
 
     // getters
     function getValue(key: keyof T): any {
@@ -301,6 +310,7 @@ function useForm<T extends Object>(props?: UseFormProps<T>) {
             setValue,
             getValue,
             setError,
+            onReset,
         },
         formState,
     };
