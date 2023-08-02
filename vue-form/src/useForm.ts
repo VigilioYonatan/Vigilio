@@ -167,7 +167,7 @@ function useForm<T extends Object>(props?: UseFormProps<T>) {
         clearError(name);
         if (props && props?.resolver) {
             try {
-                await props.resolver(name as keyof T, (values as any)[name]);
+                await props.resolver(name as keyof T, values as any);
             } catch (error) {
                 setError(name, {
                     message: (error as Error).message,
