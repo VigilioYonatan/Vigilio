@@ -142,7 +142,8 @@ watch(
             <thead>
                 <tr>
                     <th scope="col" v-for="{ value } in table.Thead()">
-                        <div v-html="value"></div>
+                        <template v-if="typeof value === 'string' ">{{ value }}</template>
+                     <component  v-else :is="value"/>
                     </th>
                 </tr>
             </thead>
@@ -159,7 +160,8 @@ watch(
                         v-for="{ key, value } in table.TBody.Cell(data)"
                         :key="key"
                     >
-                        <div v-html="value"></div>
+                        <template v-if="typeof value === 'string' ">{{ value }}</template>
+                     <component  v-else :is="value"/>
                     </td>
                 </tr>
             </tbody>
