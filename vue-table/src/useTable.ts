@@ -121,7 +121,7 @@ function useTable<T extends object, K extends string>(
         return props.columns.map(({ key, header }) => {
             let value: any = key;
             if (header && header instanceof Function) {
-                value = vnodeToString(header(key, sorting));
+                value =header(key, sorting);
             }
             if (typeof header === "string") {
                 value = header;
@@ -143,9 +143,8 @@ function useTable<T extends object, K extends string>(
         return props.columns.map(({ key, cell }) => {
             let value = data[key];
             if (cell && cell instanceof Function) {
-                value = vnodeToString(
-                    cell(data, pagination.offset + data.index)
-                );
+                value = cell(data, pagination.offset + data.index)
+                
             }
             if (typeof cell === "string") {
                 value = data[cell];
@@ -154,14 +153,6 @@ function useTable<T extends object, K extends string>(
         });
     }
 
-    function vnodeToString(vnode: VNode) {
-        const container = document.createElement("th");
-        const app = createApp({ render: () => vnode });
-        app.mount(container);
-        const htmlString = container.innerHTML;
-        app.unmount();
-        return htmlString;
-    }
     return {
         table: {
             Thead,
