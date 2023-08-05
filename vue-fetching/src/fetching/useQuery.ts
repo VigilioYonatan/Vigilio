@@ -19,7 +19,7 @@ export type UseQuery<Data, Error> = {
         FetchPropsProps<Data, Error>[K]
     >;
 } & {
-    refetch: (clean?: boolean) => void;
+    refetch: (clean?: boolean) => Promise<void>;
 };
 
 type FetchPropsProps<Data, Error> = {
