@@ -43,7 +43,7 @@ function useMutation<Data, Body, Error>(
     let opciones: Required<OptionsQuery> = {
         skipFetching: false,
         delay: null,
-        retry: 3,
+        retry: 1,
         retryDelay: null,
     };
     if (options) {
@@ -91,7 +91,7 @@ function useMutation<Data, Body, Error>(
         } catch (error) {
             fetchProps.errorTimes += 1;
             if (retry && fetchProps.errorTimes < retry) {
-                fetch(body, moreOption);
+                await fetch(body, moreOption);
                 return;
             }
             fetchProps.isError = true;

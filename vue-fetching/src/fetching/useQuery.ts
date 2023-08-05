@@ -112,7 +112,7 @@ function useQuery<Data, Error>(
         } catch (error: unknown) {
             fetchProps.errorTimes += 1;
             if (retry && fetchProps.errorTimes < retry) {
-                fetchEndpoint();
+                await fetchEndpoint();
                 return;
             }
 
@@ -127,15 +127,15 @@ function useQuery<Data, Error>(
         }
     }
 
-    onMounted(() => {
+    onMounted(async () => {
         if (fetchProps.isSkip) return;
         if (!staleTime) {
-            fetchEndpoint();
+            await fetchEndpoint();
             return;
         }
-        fetchEndpoint();
-        const interval = setInterval(() => {
-            refetch(clean);
+        await fetchEndpoint();
+        const interval = setInterval(async () => {
+            await refetch(clean);
         }, timer(staleTime));
         return () => clearInterval(interval);
     });
@@ -147,25 +147,25 @@ function useQuery<Data, Error>(
         )
             return;
 
-        const evt = () => {
+        const evt = async () => {
             if (
                 document.visibilityState === "visible" &&
                 refetchIntervalInBackground
             ) {
-                refetch(clean);
+                await refetch(clean);
             }
         };
         document.addEventListener("visibilitychange", evt);
     });
-    onMounted(() => {
+    onMounted(async () => {
         if (
             !refetchOnReconnect &&
             fetchProps.isLoading &&
             fetchProps.isFetching
         )
             return;
-        window.addEventListener("online", () => {
-            refetch(clean);
+        window.addEventListener("online", async () => {
+            await refetch(clean);
         });
     });
     function restart() {
@@ -174,11 +174,11 @@ function useQuery<Data, Error>(
         fetchProps.data = placeholderData;
         fetchProps.error = null;
     }
-    function refetch(clean: boolean = true) {
+    async function refetch(clean: boolean = true) {
         if (clean) {
             restart();
         }
-        fetchEndpoint();
+        await fetchEndpoint();
     }
 
     return { ...(toRefs(fetchProps) as any), refetch };
