@@ -54,3 +54,42 @@ export function isActive(req: Request) {
         return req.path === uri;
     };
 }
+
+export type Money = "PEN" | "USD" | "MXN" | "COP" | "ARS";
+export function formatMoney(value: number, money: Money = "PEN") {
+    let formatMoney = null;
+    switch (money) {
+        case "PEN":
+            formatMoney = new Intl.NumberFormat("es-PE", {
+                style: "currency",
+                currency: "PEN",
+            });
+            break;
+        case "USD":
+            formatMoney = new Intl.NumberFormat("en-US", {
+                style: "currency",
+                currency: "USD",
+            });
+            break;
+        case "MXN":
+            formatMoney = new Intl.NumberFormat("es-MX", {
+                style: "currency",
+                currency: "MXN",
+            });
+            break;
+        case "COP":
+            formatMoney = new Intl.NumberFormat("es-CO", {
+                style: "currency",
+                currency: "COP",
+            });
+        case "ARS":
+            formatMoney = new Intl.NumberFormat("es-AR", {
+                style: "currency",
+                currency: "ARS",
+            });
+            break;
+        default:
+            return "choose the type money";
+    }
+    return formatMoney.format(value);
+}

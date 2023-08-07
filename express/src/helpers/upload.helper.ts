@@ -41,23 +41,34 @@ export interface ValidationProps {
         | number;
 }
 
-export function validateUpload(
-    archivos: File[],
-    validation?: ValidationProps
-): Promise<string[]> {
+/**
+ *
+ * @param archivos
+ * @param validation
+ * @default  
+ * maxFiles = 1,
+    minFiles = 1,
+    maxSize = 5,
+    minSize = 0,
+    typeFile = {
+        value: ["image/jpg", "image/jpeg", "image/png", "image/webp"],
+    },
+    required = true,
+ */
+export function validateUpload(archivos: File[], validation?: ValidationProps) {
     return new Promise((res, rej) => {
         const {
             maxFiles = 1,
             minFiles = 1,
-            maxSize = 1,
-            minSize = 0.001,
+            maxSize = 5,
+            minSize = 0,
             typeFile = {
                 value: ["image/jpg", "image/jpeg", "image/png", "image/webp"],
             },
             required = true,
         } = validation || {
-            minSize: 0.001,
-            maxSize: 1,
+            minSize: 0,
+            maxSize: 5,
             maxFiles: 1,
             minFiles: 1,
             required: true,
@@ -92,7 +103,6 @@ export function validateUpload(
             rej(`Demasiados archivos, máximo ${minFiles} archivos`);
             return;
         }
-        let filesNames: string[] = [];
 
         for (const archivo of archivos) {
             const extension = archivo.originalFilename!.split(".").at(-1);
@@ -149,15 +159,7 @@ export function validateUpload(
                 );
                 return;
             }
-            const readArchivo = fs.readFileSync(archivo.filepath);
-
-            const nameFiles = generateId() + "." + extension;
-            fs.writeFileSync(
-                path.resolve(__dirname, "..", "..", "uploads", nameFiles),
-                readArchivo
-            );
-            filesNames = [...filesNames, nameFiles];
         }
-        res(filesNames);
+        res(archivos);
     });
 }

@@ -24,10 +24,8 @@ export function Upload(validation?: ValidationProps) {
                     }
                     const archivos = files.file as File[];
                     try {
-                        (req as any).files = await validateUpload(
-                            archivos,
-                            validation
-                        );
+                        await validateUpload(archivos, validation);
+                        (req as any).files = archivos;
                         next();
                     } catch (err) {
                         return res
