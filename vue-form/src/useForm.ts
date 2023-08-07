@@ -240,10 +240,14 @@ function useForm<T extends Object>(props?: UseFormProps<T>) {
     }
 
     function setValues(dValues: Partial<T>) {
-        Object.assign(values, dValues);
+        for (const [key, val] of Object.entries(dValues)) {
+            setValue(key as keyof T, val);
+            setValueInput(key as keyof T, String(val));
+        }
     }
     function setValue(key: keyof T, value: T[keyof T]) {
         (values as T)[key] = value;
+        setValueInput(key, String(value));
     }
     function setValueInput(key: keyof T, value: string) {
         (valuesInput as any)[key] = value;
