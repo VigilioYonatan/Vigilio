@@ -66,7 +66,7 @@ function useForm<T extends Object>(props?: UseFormProps<T>) {
         }
 
         async function onInput(e: Event) {
-            let value: any = (e.target as HTMLInputElement).value;
+            let value: any = (e.target as HTMLInputElement).value.trim();
 
             if (
                 options &&
