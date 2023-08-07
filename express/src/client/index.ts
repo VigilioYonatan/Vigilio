@@ -10,10 +10,10 @@ export function client(props?: Client) {
     const {
         file = "ts/main.ts",
         port = Number(process.env.VITE_PORT) || 3000,
-        host = process.env.VITE_PORT || "http://localhost:4000",
+        host = process.env.VITE_URL || "http://localhost:4000",
     } = props || {
         file: "ts/main.ts",
-        host: process.env.VITE_PORT || "http://localhost:4000",
+        host: process.env.VITE_URL || "http://localhost:4000",
         port: Number(process.env.VITE_PORT) || 3000,
     };
     return async (req: Request, res: Response, next: NextFunction) => {
