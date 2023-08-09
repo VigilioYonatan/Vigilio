@@ -1,0 +1,73 @@
+import { Injectable } from "@decorators/di";
+import { ${Props}Entity } from "../entities/${props}.entity";
+import {
+    BadRequestException,
+    NotFoundException,
+} from "@vigilio/express-core/handler";
+import { ${Props}StoreDto } from "../dtos/${props}.store.dto";
+import { ${Props}UpdateDto } from "../dtos/${props}.update.dto";
+
+@Injectable()
+export class ${Props}Service {
+    async index() {
+        const data = await ${Props}Entity.findAll({ raw: true });
+        return {
+            success: true,
+            data,
+        };
+    }
+
+    async show(slug: string) {
+        let ${prop} = await ${Props}Entity.findByPk(slug);
+        if (!${prop}) {
+            ${prop} = await ${Props}Entity.findOne({
+                where: {
+                    slug,
+                },
+            });
+        }
+        if (!${prop})
+            throw new NotFoundException(`No se encontró un user con ${slug}`);
+        return {
+            success: true,
+            ${prop},
+        };
+    }
+
+    async store(${props}StoreDto: ${Props}StoreDto) {
+        const ${prop} = new ${Props}Entity(${props}StoreDto);
+        await ${prop}.save();
+
+        return {
+            success: true,
+            ${prop},
+        };
+    }
+
+    async update(id: string, ${props}UpdateDto: ${Props}UpdateDto) {
+        const { ${prop} } = await this.show(id);
+        if (${prop}.name === ${props}UpdateDto.name)
+            throw new BadRequestException(
+                `Este ${prop} con el nombre ${usersUpdateDto.name} ya existe`
+            );
+        if (${prop}.slug === ${props}UpdateDto.slug) {
+            throw new BadRequestException(
+                `Este ${prop} con el slug ${usersUpdateDto.name} ya existe`
+            );
+        }
+        await ${prop}.update(${props}UpdateDto);
+        return {
+            success: true,
+            ${prop},
+        };
+    }
+
+    async destroy(id: string) {
+        const { ${prop} } = await this.show(id);
+        await ${prop}.destroy();
+        return {
+            success: true,
+            message: `El user con el id ${id} fue eliminado`,
+        };
+    }
+}

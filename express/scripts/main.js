@@ -27,16 +27,19 @@ function create(mode, name, createDir) {
         trimName,
         createDir ? createDir : ""
     );
+    if (!fs.existsSync(dir)) {
+        console.log(`Dont exist this dir. we're creating....`);
+        fs.mkdirSync(dir);
+    }
+    let fileTxt = mode;
     for (const pro of process.argv) {
         if (pro.startsWith("--path=")) {
             const pathDir = pro.replace("--path=", "").split(".");
             dir = path.resolve(process.cwd(), "app", ...pathDir);
         }
-    }
-
-    if (!fs.existsSync(dir)) {
-        console.log(`Dont exist this dir. we're creating....`);
-        fs.mkdirSync(dir);
+        if (pro.startsWith("-f")) {
+            fileTxt = `${mode}Complete`;
+        }
     }
 
     const nameFile = `${trimName}.${mode}.ts`;
@@ -47,13 +50,15 @@ function create(mode, name, createDir) {
     }
 
     const file = fs.readFileSync(
-        path.resolve(__dirname, "files", mode, `${mode}.txt`),
+        path.resolve(__dirname, "files", mode, `${fileTxt}.txt`),
         { encoding: "utf-8" }
     );
-    const templateFile = file.replaceAll("${Prop}", capitalize(trimName));
-    templateFile.replaceAll("${prop}", trimName);
+    const templateFile = file.replaceAll("${Props}", capitalize(trimName));
+    templateFile.replaceAll("${props}", trimName);
+    templateFile.replaceAll("${prop}", trimName.slice(0, -1));
     fs.writeFileSync(`${dir}\\${nameFile}`, templateFile);
 }
+
 function init(c, createDir) {
     if (
         (process.argv[2] && process.argv[2].includes(`--${c}=`)) ||
@@ -90,23 +95,23 @@ function resource() {
         if (process.argv[3]) {
             for (const val of process.argv[3].replace("-", "").split("")) {
                 if (val === "c") {
-                    create("controller", trimName);
+                    create("controller", trimName, "controllers");
                 }
                 if (val === "s") {
-                    create("service", trimName);
+                    create("service", trimName, "services");
                 }
                 if (val === "e") {
-                    create("entity", trimName, true);
+                    create("entity", trimName, "entities");
                 }
             }
         } else {
-            create("controller", trimName);
-            create("service", trimName);
+            create("controller", trimName, "controllers");
+            create("service", trimName, "services");
             create("entity", trimName, "entities");
         }
     }
 }
 resource();
-init("controller");
-init("service");
+init("controller", "controllers");
+init("service", "services");
 init("entity", "entities");

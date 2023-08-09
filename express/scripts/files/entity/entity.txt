@@ -1,11 +1,6 @@
 import { Column, DataType, Table,Model } from "sequelize-typescript";
 
-@Table({ tableName: "${prop}" })
-export class ${Prop}Entity  extends Model{
-    @Column({
-        allowNull: false,
-        unique: true,
-        type: DataType.STRING,
-    })
-    name: string;
+@Table({ tableName: "${props}" })
+export class ${Props}Entity  extends Model{
+   
 }

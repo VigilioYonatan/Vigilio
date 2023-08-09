@@ -9,8 +9,8 @@ import {
 } from "@decorators/express";
 
 @Injectable()
-@Controller("/controller")
-export class ${Prop}Controller {
+@Controller("/${props}")
+export class ${Props}Controller {
     constructor() {}
 
     @Get("/")
@@ -23,11 +23,11 @@ export class ${Prop}Controller {
     @Post("/")
     async store() {}
 
-    @Status(201)
+    @Status(200)
     @Put("/")
     async update() {}
 
-    @Status(201)
+    @Status(204)
     @Delete("/")
     async destroy() {}
 }
