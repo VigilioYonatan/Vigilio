@@ -39,11 +39,11 @@ function create(mode, name, createDir) {
             const pathDir = pro.replace("--path=", "").split(".");
             dir = path.resolve(process.cwd(), "app", ...pathDir);
         }
-        if (pro.startsWith("-f")) {
-            fileTxt = `${mode}Complete`;
-        }
     }
 
+    if (process.argv[4] === "-f" || process.argv[4] === "--force") {
+        fileTxt = `${mode}Complete`;
+    }
     const nameFile = `${trimName}.${mode}.ts`;
     const existFile = fs.existsSync(`${dir}\\${nameFile}`);
     if (existFile) {
