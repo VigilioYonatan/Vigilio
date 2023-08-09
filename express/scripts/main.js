@@ -102,7 +102,7 @@ function resource() {
         if (arg.startsWith("-r=")) {
             trimName = arg.replace("-r=", "");
         }
-        if (process.argv[3].startsWith("-")) {
+        if (process.argv[3] && process.argv[3].startsWith("-")) {
             for (const val of process.argv[3].replace("-", "").split("")) {
                 if (val === "c") {
                     create("controller", trimName, "controllers");
