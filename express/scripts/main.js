@@ -20,16 +20,18 @@ function create(mode, name, createDir) {
         process.exit(1);
     }
 
-    let dir = path.resolve(
-        process.cwd(),
-        "app",
-        "services",
-        trimName,
-        createDir ? createDir : ""
-    );
+    let dir = path.resolve(process.cwd(), "app", "services", trimName);
+
     if (!fs.existsSync(dir)) {
         console.log(`Dont exist this dir. we're creating....`);
         fs.mkdirSync(dir);
+    }
+    if (createDir) {
+        dir = path.resolve(dir, createDir);
+        if (!fs.existsSync(dir)) {
+            console.log(`Dont exist this dir. we're creating....`);
+            fs.mkdirSync(dir);
+        }
     }
     let fileTxt = mode;
     for (const pro of process.argv) {
