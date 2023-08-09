@@ -23,13 +23,17 @@ function create(mode, name, createDir) {
     let dir = path.resolve(process.cwd(), "app", "services", trimName);
 
     if (!fs.existsSync(dir)) {
-        console.log(`Dont exist this dir. we're creating....`);
+        console.log(
+            `Dont exist this dir. we're creating app/services/${trimName}....`
+        );
         fs.mkdirSync(dir);
     }
     if (createDir) {
         dir = path.resolve(dir, createDir);
         if (!fs.existsSync(dir)) {
-            console.log(`Dont exist this dir. we're creating....`);
+            console.log(
+                `Dont exist this dir. we're creating app/services/${trimName}/${createDir}....`
+            );
             fs.mkdirSync(dir);
         }
     }
@@ -39,11 +43,11 @@ function create(mode, name, createDir) {
             const pathDir = pro.replace("--path=", "").split(".");
             dir = path.resolve(process.cwd(), "app", ...pathDir);
         }
+        if (pro.startsWith("f")) {
+            fileTxt = `${mode}Complete`;
+        }
     }
 
-    if (process.argv[4] === "-f" || process.argv[4] === "--force") {
-        fileTxt = `${mode}Complete`;
-    }
     const nameFile = `${trimName}.${mode}.ts`;
     const existFile = fs.existsSync(`${dir}\\${nameFile}`);
     if (existFile) {
@@ -56,9 +60,13 @@ function create(mode, name, createDir) {
         { encoding: "utf-8" }
     );
     const templateFile = file.replaceAll("${Props}", capitalize(trimName));
-    templateFile.replaceAll("${props}", trimName);
-    templateFile.replaceAll("${prop}", trimName.slice(0, -1));
-    fs.writeFileSync(`${dir}\\${nameFile}`, templateFile);
+    const templateFile2 = templateFile.replaceAll("${props}", trimName);
+    const templateFile3 = templateFile2.replaceAll(
+        "${prop}",
+        trimName.slice(0, -1)
+    );
+    fs.writeFileSync(`${dir}\\${nameFile}`, templateFile3);
+    console.log(`created succelly: ${dir}\\${nameFile}`);
 }
 
 function init(c, createDir) {
@@ -94,7 +102,7 @@ function resource() {
         if (arg.startsWith("-r=")) {
             trimName = arg.replace("-r=", "");
         }
-        if (process.argv[3]) {
+        if (process.argv[3].startsWith("-")) {
             for (const val of process.argv[3].replace("-", "").split("")) {
                 if (val === "c") {
                     create("controller", trimName, "controllers");
@@ -105,11 +113,15 @@ function resource() {
                 if (val === "e") {
                     create("entity", trimName, "entities");
                 }
+                if (val === "d") {
+                    create("dto", trimName, "dtos");
+                }
             }
         } else {
             create("controller", trimName, "controllers");
             create("service", trimName, "services");
             create("entity", trimName, "entities");
+            create("dto", trimName, "dtos");
         }
     }
 }
@@ -117,3 +129,4 @@ resource();
 init("controller", "controllers");
 init("service", "services");
 init("entity", "entities");
+init("dto", "dtos");
