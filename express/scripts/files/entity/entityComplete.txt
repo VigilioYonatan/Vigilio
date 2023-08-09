@@ -1,4 +1,5 @@
 import { Column, DataType, Table,Model } from "sequelize-typescript";
+import { ${Props}EntitySchema } from "../schemas/${props}.schema";
 
 @Table({ tableName: "${props}" })
 export class ${Props}Entity  extends Model implement ${Props}EntitySchema{

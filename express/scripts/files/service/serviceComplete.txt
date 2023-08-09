@@ -48,11 +48,11 @@ export class ${Props}Service {
         const { ${prop} } = await this.show(id);
         if (${prop}.name === ${props}UpdateDto.name)
             throw new BadRequestException(
-                `Este ${prop} con el nombre ${usersUpdateDto.name} ya existe`
+                `Este ${prop} con el nombre ${props}UpdateDto.name ya existe`
             );
         if (${prop}.slug === ${props}UpdateDto.slug) {
             throw new BadRequestException(
-                `Este ${prop} con el slug ${usersUpdateDto.name} ya existe`
+                `Este ${prop} con el slug ${props}UpdateDto.name ya existe`
             );
         }
         await ${prop}.update(${props}UpdateDto);
