@@ -1,0 +1,10 @@
+import * as z from "zod";
+
+export const ${props}Schema = z.object({
+    id: z.number(),
+    name: z.string().min(1, "Este campo es obligatorio"),
+    slug: z.string().min(1, "Este campo es obligatorio"),
+});
+
+export type ${Props}Schema = z.infer<typeof ${props}Schema>;
+export type ${Props}EntitySchema = Omit<${Props}Schema, "id">;
