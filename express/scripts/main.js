@@ -116,12 +116,16 @@ function resource() {
                 if (val === "d") {
                     create("dto", trimName, "dtos");
                 }
+                if (val === "s") {
+                    create("schema", trimName, "schemas");
+                }
             }
         } else {
             create("controller", trimName, "controllers");
             create("service", trimName, "services");
             create("entity", trimName, "entities");
             create("dto", trimName, "dtos");
+            create("schema", trimName, "schemas");
         }
     }
 }
@@ -130,3 +134,4 @@ init("controller", "controllers");
 init("service", "services");
 init("entity", "entities");
 init("dto", "dtos");
+init("schema", "schemas");
