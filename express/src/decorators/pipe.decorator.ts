@@ -17,7 +17,7 @@ export function Pipe<T extends z.ZodRawShape>(cb: (zod: typeof z) => T) {
                 try {
                     zodImport = (
                         await import(
-                            path.resolve(process.cwd(), "app", "lib", "lang")
+                            path.resolve(process.cwd(), "app", "lib", "lang.ts")
                         )
                     ).default;
                 } catch (error) {}
