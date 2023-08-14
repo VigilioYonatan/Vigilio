@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { attachMiddleware } from "@decorators/express";
 import * as z from "zod";
+import path from "node:path";
 
 export function Pipe<T extends z.ZodRawShape>(cb: (zod: typeof z) => T) {
     return function (
@@ -12,8 +13,18 @@ export function Pipe<T extends z.ZodRawShape>(cb: (zod: typeof z) => T) {
             target,
             propertyKey,
             async (req: Request, res: Response, next: NextFunction) => {
-                const params = await z
-                    .object(cb(z))
+                let zodImport = (
+                    await import(
+                        path.resolve(process.cwd(), "app", "lib", "lang")
+                    )
+                ).default;
+
+                if (!zodImport) {
+                    zodImport = z;
+                }
+
+                const params = await zodImport
+                    .object(cb(zodImport))
                     .strict()
                     .safeParseAsync(req.params);
                 if (!params.success) {
