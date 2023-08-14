@@ -13,15 +13,14 @@ export function Pipe<T extends z.ZodRawShape>(cb: (zod: typeof z) => T) {
             target,
             propertyKey,
             async (req: Request, res: Response, next: NextFunction) => {
-                let zodImport = (
-                    await import(
-                        path.resolve(process.cwd(), "app", "lib", "lang")
-                    )
-                ).default;
-
-                if (!zodImport) {
-                    zodImport = z;
-                }
+                let zodImport = z;
+                try {
+                    zodImport = (
+                        await import(
+                            path.resolve(__dirname, "..", "lib", "lang")
+                        )
+                    ).default;
+                } catch (error) {}
 
                 const params = await zodImport
                     .object(cb(zodImport))
