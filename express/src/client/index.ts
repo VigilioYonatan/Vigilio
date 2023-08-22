@@ -18,16 +18,15 @@ export function client(props?: Client) {
     };
     return async (req: Request, res: Response, next: NextFunction) => {
         let vites = null;
-        try {
-            vites = await vite(file, "http://localhost:" + port);
-        } catch (err) {
-            console.log("please npm run start:dev and restart serve");
-        }
+
         const route = (uri: string) => `${host}${uri}`;
         res.locals.vite = vites;
         res.locals.route = route;
         res.locals.formatDate = formatDate;
         res.locals.isActive = isActive(req);
+        try {
+            vites = await vite(file, "http://localhost:" + port);
+        } catch (err) {}
         next();
     };
 }
