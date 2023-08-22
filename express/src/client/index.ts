@@ -20,13 +20,14 @@ export function client(props?: Client) {
         let vites = null;
 
         const route = (uri: string) => `${host}${uri}`;
-        res.locals.vite = vites;
         res.locals.route = route;
         res.locals.formatDate = formatDate;
         res.locals.isActive = isActive(req);
         try {
             vites = await vite(file, "http://localhost:" + port);
         } catch (err) {}
+        res.locals.vite = vites;
+
         next();
     };
 }
