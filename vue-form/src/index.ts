@@ -1,6 +1,11 @@
 import useForm from "./useForm";
-import { UseFormProps, Control, UseFormOptions, Errores } from "./types";
-import { validateFile } from "./helper";
+import {
+    UseFormProps,
+    Control,
+    UseFormOptions,
+    UseFormOptionsFile,
+    Errores,
+} from "./types";
 
 export {
     useForm,
@@ -8,5 +13,5 @@ export {
     Control,
     UseFormOptions,
     Errores,
-    validateFile,
+    UseFormOptionsFile,
 };

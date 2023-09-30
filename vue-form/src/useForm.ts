@@ -1,23 +1,20 @@
 import { onMounted, reactive, ref } from "vue";
-import { Control, Errores, UseFormOptions, UseFormProps } from "./types";
 import {
-    maxLength,
-    maxNumber,
-    minLength,
-    minNumber,
-    patternValidate,
-    requiredNumber,
-    requiredValidate,
-} from "./validate";
-
+    Control,
+    Errores,
+    UseFormOptions,
+    UseFormOptionsFile,
+    UseFormProps,
+} from "./types";
 function useForm<T extends Object>(props?: UseFormProps<T>) {
     const { defaultValues = {}, type = "normal" } = props || {
         defaultValues: {},
         type: "normal",
     };
-
     const values = reactive<T>({} as T);
-    const valuesInput = reactive({} as Record<keyof T, string>);
+    const valuesInput: Record<keyof T, string> = reactive(
+        {} as Record<keyof T, string>
+    );
     const errores = reactive<Errores<T>>({} as Errores<T>);
     const refs = ref<Record<keyof T, any>>({} as Record<keyof T, any>);
     const opciones = reactive<UseFormOptions<T>>({} as UseFormOptions<T>);
@@ -26,23 +23,52 @@ function useForm<T extends Object>(props?: UseFormProps<T>) {
         isErrors: false,
     });
 
-    const control: Control<T> = (
-        name: keyof T,
-        options?: UseFormOptions<T>,
-        onChangeCustom?: (e: Event) => any
-    ) => {
+    function controlFile(name: keyof T, options?: UseFormOptionsFile) {
         const controlRef = ref();
-        if ((valuesInput as any)[name] === undefined) {
-            setValueInput(name, String((defaultValues as any)[name] || ""));
+        if ((values as T)[name] === undefined) {
+            setValue(name, "" as any);
+        }
+        if ((opciones as any)[name] === undefined) {
+            (opciones as any)[name] = options || {};
         }
 
+        if ((refs as any)[name] === undefined) {
+            (refs as any).value[name] = controlRef;
+        }
+
+        async function onChange(e: Event) {
+            const value: any = (e.target as HTMLInputElement).files;
+            setValue(name, value);
+            if (type === "submit" && !formState.isSubmmit) return;
+            await validate(name, (opciones as any)[name]);
+        }
+
+        async function onBlur(_e: Event) {
+            if (type === "blur") {
+                await validate(name, (opciones as any)[name]);
+            }
+        }
+        return {
+            id: name,
+            name,
+            ref: controlRef,
+            onBlur,
+            onChange,
+        };
+    }
+
+    const control: Control<T> = (
+        name: keyof T,
+        options?: UseFormOptions<T>
+    ) => {
+        const controlRef = ref();
+        if (valuesInput[name] === undefined) {
+            setValueInput(name, String((defaultValues as any)[name] || ""));
+        }
         if ((values as T)[name] === undefined) {
             let value: any = "" as T[keyof T];
             if ((defaultValues as any)[name]) {
                 value = (defaultValues as T)[name];
-            }
-            if (options?.isNumber) {
-                value = Number((defaultValues as any)[name] ?? "");
             }
             if (options?.transformValue) {
                 value = options.transformValue(
@@ -55,6 +81,7 @@ function useForm<T extends Object>(props?: UseFormProps<T>) {
                         ? (defaultValues as any)[name]
                         : [];
             }
+
             setValue(name, value);
         }
         if ((opciones as any)[name] === undefined) {
@@ -66,21 +93,8 @@ function useForm<T extends Object>(props?: UseFormProps<T>) {
         }
 
         async function onInput(e: Event) {
-            let value: any = (e.target as HTMLInputElement).value.trim();
-
-            if (
-                options &&
-                options.stopValue &&
-                (value as string).length > options.stopValue
-            ) {
-                controlRef.value.value = (valuesInput as any)[name];
-                return;
-            }
-
+            let value: any = (e.target as HTMLInputElement).value;
             setValueInput(name, value);
-            if (options?.isNumber) {
-                value = Number(value ?? "");
-            }
             if (options?.transformValue) {
                 value = options.transformValue(value as any);
             }
@@ -100,43 +114,27 @@ function useForm<T extends Object>(props?: UseFormProps<T>) {
             if (type === "submit" && !formState.isSubmmit) return;
             await validate(name, (opciones as any)[name]);
         }
-        async function onChange(e: Event) {
-            const val = (e.target as HTMLInputElement).value as string;
-            setValueInput(name, val);
-            let valor = onChangeCustom!(e);
-            setValue(name, valor);
-            if (type === "submit" && !formState.isSubmmit) return;
-            await validate(name, (opciones as any)[name]);
-        }
+
         async function onBlur(_e: Event) {
             if (type === "blur") {
                 await validate(name, (opciones as any)[name]);
             }
         }
-        let returnControl: any = {
+
+        return {
             id: name,
             name,
             ref: controlRef,
             onBlur,
-        };
-        if (options && options.value) {
-            returnControl["value"] = options.value;
-        } else {
-            returnControl["value"] = (valuesInput as any)[name];
-        }
-        if (onChangeCustom) {
-            return { ...returnControl, onChange };
-        }
-        return {
-            ...returnControl,
+            value: options?.value || valuesInput[name],
             onInput,
         };
     };
 
-    onMounted(() => {
+    onMounted(async () => {
         if (type !== "initial") return;
         for (const [name, _val] of Object.entries(values)) {
-            validate(name as keyof T, (opciones as any)[name]);
+            await validate(name as keyof T, (opciones as any)[name]);
         }
     });
 
@@ -147,6 +145,7 @@ function useForm<T extends Object>(props?: UseFormProps<T>) {
             for (const [name, _val] of Object.entries(values)) {
                 await validate(name as keyof T, (opciones as any)[name]);
             }
+
             if (Object.keys(errores).length) {
                 formState.isErrors = true;
                 return;
@@ -161,9 +160,12 @@ function useForm<T extends Object>(props?: UseFormProps<T>) {
         (refs.value as any)[key].focus();
     }
     function clearError(name: keyof T) {
-        delete (errores as any)[name];
+        delete errores[name];
     }
-    async function validate(name: keyof T, options: UseFormOptions<T>) {
+    async function validate(
+        name: keyof T,
+        options: UseFormOptions<T> & UseFormOptionsFile
+    ) {
         clearError(name);
         if (props && props?.resolver) {
             try {
@@ -180,55 +182,336 @@ function useForm<T extends Object>(props?: UseFormProps<T>) {
             required = false,
             max,
             min,
-            isNumber,
+            maxValue,
+            minValue,
             pattern,
+            types,
             custom,
         } = options;
         const value = (values as any)[name];
-        const resp = requiredValidate(required, value);
 
-        if (resp?.type) {
-            setError(name, resp);
-            return;
+        // max
+        if (max) {
+            if (typeof max === "number") {
+                if (typeof value === "string" && value.length > max) {
+                    setError(name, {
+                        type: "max",
+                        message: `Este campo permite máximo ${max} carácteres`,
+                    });
+                }
+                if (
+                    typeof value === "number" &&
+                    value.toString().length > max
+                ) {
+                    setError(name, {
+                        type: "max",
+                        message: `Este campo permite máximo ${max} dígitos`,
+                    });
+                }
+                if (value instanceof FileList && value.length > max) {
+                    setError(name, {
+                        type: "max",
+                        message: `Este campo requiere máximo ${max} archivos`,
+                    });
+                }
+            }
+            if (max instanceof Object) {
+                if (typeof value === "string" && value.length > max.value) {
+                    setError(name, {
+                        type: "max",
+                        message:
+                            max.message ||
+                            `Este campo permite máximo ${max.value} carácteres`,
+                    });
+                }
+                if (
+                    typeof value === "number" &&
+                    value.toString().length > max.value
+                ) {
+                    setError(name, {
+                        type: "max",
+                        message:
+                            max.message ||
+                            `Este campo permite máximo ${max.value} dígitos`,
+                    });
+                }
+                if (value instanceof FileList && value.length > max.value) {
+                    setError(name, {
+                        type: "max",
+                        message:
+                            max.message ||
+                            `Este campo requiere mámimo ${max.value} de archivos`,
+                    });
+                }
+            }
         }
-        if (typeof (values as any)[name] === "string") {
-            const value = (values as any)[name] as string;
-            const respPattern = patternValidate(pattern, value);
-            if (respPattern?.type) {
-                setError(name, respPattern);
-                return;
+        // min
+        if (min) {
+            if (typeof min === "number") {
+                if (typeof value === "string" && value.length < min) {
+                    setError(name, {
+                        type: "min",
+                        message: `Este campo permite mínimo ${min} carácteres`,
+                    });
+                }
+                if (
+                    typeof value === "number" &&
+                    value.toString().length < min
+                ) {
+                    setError(name, {
+                        type: "min",
+                        message: `Este campo permite mínimo ${min} dígitos`,
+                    });
+                }
+                if (value instanceof FileList && value.length < min) {
+                    setError(name, {
+                        type: "min",
+                        message: `Este campo permite mínimo ${min} archivos`,
+                    });
+                }
             }
-            const minResp = minLength(min, value);
-            if (minResp?.type) {
-                setError(name, minResp);
-                return;
-            }
-            const maxResp = maxLength(max, value);
-            if (maxResp?.type) {
-                setError(name, maxResp);
-                return;
+            if (min instanceof Object) {
+                if (typeof value === "string" && value.length < min.value) {
+                    setError(name, {
+                        type: "min",
+                        message:
+                            min.message ||
+                            `Este campo permite mínimo ${min.value} carácteres`,
+                    });
+                }
+                if (
+                    typeof value === "number" &&
+                    value.toString().length < min.value
+                ) {
+                    setError(name, {
+                        type: "min",
+                        message:
+                            min.message ||
+                            `Este campo permite mínimo ${min.value} dígitos`,
+                    });
+                }
+                if (value instanceof FileList && value.length < min.value) {
+                    setError(name, {
+                        type: "min",
+                        message:
+                            min.message ||
+                            `Este campo permite mínimo ${min.value} archivos`,
+                    });
+                }
             }
         }
+        // minvalue
+        if (minValue) {
+            if (typeof minValue === "number") {
+                if (typeof value === "number" && value < minValue) {
+                    console.log({ value });
+                    setError(name, {
+                        type: "minValue",
+                        message: `Este campo debe ser mayor a ${minValue}`,
+                    });
+                }
+                if (value instanceof FileList) {
+                    for (const file of value) {
+                        if (file.size < minValue * 1000000) {
+                            setError(name, {
+                                type: "minValue",
+                                message: `Archivo muy ligero ${file.name.slice(
+                                    0,
+                                    18
+                                )}, mínimo ${minValue} mb`,
+                            });
+                        }
+                    }
+                }
+            }
+            if (minValue instanceof Object) {
+                if (typeof value === "number" && value < minValue.value) {
+                    setError(name, {
+                        type: "minValue",
+                        message:
+                            minValue.message ||
+                            `Este campo debe ser mayor a ${minValue.value}`,
+                    });
+                }
+                if (value instanceof FileList) {
+                    for (const file of value) {
+                        if (file.size < minValue.value * 1000000) {
+                            setError(name, {
+                                type: "minValue",
+                                message:
+                                    minValue.message ||
+                                    `Archivo muy ligero ${file.name.slice(
+                                        0,
+                                        18
+                                    )}, mínimo ${minValue.value} mb`,
+                            });
+                        }
+                    }
+                }
+            }
+        }
+        // max value
+        if (maxValue) {
+            if (typeof maxValue === "number") {
+                if (typeof value === "number" && value > maxValue) {
+                    setError(name, {
+                        type: "maxValue",
+                        message: `Este campo debe ser menor a ${maxValue}`,
+                    });
+                }
+                if (value instanceof FileList) {
+                    for (const file of value) {
+                        if (file.size > maxValue * 1000000) {
+                            setError(name, {
+                                type: "maxValue",
+                                message: `Archivo muy pesado ${file.name.slice(
+                                    0,
+                                    18
+                                )}, máximo ${maxValue} mb`,
+                            });
+                        }
+                    }
+                }
+            }
+            if (maxValue instanceof Object) {
+                if (typeof value === "number" && value > maxValue.value) {
+                    setError(name, {
+                        type: "maxValue",
+                        message:
+                            maxValue.message ||
+                            `Este campo debe ser menor a ${maxValue}`,
+                    });
+                }
+                if (value instanceof FileList) {
+                    for (const file of value) {
+                        if (file.size > maxValue.value * 1000000) {
+                            setError(name, {
+                                type: "maxValue",
+                                message:
+                                    maxValue.message ||
+                                    `Archivo muy pesado ${file.name.slice(
+                                        0,
+                                        18
+                                    )}, máximo ${maxValue.value} mb`,
+                            });
+                        }
+                    }
+                }
+            }
+        }
+        // pattern
+        if (pattern && pattern.value && !RegExp(pattern.value).test(value)) {
+            setError(name, {
+                type: "pattern",
+                message: pattern.message,
+            });
+        }
+        if (required) {
+            if (typeof value === "string") {
+                if (
+                    required instanceof Object &&
+                    required.value &&
+                    !value.length
+                ) {
+                    setError(name, {
+                        type: "required",
+                        message:
+                            required.message || "Este campo es obligatorio",
+                    });
+                }
+                if (
+                    typeof required === "boolean" &&
+                    required &&
+                    !value.length
+                ) {
+                    setError(name, {
+                        type: "required",
+                        message: "Este campo es obligatorio",
+                    });
+                }
+            }
+            if (typeof value === "number") {
+                if (
+                    required instanceof Object &&
+                    required.value &&
+                    value === 0
+                ) {
+                    setError(name, {
+                        type: "required",
+                        message:
+                            required.message || "Este campo es obligatorio",
+                    });
+                }
 
-        if (typeof (values as any)[name] === "number") {
-            const value = (values as any)[name] as number;
-            const requiredNum = requiredNumber(isNumber, value);
-            if (requiredNum?.type) {
-                setError(name, requiredNum);
-                return;
+                if (typeof required === "boolean" && required && value === 0) {
+                    setError(name, {
+                        type: "required",
+                        message: "Este campo es obligatorio",
+                    });
+                }
             }
-            const minResp = minNumber(min, value);
-            if (minResp?.type) {
-                setError(name, minResp);
-                return;
+            if (value instanceof FileList) {
+                if (
+                    required instanceof Object &&
+                    required.value &&
+                    value.length === 0
+                ) {
+                    setError(name, {
+                        type: "required",
+                        message:
+                            required.message || "Este campo es obligatorio",
+                    });
+                }
+                if (
+                    typeof required === "boolean" &&
+                    required &&
+                    value.length === 0
+                ) {
+                    setError(name, {
+                        type: "required",
+                        message: "Este campo es obligatorio",
+                    });
+                }
             }
-            const maxResp = maxNumber(max, value);
-            if (maxResp?.type) {
-                setError(name, maxResp);
-                return;
+            if (value instanceof Array) {
+                if (
+                    required instanceof Object &&
+                    required.value &&
+                    value.length === 0
+                ) {
+                    setError(name, {
+                        type: "required",
+                        message:
+                            required.message || "Este campo es obligatorio",
+                    });
+                }
+                if (
+                    typeof required === "boolean" &&
+                    required &&
+                    value.length === 0
+                ) {
+                    setError(name, {
+                        type: "required",
+                        message: "Este campo es obligatorio",
+                    });
+                }
             }
         }
-
+        if (types) {
+            if (value instanceof FileList) {
+                for (const file of value) {
+                    if (!types.includes(file.type)) {
+                        setError(name, {
+                            type: "types",
+                            message: `Este archivo no tiene un formato válido: ${file.name.slice(
+                                0,
+                                12
+                            )}`,
+                        });
+                    }
+                }
+            }
+        }
         if (custom) {
             try {
                 await custom((values as any)[name], values as T);
@@ -240,20 +523,24 @@ function useForm<T extends Object>(props?: UseFormProps<T>) {
     }
 
     function setValues(dValues: Partial<T>) {
-        for (const [key, val] of Object.entries(dValues)) {
-            setValue(key as keyof T, val);
-        }
+        Object.assign(values, dValues);
     }
-    function setValue(key: keyof T, value: T[keyof T]) {
-        (values as T)[key] = value;
-        setValueInput(key, String(value));
-    }
+
     function setValueInput(key: keyof T, value: string) {
         (valuesInput as any)[key] = value;
     }
+    function setValue(key: keyof T, value: T[keyof T]) {
+        (values as T)[key] = value;
+    }
+
     function setError(
         name: keyof T,
-        props: { type: keyof UseFormOptions<T>; message: string } | string
+        props:
+            | {
+                  type: keyof UseFormOptions<T> | keyof UseFormOptionsFile;
+                  message: string;
+              }
+            | string
     ) {
         if (typeof props === "string") {
             (errores as Errores<T>)[name] = {
@@ -262,7 +549,7 @@ function useForm<T extends Object>(props?: UseFormProps<T>) {
             };
             return;
         }
-        (errores as Errores<T>)[name] = {
+        (errores as any)[name] = {
             type: props.type,
             message: props.message,
         };
@@ -274,15 +561,6 @@ function useForm<T extends Object>(props?: UseFormProps<T>) {
             setError(key as keyof T, value);
         }
     }
-    function onReset(name: keyof T, clean: boolean = false) {
-        if (!clean) {
-            setValue(name, (defaultValues as any)[name] || "");
-            setValueInput(name, (defaultValues as any)[name] || "");
-            return;
-        }
-        setValue(name, "" as T[keyof T]);
-        setValueInput(name, "");
-    }
 
     // getters
     function getValue(key: keyof T): any {
@@ -293,7 +571,6 @@ function useForm<T extends Object>(props?: UseFormProps<T>) {
         const { validation = false } = props || { validation: false };
         for (const [name] of Object.entries(values)) {
             setValue(name as keyof T, (defaultValues as any)[name] || "");
-            setValueInput(name as keyof T, (defaultValues as any)[name] || "");
             if (validation) {
                 validate(name as keyof T, (opciones as any)[name]);
             }
@@ -302,6 +579,7 @@ function useForm<T extends Object>(props?: UseFormProps<T>) {
     return {
         handleSubmit,
         control,
+        controlFile,
         opciones,
         reset,
         values,
@@ -313,7 +591,6 @@ function useForm<T extends Object>(props?: UseFormProps<T>) {
             setValue,
             getValue,
             setError,
-            onReset,
         },
         formState,
     };

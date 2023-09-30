@@ -7,13 +7,11 @@ export interface UseFormProps<T> {
 }
 export type Control<T extends object> = (
     name: keyof T,
-    options?: UseFormOptions<T>,
-    onChangeInput?: (e: Event) => any
+    options?: UseFormOptions<T>
 ) => void;
 
 export interface UseFormOptions<T> {
     required?: boolean | { value: true; message: string };
-    isNumber?: boolean | { value: true; message: string };
     min?:
         | {
               value: number;
@@ -34,9 +32,49 @@ export interface UseFormOptions<T> {
         | ((value: any, values: T) => Promise<true | never>)
         | ((value: any, values: T) => true | never);
     transformValue?: (value: string) => any;
-    stopValue?: number;
     value?: string;
     isArray?: boolean;
+    minValue?:
+        | {
+              value: number;
+              message?: string;
+          }
+        | number;
+    maxValue?:
+        | {
+              value: number;
+              message?: string;
+          }
+        | number;
+}
+
+export interface UseFormOptionsFile {
+    required?: boolean | { value: true; message: string };
+    min?:
+        | {
+              value: number;
+              message?: string;
+          }
+        | number;
+    max?:
+        | {
+              value: number;
+              message?: string;
+          }
+        | number;
+    minValue?:
+        | {
+              value: number;
+              message?: string;
+          }
+        | number;
+    maxValue?:
+        | {
+              value: number;
+              message?: string;
+          }
+        | number;
+    types: string[];
 }
 export type Errores<T> = Record<
     keyof T,
