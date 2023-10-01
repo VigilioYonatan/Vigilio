@@ -568,7 +568,7 @@ function useForm<T extends Object>(props?: UseFormProps<T>) {
     }
     function resetOne(name: keyof T, validation = false) {
         setValue(name as keyof T, (defaultValues as any)[name] || "");
-        setValueInput(name, String((defaultValues as any)[name]) || "");
+        setValueInput(name, (defaultValues as any)[name] || "");
         if (validation) {
             validate(name as keyof T, (opciones as any)[name]);
         }
@@ -576,14 +576,7 @@ function useForm<T extends Object>(props?: UseFormProps<T>) {
     function reset(props?: { validation?: boolean }) {
         const { validation = false } = props || { validation: false };
         for (const [name] of Object.entries(values)) {
-            setValue(name as keyof T, (defaultValues as any)[name] || "");
-            setValueInput(
-                name as keyof T,
-                String((defaultValues as any)[name]) || ""
-            );
-            if (validation) {
-                validate(name as keyof T, (opciones as any)[name]);
-            }
+            resetOne(name as keyof T, validation);
         }
     }
     return {
