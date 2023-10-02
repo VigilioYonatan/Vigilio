@@ -10,8 +10,8 @@ export type Control<T extends object> = (
     name: keyof T,
     options?: UseFormOptions<T>
 ) => {
-    id: keyof T;
-    name: keyof T;
+    id: string;
+    name: string;
     ref: Ref;
     onBlur: (e: Event) => void;
     value: string;

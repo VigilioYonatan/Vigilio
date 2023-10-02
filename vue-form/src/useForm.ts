@@ -122,8 +122,8 @@ function useForm<T extends Object>(props?: UseFormProps<T>) {
         }
 
         return {
-            id: name,
-            name,
+            id: name as string,
+            name: name as string,
             ref: controlRef,
             onBlur,
             value: options?.value || valuesInput[name],
