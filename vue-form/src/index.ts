@@ -5,6 +5,7 @@ import {
     UseFormOptions,
     UseFormOptionsFile,
     Errores,
+    ControlFile,
 } from "./types";
 
 export {
@@ -14,4 +15,5 @@ export {
     UseFormOptions,
     Errores,
     UseFormOptionsFile,
+    ControlFile,
 };

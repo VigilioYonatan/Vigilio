@@ -4,6 +4,7 @@ import {
     Errores,
     UseFormOptions,
     UseFormOptionsFile,
+    ControlFile,
     UseFormProps,
 } from "./types";
 function useForm<T extends Object>(props?: UseFormProps<T>) {
@@ -23,7 +24,7 @@ function useForm<T extends Object>(props?: UseFormProps<T>) {
         isErrors: false,
     });
 
-    function controlFile(name: keyof T, options?: UseFormOptionsFile) {
+    const controlFile: ControlFile<T> = (name, options) => {
         const controlRef = ref();
         if ((values as T)[name] === undefined) {
             setValue(name, "" as any);
@@ -49,13 +50,13 @@ function useForm<T extends Object>(props?: UseFormProps<T>) {
             }
         }
         return {
-            id: name,
-            name,
+            id: name as string,
+            name: name as string,
             ref: controlRef,
             onBlur,
             onChange,
         };
-    }
+    };
 
     const control: Control<T> = (
         name: keyof T,

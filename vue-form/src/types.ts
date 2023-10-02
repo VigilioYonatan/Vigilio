@@ -17,6 +17,16 @@ export type Control<T extends object> = (
     value: string;
     onInput: (e: Event) => void;
 };
+export type ControlFile<T extends object> = (
+    name: keyof T,
+    options?: UseFormOptionsFile
+) => {
+    id: string;
+    name: string;
+    ref: Ref;
+    onBlur: (e: Event) => void;
+    onChange: (e: Event) => void;
+};
 
 export interface UseFormOptions<T> {
     required?: boolean | { value: true; message: string };
