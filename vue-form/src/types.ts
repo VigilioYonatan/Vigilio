@@ -1,3 +1,4 @@
+import { Ref } from "vue";
 export interface UseFormProps<T> {
     defaultValues?: Partial<{
         [Key in keyof T]: T[Key];
@@ -8,7 +9,14 @@ export interface UseFormProps<T> {
 export type Control<T extends object> = (
     name: keyof T,
     options?: UseFormOptions<T>
-) => void;
+) => {
+    id: keyof T;
+    name: keyof T;
+    ref: Ref;
+    onBlur: (e: Event) => void;
+    value: string;
+    onInput: (e: Event) => void;
+};
 
 export interface UseFormOptions<T> {
     required?: boolean | { value: true; message: string };
