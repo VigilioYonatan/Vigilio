@@ -1,4 +1,4 @@
-import { Ref } from "vue";
+import { Ref, type UnwrapNestedRefs } from "vue";
 export interface UseFormProps<T> {
     defaultValues?: Partial<{
         [Key in keyof T]: T[Key];
@@ -98,3 +98,35 @@ export type Errores<T> = Record<
     keyof T,
     { type: keyof UseFormOptions<T>; message: string }
 >;
+
+export interface UseForm<T extends Object> {
+    handleSubmit: (cb: (data: T) => void) => (e: Event) => Promise<void>;
+    control: Control<T>;
+    controlFile: ControlFile<T>;
+    opciones: UseFormOptions<T>;
+    reset: (validation?: boolean) => void;
+    values: UnwrapNestedRefs<T>;
+    errores: Errores<T>;
+    methods: {
+        onFocus: (key: keyof T) => void;
+        setValues: (dValues: Partial<T>) => void;
+        setErrors: (props: { [Key in keyof T]?: string }) => void;
+        setValue: (key: keyof T, value: T[keyof T]) => void;
+        getValue: (key: keyof T) => T[keyof T];
+        setError: (
+            name: keyof T,
+            props:
+                | string
+                | {
+                      type: keyof UseFormOptions<T> | keyof UseFormOptionsFile;
+                      message: string;
+                  }
+        ) => void;
+        resetOne: (name: keyof T, validation?: boolean) => void;
+        setValueInput: (key: keyof T, value: string) => void;
+    };
+    formState: {
+        isSubmmit: boolean;
+        isErrors: boolean;
+    };
+}

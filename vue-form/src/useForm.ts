@@ -6,8 +6,10 @@ import {
     UseFormOptionsFile,
     ControlFile,
     UseFormProps,
+    UseForm,
 } from "./types";
-function useForm<T extends Object>(props?: UseFormProps<T>) {
+
+function useForm<T extends Object>(props?: UseFormProps<T>): UseForm<T> {
     const { defaultValues = {}, type = "normal" } = props || {
         defaultValues: {},
         type: "normal",
@@ -524,7 +526,9 @@ function useForm<T extends Object>(props?: UseFormProps<T>) {
     }
 
     function setValues(dValues: Partial<T>) {
-        Object.assign(values, dValues);
+        for (const [key, value] of Object.entries(dValues)) {
+            setValue(key as keyof T, value as T[keyof T]);
+        }
     }
 
     function setValueInput(key: keyof T, value: string) {
@@ -532,6 +536,7 @@ function useForm<T extends Object>(props?: UseFormProps<T>) {
     }
     function setValue(key: keyof T, value: T[keyof T]) {
         (values as T)[key] = value;
+        setValueInput(key, value as string);
     }
 
     function setError(
@@ -564,7 +569,7 @@ function useForm<T extends Object>(props?: UseFormProps<T>) {
     }
 
     // getters
-    function getValue(key: keyof T): any {
+    function getValue(key: keyof T): T[keyof T] {
         return (values as T)[key];
     }
     function resetOne(name: keyof T, validation = false) {
@@ -574,8 +579,7 @@ function useForm<T extends Object>(props?: UseFormProps<T>) {
             validate(name as keyof T, (opciones as any)[name]);
         }
     }
-    function reset(props?: { validation?: boolean }) {
-        const { validation = false } = props || { validation: false };
+    function reset(validation = false) {
         for (const [name] of Object.entries(values)) {
             resetOne(name as keyof T, validation);
         }
