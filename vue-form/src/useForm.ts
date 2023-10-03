@@ -113,7 +113,11 @@ function useForm<T extends Object>(props?: UseFormProps<T>): UseForm<T> {
                     value = [...(values as any)[name], value];
                 }
             }
+            if(options?.onChange){
+                options.onChange(value)
+            }
             setValue(name, value);
+
             if (type === "submit" && !formState.isSubmmit) return;
             await validate(name, (opciones as any)[name]);
         }

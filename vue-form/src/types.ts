@@ -64,6 +64,7 @@ export interface UseFormOptions<T> {
               message?: string;
           }
         | number;
+    onChange?: (value: T[keyof T]) => void;
 }
 
 export interface UseFormOptionsFile {
