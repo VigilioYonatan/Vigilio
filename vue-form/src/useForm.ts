@@ -28,6 +28,9 @@ function useForm<T extends Object>(props?: UseFormProps<T>): UseForm<T> {
 
     const controlFile: ControlFile<T> = (name, options) => {
         const controlRef = ref();
+        if (valuesInput[name] === undefined) {
+            setValueInput(name, String((defaultValues as any)[name] || ""));
+        }
         if ((values as T)[name] === undefined) {
             setValue(name, "" as any);
         }
@@ -42,6 +45,7 @@ function useForm<T extends Object>(props?: UseFormProps<T>): UseForm<T> {
         async function onChange(e: Event) {
             const value: any = (e.target as HTMLInputElement).files;
             setValue(name, value);
+            setValueInput(name, value);
             if (options?.onChange) {
                 await validateOne(name as keyof T);
                 options.onChange(value);
@@ -61,6 +65,7 @@ function useForm<T extends Object>(props?: UseFormProps<T>): UseForm<T> {
             ref: controlRef,
             onBlur,
             onChange,
+            value: valuesInput[name],
         };
     };
 
