@@ -42,6 +42,9 @@ function useForm<T extends Object>(props?: UseFormProps<T>): UseForm<T> {
         async function onChange(e: Event) {
             const value: any = (e.target as HTMLInputElement).files;
             setValue(name, value);
+            if (options?.onChange) {
+                options.onChange(value);
+            }
             if (type === "submit" && !formState.isSubmmit) return;
             await validate(name, (opciones as any)[name]);
         }
