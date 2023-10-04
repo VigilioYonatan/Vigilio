@@ -1,6 +1,6 @@
 {
     "name": "@vigilio/vue-form",
-    "version": "2.1.4",
+    "version": "2.1.5",
     "description": "Now you can use this vue form library",
     "main": "./dist/cjs/index.js",
     "module": "./dist/esm/index.js",
