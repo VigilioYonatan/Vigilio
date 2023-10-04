@@ -126,6 +126,7 @@ export interface UseForm<T extends Object> {
         ) => void;
         resetOne: (name: keyof T, validation?: boolean) => void;
         setValueInput: (key: keyof T, value: string) => void;
+        validateOne(name: keyof T): Promise<void>;
     };
     formState: {
         isSubmmit: boolean;

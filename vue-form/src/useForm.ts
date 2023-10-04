@@ -43,16 +43,16 @@ function useForm<T extends Object>(props?: UseFormProps<T>): UseForm<T> {
             const value: any = (e.target as HTMLInputElement).files;
             setValue(name, value);
             if (options?.onChange) {
-                await validate(name, (opciones as any)[name]);
+                await validateOne(name as keyof T);
                 options.onChange(value);
             }
             if (type === "submit" && !formState.isSubmmit) return;
-            await validate(name, (opciones as any)[name]);
+            await validateOne(name as keyof T);
         }
 
         async function onBlur(_e: Event) {
             if (type === "blur") {
-                await validate(name, (opciones as any)[name]);
+                await validateOne(name as keyof T);
             }
         }
         return {
@@ -123,12 +123,12 @@ function useForm<T extends Object>(props?: UseFormProps<T>): UseForm<T> {
                 options.onChange((values as any)[name]);
             }
             if (type === "submit" && !formState.isSubmmit) return;
-            await validate(name, (opciones as any)[name]);
+            await validateOne(name as keyof T);
         }
 
         async function onBlur(_e: Event) {
             if (type === "blur") {
-                await validate(name, (opciones as any)[name]);
+                await validateOne(name as keyof T);
             }
         }
 
@@ -145,7 +145,7 @@ function useForm<T extends Object>(props?: UseFormProps<T>): UseForm<T> {
     onMounted(async () => {
         if (type !== "initial") return;
         for (const [name, _val] of Object.entries(values)) {
-            await validate(name as keyof T, (opciones as any)[name]);
+            await validateOne(name as keyof T);
         }
     });
 
@@ -154,7 +154,7 @@ function useForm<T extends Object>(props?: UseFormProps<T>): UseForm<T> {
             e?.preventDefault();
             formState.isSubmmit = true;
             for (const [name, _val] of Object.entries(values)) {
-                await validate(name as keyof T, (opciones as any)[name]);
+                await validateOne(name as keyof T);
             }
 
             if (Object.keys(errores).length) {
@@ -584,8 +584,11 @@ function useForm<T extends Object>(props?: UseFormProps<T>): UseForm<T> {
         setValue(name as keyof T, (defaultValues as any)[name] || "");
         setValueInput(name, (defaultValues as any)[name] || "");
         if (validation) {
-            validate(name as keyof T, (opciones as any)[name]);
+            validateOne(name);
         }
+    }
+    async function validateOne(name: keyof T) {
+        await validate(name, (opciones as any)[name]);
     }
     function reset(validation = false) {
         for (const [name] of Object.entries(values)) {
@@ -609,6 +612,7 @@ function useForm<T extends Object>(props?: UseFormProps<T>): UseForm<T> {
             setError,
             resetOne,
             setValueInput,
+            validateOne,
         },
         formState,
     };
