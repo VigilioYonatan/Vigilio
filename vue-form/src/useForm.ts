@@ -29,7 +29,7 @@ function useForm<T extends Object>(props?: UseFormProps<T>): UseForm<T> {
     const controlFile: ControlFile<T> = (name, options) => {
         const controlRef = ref();
         if (valuesInput[name] === undefined) {
-            setValueInput(name, String((defaultValues as any)[name] || ""));
+            setValueInput(name, "");
         }
         if ((values as T)[name] === undefined) {
             setValue(name, "" as any);
