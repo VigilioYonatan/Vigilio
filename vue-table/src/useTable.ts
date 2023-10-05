@@ -78,6 +78,9 @@ function useTable<T extends object, K extends string, Y>(
         page.value = page.value - 1;
     }
     function onchangeLimit(limit = 10) {
+        if (page.value > 1) {
+            onChangePage(1);
+        }
         pagination.limit = limit;
     }
 
