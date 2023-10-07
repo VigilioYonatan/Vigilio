@@ -1,10 +1,30 @@
 {
     "name": "@vigilio/sweet",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "description": "this is a library to fetch in vue",
     "main": "./dist/cjs/index.js",
     "module": "./dist/esm/index.js",
     "types": "./dist/esm/index.d.ts",
+    "exports": {
+        "./react": {
+            "import": "./dist/esm/react.js",
+            "require": "./dist/cjs/react.js"
+        },
+        "./vue": {
+            "import": "./dist/esm/vue.js",
+            "require": "./dist/cjs/vue.js"
+        }
+    },
+    "typesVersions": {
+        "*": {
+            "react": [
+                "./dist/esm/react.d.ts"
+            ],
+            "vue": [
+                "./dist/esm/vue.d.ts"
+            ]
+        }
+    },
     "repository": {
         "type": "git",
         "url": "https://github.com/VigilioYonatan/Vigilio/blob/main/sweetREADME.md"
@@ -26,8 +46,5 @@
         "build": "rimraf dist && pnpm build:esm && pnpm build:cjs"
     },
     "author": "Vigilio",
-    "license": "ISC",
-    "devDependencies": {
-        "typescript": "^5.2.2"
-    }
+    "license": "ISC"
 }

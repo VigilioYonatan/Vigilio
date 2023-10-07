@@ -173,4 +173,6 @@ function vigilioSwal({
         }
     });
 }
+
+
 export default vigilioSwal;
