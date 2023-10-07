@@ -7,12 +7,13 @@
     "types": "./dist/esm/index.d.ts",
     "repository": {
         "type": "git",
-        "url": "https://github.com/VigilioYonatan/Vigilio/blob/main/vue-fetchingREADME.md"
+        "url": "https://github.com/VigilioYonatan/Vigilio/blob/main/sweetREADME.md"
     },
     "files": [
         "dist",
         "LICENSE",
-        "README.md"
+        "README.md",
+        "./src/vigilio-sweet.css"
     ],
     "keywords": [
         "typescript",
