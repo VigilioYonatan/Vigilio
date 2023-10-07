@@ -1,6 +1,6 @@
 {
     "name": "@vigilio/sweet",
-    "version": "0.0.5",
+    "version": "0.0.6",
     "description": "this is a library to fetch in vue",
     "main": "./dist/cjs/index.js",
     "module": "./dist/esm/index.js",
@@ -17,6 +17,9 @@
         "./vue": {
             "import": "./dist/esm/vue.js",
             "require": "./dist/cjs/vue.js"
+        },
+        "./sweet.css": {
+            "import": "./src/vigilio-sweet.css"
         }
     },
     "typesVersions": {
@@ -27,7 +30,7 @@
             "vue": [
                 "./dist/esm/vue.d.ts"
             ],
-            "vigilio-sweet.css": [
+            "sweet.css": [
                 "./src/vigilio-sweet.css"
             ]
         }
