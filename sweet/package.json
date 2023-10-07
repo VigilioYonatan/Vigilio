@@ -1,5 +1,5 @@
 {
-    "name": "@vigilio/vue-fetching",
+    "name": "@vigilio/sweet",
     "version": "0.0.1",
     "description": "this is a library to fetch in vue",
     "main": "./dist/cjs/index.js",
