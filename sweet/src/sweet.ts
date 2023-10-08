@@ -40,6 +40,7 @@ function vigilioSwal({
                     className: "modal vigilio-modal-show",
                     onclick: (e) => {
                         e.stopPropagation();
+                        res({ isConfirmed: false });
                     },
                 },
                 html
@@ -173,6 +174,5 @@ function vigilioSwal({
         }
     });
 }
-
 
 export default vigilioSwal;
