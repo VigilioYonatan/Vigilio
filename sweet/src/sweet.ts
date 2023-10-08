@@ -32,7 +32,10 @@ function vigilioSwal({
                             : "center"
                     };`,
                 } as CSSStyleDeclaration,
-                onclick: onClose,
+                onclick: () => {
+                    onClose();
+                    res({ isConfirmed: false });
+                },
             },
             h(
                 "div",
@@ -40,7 +43,6 @@ function vigilioSwal({
                     className: "modal vigilio-modal-show",
                     onclick: (e) => {
                         e.stopPropagation();
-                        res({ isConfirmed: false });
                     },
                 },
                 html

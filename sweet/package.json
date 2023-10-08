@@ -1,7 +1,7 @@
 {
     "name": "@vigilio/sweet",
-    "version": "0.0.7",
-    "description": "this is a library to fetch in vue",
+    "version": "0.0.8",
+    "description": "this library is like sweet but optimized",
     "main": "./dist/cjs/index.js",
     "module": "./dist/esm/index.js",
     "types": "./dist/esm/index.d.ts",
@@ -43,7 +43,8 @@
         "dist",
         "LICENSE",
         "README.md",
-        "./src/vigilio-sweet.css"
+        "./src/vigilio-sweet.css",
+        "./src/sweet.min.js"
     ],
     "keywords": [
         "typescript",
