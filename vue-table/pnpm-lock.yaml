@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@vigilio/vue-paginator':
+    specifier: ^0.0.1
+    version: 0.0.1(vue@3.3.4)
   vue:
     specifier: '>=3.2'
     version: 3.3.4
@@ -67,6 +70,15 @@ packages:
   /@types/node@20.7.0:
     resolution: {integrity: sha512-zI22/pJW2wUZOVyguFaUL1HABdmSVxpXrzIqkjsHmyUjNhPoWM1CKfvVuXfetHhIok4RY573cqS0mZ1SJEnoTg==}
     dev: true
+
+  /@vigilio/vue-paginator@0.0.1(vue@3.3.4):
+    resolution: {integrity: sha512-H4iARAB97LWuUlKpRnQcTyUwM1vppRvU3rfYdaH6PRuKaF97KPN2/694wtSRUIdyhW0rLiAy38jmyYT3/W1xPw==}
+    peerDependencies:
+      vue: '>=3.2'
+    dependencies:
+      tslib: 2.6.2
+      vue: 3.3.4
+    dev: false
 
   /@vue/compiler-core@3.3.4:
     resolution: {integrity: sha512-cquyDNvZ6jTbf/+x+AgM2Arrp6G4Dzbb0R64jiG804HRMfRiFXWI6kqUVqZ6ZR0bQhIoQjB4+2bhNtVwndW15g==}
@@ -343,7 +355,6 @@ packages:
 
   /tslib@2.6.2:
     resolution: {integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==}
-    dev: true
 
   /typescript@5.1.6:
     resolution: {integrity: sha512-zaWCozRZ6DLEWAWFrVDz1H6FVXzUSfTy5FUMWsQlU8Ym5JP9eO4xkTIROFCQvhQf61z6O/G6ugw3SgAnvvm+HA==}

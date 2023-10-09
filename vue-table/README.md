@@ -23,26 +23,14 @@ API REFERENCE
             },
         },
         updateData,
-        pagination: {
-            onNextPage,
-            onBackPage,
-            onchangeLimit,
-            onChangePage,
-            backInitialPage,
-            paginator,
-            onFinalPage,
-            pagination,
-            totalPages,
-            page,
-            currentPage,
-        },
+        pagination, // @vigilio/vue-paginator
         sort: {
             sort,
             sorting,
         },
     }}=useTable({
     columns: columns,
-    pagination: { limit: 10, offset: 0 },
+    pagination: { limit: 10, offset: 0 },// @vigilio/vue-paginator
 });
 ```
 
@@ -81,13 +69,14 @@ const columns: Columns<{ name: string }, "index" | "acciones"> = [
         key: "name",
         cell: (props, index) => props.name.toUpperCase() + " " + (index + 1),
         header: (props) => h("span", null, props + "^"),
+        isSort: true,
     },
 
     {
         key: "acciones",
         cell: () => {
             function clicked() {
-                console.log("hola mierda");
+                console.log("hola bro");
             }
             return h("div", null, [
                 h("button", { class: "" }, "Editar"),
@@ -108,7 +97,7 @@ const { pagination, sort, table, updateData } = useTable({
 });
 // You can use @vigilio/vue-fetching
 const { refetch, isLoading } = useQuery(
-    "/product",
+    "/paginator/product",
     async function (url) {
         const data = new URLSearchParams();
         data.append("offset", String(pagination.pagination.offset));
@@ -122,13 +111,16 @@ const { refetch, isLoading } = useQuery(
     },
     {
         onSuccess(data) {
-            updateData(data.results, { total: data.count });
+            updateData(
+                { total: data.count, data: data.results },
+                // if you want to add methods {}
+            );
         },
     }
 );
 
 watch(
-    [pagination.page, () => pagination.pagination.limit, sort.sort],
+    [pagination.page, () => pagination.value.limit, sort.sort],
     () => {
         refetch();
     },
@@ -142,14 +134,15 @@ watch(
             <thead>
                 <tr>
                     <th scope="col" v-for="{ value } in table.Thead()">
-                        <template v-if="typeof value === 'string' ">{{ value }}</template>
-                     <component  v-else :is="value"/>
+                        <template v-if="typeof value === 'string'">{{
+                            value
+                        }}</template>
+                        <component v-else :is="value" />
                     </th>
                 </tr>
             </thead>
             <tbody>
-                <p v-if="isLoading">Cargandoo...</p>
-
+                <p v-if="isLoading">loading...</p>
                 <tr
                     v-else
                     v-for="{ ...data } in table.TBody.Row()"
@@ -160,62 +153,16 @@ watch(
                         v-for="{ key, value } in table.TBody.Cell(data)"
                         :key="key"
                     >
-                        <template v-if="typeof value === 'string' ">{{ value }}</template>
-                     <component  v-else :is="value"/>
+                        <template v-if="typeof value === 'string'">{{
+                            value
+                        }}</template>
+                        <component v-else :is="value" />
                     </td>
                 </tr>
             </tbody>
         </table>
-        <nav>
-            <ul>
-                <li>
-                    <button
-                        type="button"
-                        @click="() => pagination.onBackPage()"
-                    >
-                        {{ "<" }}
-                    </button>
-                </li>
-
-                <div>
-                    <li
-                        :key="page"
-                        v-for="{ isActualPage, page } in pagination.paginator()"
-                    >
-                        <span v-if="isActualPage">
-                            {{ page }}
-                        </span>
-                        <button
-                            v-else
-                            @click="() => pagination.onChangePage(page)"
-                        >
-                            {{ page }}
-                        </button>
-                    </li>
-                </div>
-
-                <li>
-                    <button @click="pagination.onNextPage" type="button">
-                        {{ ">" }}
-                    </button>
-                </li>
-            </ul>
-            <div class="">
-                <label class="text-white" for=""> Limite </label>
-                <input
-                    type="text"
-                    placeholder="Max Limit"
-                    class="w-[30px]"
-                    @input="
-                        (e) => {
-                            pagination.onchangeLimit(
-                                Number((e.target as HTMLInputElement).value)
-                            );
-                        }
-                    "
-                />
-            </div>
-        </nav>
+        <!-- if you want to see paginator  -->
+        <!-- @vigilio/vue-paginator -->
     </div>
 </template>
 ```
