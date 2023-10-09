@@ -3,7 +3,8 @@
 A simple react Hooks library for table.
 
 ```bash
-npm add -D tslib
+npm add  tslib
+npm add @vigilio/react-paginator
 
 ```
 
@@ -13,7 +14,7 @@ npm add -D tslib
 
 API REFERENCE
 
-```ts
+```tsx
 {
       const {  table: {
             Thead,
@@ -23,19 +24,7 @@ API REFERENCE
             },
         },
         updateData,
-        pagination: {
-            onNextPage,
-            onBackPage,
-            onchangeLimit,
-            onChangePage,
-            backInitialPage,
-            paginator,
-            onFinalPage,
-            pagination,
-            totalPages,
-            page,
-            currentPage,
-        },
+        pagination,
         sort: {
             sort,
             sorting,
@@ -47,166 +36,114 @@ API REFERENCE
 ```
 
 ```tsx
-import { Columns } from "@vigilio/vue-table";
-
-const columns: Columns<{ name: string }, "index" | "acciones"> = [
+import { useEffect } from "react";
+import useTable, { Columns } from "./useTable";
+const columns: Columns<{ name: string }, "index" | "image" | "acciones"> = [
     {
         key: "index",
+        cell(_, index) {
+            return index;
+        },
     },
+    { key: "name", isSort: true },
     {
-        key: "name",
-        cell: (props) => props.name.toUpperCase(),
-        header: (head, sort) => (
-            <div>
-                <button type="button" onClick={() => sort("name")}>
-                    {"^"}
-                </button>
-                <p>{head.toUpperCase()}</p>
-            </div>
-        ),
+        key: "image",
+        cell(props, index, _methods) {
+            return (
+                <>
+                    <img
+                        width={50}
+                        height={50}
+                        src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${
+                            index + 1
+                        }.png`}
+                        alt={props.name}
+                    />
+                </>
+            );
+        },
     },
-
     {
         key: "acciones",
-        cell(index) {
+        cell(props) {
             return (
                 <div>
-                    <button>Editar</button>
                     <button
-                        onClick={() => {
-                            console.log(index);
-                        }}
+                        type="button"
+                        onClick={() => console.log(props.name)}
                     >
-                        Eliminar
+                        Editar
                     </button>
                 </div>
             );
         },
     },
 ];
-const { pagination, sort, table, updateData } = useTable({
-    columns: columns,
-    pagination: { limit: 10, offset: 0 },
-});
-// You can use @vigilio/react-fetching
-const { refetch, isLoading } = useQuery(
-    "/product",
-    async function (url) {
-        const data = new URLSearchParams();
-        data.append("offset", String(pagination.pagination.offset));
-        data.append("limit", String(pagination.pagination.limit));
-        for (const [key, value] of Object.entries(sort.sort)) {
-            data.append(key, value);
-        }
-        const response = await fetch(`http://localhost:4000${url}?${data}`);
-        const result = await response.json();
-        return result;
-    },
-    {
-        onSuccess(data) {
-            updateData(data.results, { total: data.count });
-        },
+const App = () => {
+    interface ResultApi {
+        count: number;
+        results: { name: string }[];
     }
-);
+    const { pagination, updateData, search, table } = useTable(
+        { columns },
+        true // false for default to see on the url when you change the page
+    );
+    async function fetching() {
+        const url = new URLSearchParams();
+        url.append("offset", String(pagination.value.offset));
+        url.append("limit", String(pagination.value.limit));
+        // data.append("search", String(search.debounceTerm.value));
+        // your backend could have to this queries. you can play with orm
 
- useEffect(() => {
-        refetch();
-    }, [pagination.page, pagination.pagination.limit, sort.sort]);
-    <h1>@VIGILIO/TABLE</h1>
-    <div>
-        <table >
-                    <thead >
-                        <tr>
-                            {table.Thead().map((val) => (
-                                <th
-                                    key={val.key}
-                                >
-                                    {val.value}
-                                </th>
+        // YOUR API shoould be response { data:[],total}
+        // example https://pokeapi.co/  - https://pokeapi.co/api/v2/pokemon
+        const response = await fetch(
+            `https://pokeapi.co/api/v2/pokemon?${url}`
+        );
+        const result: ResultApi = await response.json();
+        updateData({
+            count: result.count,
+            result: result.results,
+            methods: { fetching },
+        });
+    }
+
+    useEffect(() => {
+        fetching();
+    }, [pagination.page, pagination.value.limit]);
+
+    return (
+        <div>
+            <table>
+                <thead>
+                    <tr>
+                        {table.Thead().map((val) => (
+                            <th
+                                key={val.key}
+                                onClick={() => {
+                                    if (val.isSort) {
+                                        val.sorting(val.key);
+                                    }
+                                }}
+                            >
+                                {val.isSort ? <span>{"^"}</span> : val.value}
+                            </th>
+                        ))}
+                    </tr>
+                </thead>
+                <tbody>
+                    {table.TBody.Row().map((data) => (
+                        <tr key={data.name}>
+                            {table.TBody.Cell(data).map((val) => (
+                                <td key={val.key}>{val.value}</td>
                             ))}
                         </tr>
-                    </thead>
-                    <tbody>
-                        {table.TBody.Row().map((data) => (
-                            <tr
-
-                                key={data.index}
-                            >
-                                {table.TBody.Cell(data).map((val) => (
-                                    <td  key={val.key}>
-                                        {val.value}
-                                    </td>
-                                ))}
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-        <nav>
-                    <ul >
-                        <li>
-                            <button
-                                type="button"
-                                onClick={pagination.onBackPage}
-
-                            >{"<"}
-                            </button>
-                        </li>
-                        <div >
-                            {pagination
-                                .paginator()
-                                .map(({ isActualPage, page }) => {
-                                    return (
-                                        <li key={page}>
-                                            {isActualPage ? (
-                                                <span >
-                                                    {page}
-                                                </span>
-                                            ) : (
-                                                <button
-                                                    onClick={() =>
-                                                        pagination.onChangePage(
-                                                            page
-                                                        )
-                                                    }
-
-                                                >
-                                                    {page}
-                                                </button>
-                                            )}
-                                        </li>
-                                    );
-                                })}
-                        </div>
-
-                        <li>
-                            <button
-                                onClick={pagination.onNextPage}
-                                type="button"
-
-                            >
-                               {">"}
-                            </button>
-                            <button
-                                onClick={pagination.onFinalPage}
-                                type="button"
-
-                            >
-                                {">>"}
-                            </button>
-                        </li>
-                    </ul>
-                    <div className="">
-                        <label className="text-white" htmlFor="">
-                            Limit
-                        </label>
-                        <input
-                            type="text"
-                            placeholder="Max Limit"
-                            onChange={(e) =>
-                                pagination.onchangeLimit(Number(e.target.value))
-                            }
-                        />
-                    </div>
-                </nav>
-    </div>
+                    ))}
+                </tbody>
+            </table>
+            {/* paginator */}
+            {/* @vigilio/react-paginator */}
+        </div>
+    );
+};
 ```
