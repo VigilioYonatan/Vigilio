@@ -3,8 +3,8 @@
 A simple vue Hooks library for table.
 
 ```bash
-npm add -D tslib
-
+npm add tslib
+npm add @vigilio/vue-paginator # 2kb
 ```
 
 ### Getting Started
