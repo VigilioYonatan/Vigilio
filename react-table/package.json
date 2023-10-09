@@ -1,7 +1,7 @@
 {
     "name": "@vigilio/react-table",
-    "version": "1.0.0",
-    "description": "this is a table library to react",
+    "version": "0.0.1",
+    "description": "this is a light table library to react",
     "main": "./dist/cjs/index.js",
     "module": "./dist/esm/index.js",
     "types": "./dist/esm/index.d.ts",
@@ -20,7 +20,8 @@
     "keywords": [
         "react",
         "typescript",
-        "react-table"
+        "react-table",
+        "vigilio"
     ],
     "scripts": {
         "build:esm": "tsc",
@@ -32,7 +33,10 @@
     "devDependencies": {
         "@types/react": "^18.2.14",
         "react": "^18.2.0",
-        "tslib": "^2.6.0",
         "typescript": "^5.1.6"
+    },
+    "dependencies": {
+        "@vigilio/react-paginator": "^0.0.1",
+        "tslib": "^2.6.2"
     }
 }

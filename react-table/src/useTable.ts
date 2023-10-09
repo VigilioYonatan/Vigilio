@@ -1,170 +1,103 @@
-import { useMemo, useState } from "react";
+import usePaginator, { type Pagination } from "@vigilio/react-paginator";
+import { useState } from "react";
 
 type KeyColumn<T, K extends string> = keyof (T & {
     [A in K]: string;
 });
-export type Columns<T, K extends string> = {
+export type Columns<T, K extends string = "", Y = any> = {
     key: KeyColumn<T, K>;
     header?:
         | string
         | ((
               props: KeyColumn<T, K>,
-              sorting: (key: keyof T) => void
-          ) => JSX.Element | JSX.Element[] | string);
-    cell?:
-        | KeyColumn<T, K>
-        | ((props: T, index: number) => JSX.Element | JSX.Element[] | string);
+              sorting: (key: keyof T) => void,
+              methods: Y
+          ) => any);
+    cell?: string | ((props: T, index: number, methods: Y) => any);
+    isSort?: boolean;
 }[];
-interface UseTableProps<T extends object, K extends string> {
-    columns: Columns<T, K>;
-    data?: T[];
+export interface UseTableProps<T extends object, K extends string, Y = any> {
+    columns: Columns<T, K, Y>;
     pagination?: Pagination;
+    methods?: Y;
 }
-export interface Pagination {
-    limit?: number;
-    offset?: number;
-    total?: number;
-}
-function useTable<T extends object, K extends string>(
-    props: UseTableProps<T, K>
-) {
-    const [data, setData] = useState<T[]>([]);
-    const {
-        limit = 20,
-        offset = 0,
-        total = data.length,
-    } = props.pagination || {
-        limit: 20,
-        offset: 0,
-        total: data.length,
-    };
 
-    const [page, setPage] = useState(1);
-    const [pagination, setPagination] = useState<
-        Required<Pagination & { total: number }>
-    >({
-        limit,
-        offset,
-        total,
-    });
+function useTable<T extends object, K extends string, Y>(
+    props: UseTableProps<T, K, Y>,
+    isQueryPage: boolean = false
+) {
+    const { pagination: paginationProps, columns } = props || { methods: {} };
+    const [data, setData] = useState<T[]>([]);
+    const [methods, setMethods] = useState(props.methods);
+    const {
+        pagination,
+        search,
+        updateData: update,
+    } = usePaginator(paginationProps, isQueryPage);
 
     const [sort, setSort] = useState<{
         [x: string]: string;
     }>({});
 
-    const currentPage = useMemo(
-        () => Math.floor(pagination.offset / pagination.limit) + 1,
-        [pagination.offset, pagination.limit]
-    );
-
-    const totalPages = useMemo(() => {
-        return Math.ceil(pagination.total / pagination.limit);
-    }, [pagination.limit, pagination.total]);
-
-    function updateData(data: T[], paginate?: Pagination) {
-        setData(data);
-        if (paginate) {
-            setPagination({ ...pagination, ...paginate });
+    function updateData({
+        result,
+        count,
+        methods: m,
+    }: {
+        result: T[];
+        count: number;
+        methods?: Y;
+    }) {
+        setData(result);
+        update({ total: count });
+        if (m) {
+            setMethods({ ...methods, ...m });
         }
-    }
-
-    /* PAGINATION */
-    function onNextPage() {
-        setPagination({
-            ...pagination,
-            offset: pagination.offset + 10,
-        });
-        setPage(page + 1);
-    }
-    function onBackPage() {
-        setPagination({
-            ...pagination,
-            offset: pagination.offset - 10,
-        });
-        setPage(page - 1);
-    }
-    function onchangeLimit(limit = 10) {
-        setPagination({ ...pagination, limit });
-    }
-
-    function onChangePage(page: number) {
-        setPagination({
-            ...pagination,
-            offset: (page - 1) * pagination.limit,
-        });
-        setPage(page);
-    }
-    function onFinalPage() {
-        setPagination({
-            ...pagination,
-            offset: (totalPages - 1) * pagination.limit,
-        });
-        setPage(totalPages);
-    }
-    function backInitialPage() {
-        setPagination({
-            ...pagination,
-            offset: (page - 1) * pagination.limit,
-        });
-        setPage(1);
-    }
-
-    function paginator() {
-        return Array.from({ length: totalPages }).map((_, i) => {
-            const startPage = Math.max(
-                1,
-                page - Math.floor(pagination.limit / 2)
-            );
-            const endPage = Math.min(
-                totalPages,
-                startPage + pagination.limit - 1
-            );
-
-            return {
-                startPage,
-                endPage,
-                totalPages,
-                actualPage: page,
-                isActualPage: page === i + 1,
-                page: i + 1,
-            };
-        });
     }
 
     /* SORTING */
     function sorting(key: keyof T) {
+        if (pagination.page > 1) {
+            pagination.onChangePage(1);
+        }
         const sorted = {
-            [key]: (sort as any)[key] === "ASC" ? "DESC" : "ASC",
+            [key]: (sort as any).value[key] === "ASC" ? "DESC" : "ASC",
         };
         setSort(sorted);
     }
 
     /* TABLE */
     function Thead() {
-        return props.columns.map(({ key, header }) => {
+        return columns.map(({ key, header, isSort }) => {
             let value: any = key;
             if (header && header instanceof Function) {
-                value = header(key, sorting);
+                value = header(key, sorting, methods as Y);
             }
             if (typeof header === "string") {
                 value = header;
             }
-            return { key, value };
+            return { key, value, isSort, sorting };
         });
     }
 
     function Row() {
-        return data.map((data, index) => ({
-            ...data,
-            index,
-        }));
+        return data.map((data, index) => {
+            return {
+                ...data,
+                index,
+            };
+        });
     }
 
     function Cell(data: any) {
-        return props.columns.map(({ key, cell }) => {
+        return columns.map(({ key, cell }) => {
             let value = data[key];
             if (cell && cell instanceof Function) {
-                value = cell(data, pagination.offset + data.index);
+                value = cell(
+                    data,
+                    pagination.value.offset + data.index,
+                    methods as Y
+                );
             }
             if (typeof cell === "string") {
                 value = data[cell];
@@ -172,6 +105,8 @@ function useTable<T extends object, K extends string>(
             return { key, value };
         });
     }
+
+    // name
 
     return {
         table: {
@@ -182,23 +117,12 @@ function useTable<T extends object, K extends string>(
             },
         },
         updateData,
-        pagination: {
-            onNextPage,
-            onBackPage,
-            onchangeLimit,
-            onChangePage,
-            backInitialPage,
-            paginator,
-            onFinalPage,
-            pagination,
-            totalPages,
-            page,
-            currentPage,
-        },
+        pagination,
         sort: {
             sort,
             sorting,
         },
+        search,
     };
 }
 
