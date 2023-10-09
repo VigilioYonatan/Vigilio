@@ -4,13 +4,13 @@ import vuePaginator, { type Pagination } from "@vigilio/vue-paginator";
 type KeyColumn<T, K extends string> = keyof (T & {
     [A in K]: string;
 });
-export type Columns<T, K extends string, Y = any> = {
+export type Columns<T, K extends string = "", Y = any> = {
     key: KeyColumn<T, K>;
     header?:
         | string
         | ((
               props: KeyColumn<T, K>,
-              sorting: (key: keyof T) => void,
+              sorting: (key: keyof T | K) => void,
               methods: Y
           ) => any);
     cell?: string | ((props: T, index: number, methods: Y) => any);
@@ -56,7 +56,7 @@ function useTable<T extends object, K extends string, Y>(
     }
 
     /* SORTING */
-    function sorting(key: keyof T) {
+    function sorting(key: keyof T | K) {
         if (pagination.page.value > 1) {
             pagination.onChangePage(1);
         }
