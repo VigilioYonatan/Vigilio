@@ -50,8 +50,11 @@ export function formatDate(date: string, lang: string | string[] = "es-ES") {
 }
 
 export function isActive(req: Request) {
-    return (uri: string) => {
-        return req.path === uri;
+    return (uri: string, include = true) => {
+        if (include) {
+            return req.originalUrl.startsWith(uri);
+        }
+        return req.originalUrl === uri;
     };
 }
 
