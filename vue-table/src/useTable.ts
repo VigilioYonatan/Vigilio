@@ -50,7 +50,7 @@ function useTable<T extends object, K extends string, Y>(
     }) {
         (data as any).value = result;
         update({ total: count });
-        if (methods) {
+        if (m) {
             Object.assign(methods, m);
         }
     }
