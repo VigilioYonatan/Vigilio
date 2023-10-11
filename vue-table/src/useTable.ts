@@ -1,10 +1,10 @@
-import { computed, ref } from "vue";
+import { reactive, ref } from "vue";
 import vuePaginator, { type Pagination } from "@vigilio/vue-paginator";
 
 type KeyColumn<T, K extends string> = keyof (T & {
     [A in K]: string;
 });
-export type Columns<T, K extends string = "", Y = any> = {
+export type Columns<T, K extends string = "", Y extends Object = any> = {
     key: KeyColumn<T, K>;
     header?:
         | string
@@ -16,19 +16,23 @@ export type Columns<T, K extends string = "", Y = any> = {
     cell?: string | ((props: T, index: number, methods: Y) => any);
     isSort?: boolean;
 }[];
-export interface UseTableProps<T extends object, K extends string, Y = any> {
+export interface UseTableProps<
+    T extends object,
+    K extends string,
+    Y extends Object = any
+> {
     columns: Columns<T, K, Y>;
     pagination?: Pagination;
     methods?: Y;
 }
 
-function useTable<T extends object, K extends string, Y>(
+function useTable<T extends object, K extends string, Y extends Object>(
     props: UseTableProps<T, K, Y>,
     isQueryPage: boolean = false
 ) {
     const { pagination: paginationProps, columns } = props || { methods: {} };
     const data = ref<T[]>([]);
-    const methods = ref(props.methods);
+    const methods = reactive<Y>(props.methods!);
     const {
         pagination,
         search,
@@ -67,18 +71,18 @@ function useTable<T extends object, K extends string, Y>(
     }
 
     /* TABLE */
-    const Thead = computed(() => {
+    function Thead() {
         return columns.map(({ key, header, isSort }) => {
             let value: any = key;
             if (header && header instanceof Function) {
-                value = header(key, sorting, methods.value as Y);
+                value = header(key, sorting, methods as Y);
             }
             if (typeof header === "string") {
                 value = header;
             }
             return { key, value, isSort, sorting };
         });
-    });
+    }
 
     function Row() {
         return data.value.map((data, index) => {
@@ -96,7 +100,7 @@ function useTable<T extends object, K extends string, Y>(
                 value = cell(
                     data,
                     pagination.value.offset + data.index,
-                    methods.value as Y
+                    methods as Y
                 );
             }
             if (typeof cell === "string") {
