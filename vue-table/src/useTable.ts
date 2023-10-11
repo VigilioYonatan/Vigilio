@@ -1,4 +1,4 @@
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import vuePaginator, { type Pagination } from "@vigilio/vue-paginator";
 
 type KeyColumn<T, K extends string> = keyof (T & {
@@ -67,7 +67,7 @@ function useTable<T extends object, K extends string, Y>(
     }
 
     /* TABLE */
-    function Thead() {
+    const Thead = computed(() => {
         return columns.map(({ key, header, isSort }) => {
             let value: any = key;
             if (header && header instanceof Function) {
@@ -78,7 +78,7 @@ function useTable<T extends object, K extends string, Y>(
             }
             return { key, value, isSort, sorting };
         });
-    }
+    });
 
     function Row() {
         return data.value.map((data, index) => {
