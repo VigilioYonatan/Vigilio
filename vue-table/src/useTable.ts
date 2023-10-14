@@ -14,7 +14,7 @@ export type Columns<T, K extends string = "", Y extends Object = any> = {
               methods: Y
           ) => any);
     cell?: string | ((props: T, index: number, methods: Y) => any);
-    isSort?: boolean;
+    isSort?: boolean | keyof T;
 }[];
 export interface UseTableProps<
     T extends object,
