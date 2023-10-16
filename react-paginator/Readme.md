@@ -1,9 +1,9 @@
-# @Vigilio/react-table
+# @Vigilio/react-paginator
 
-A simple react Hooks library for table.
+A simple react Hooks library for paginator.
 
 ```bash
-npm add -D tslib
+npm add  tslib
 
 ```
 

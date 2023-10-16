@@ -25,7 +25,7 @@ export class InternatServerErrorException extends NotFoundException {
 }
 
 export class ServerErrorMiddleware implements ErrorMiddleware {
-    use(error: Error, _: Request, response: Response, next: NextFunction) {
+    use(error: Error, req: Request, response: Response, next: NextFunction) {
         if (error instanceof NotFoundException) {
             return responseData(response, error);
         }
@@ -34,7 +34,9 @@ export class ServerErrorMiddleware implements ErrorMiddleware {
             return responseData(response, error);
         }
         if (error instanceof NotFoundExceptionView) {
-            response.sendStatus(error.errorCode);
+            response.statusCode = error.errorCode;
+            (req as Request & { errorMessage: string }).errorMessage =
+                error.message;
             return next();
         }
 

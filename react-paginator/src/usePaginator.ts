@@ -88,17 +88,10 @@ function usePaginator(props?: Pagination, isQueryPage: boolean = false) {
         setPage(pag);
     }
     function onFinalPage() {
-        setPagination({
-            ...pagination,
-            offset: (totalPages - 1) * pagination.limit,
-        });
+        setPage(totalPages);
     }
 
     function backInitialPage() {
-        setPagination({
-            ...pagination,
-            offset: (page - 1) * pagination.limit,
-        });
         setPage(1);
     }
     const currentPage = useMemo(
