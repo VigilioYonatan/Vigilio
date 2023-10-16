@@ -35,6 +35,7 @@ export class ServerErrorMiddleware implements ErrorMiddleware {
         }
         if (error instanceof NotFoundExceptionView) {
             response.sendStatus(error.errorCode);
+            return next();
         }
 
         next(error);
