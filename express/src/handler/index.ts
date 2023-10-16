@@ -7,6 +7,7 @@ export class NotFoundException extends Error {
         this.props = props;
     }
 }
+export class NotFoundExceptionView extends NotFoundException {}
 
 export class BadRequestException extends NotFoundException {
     public readonly errorCode: number = 400;
@@ -29,6 +30,9 @@ export class ServerErrorMiddleware implements ErrorMiddleware {
 
         if (error instanceof BadRequestException) {
             return responseData(response, error);
+        }
+        if (error instanceof NotFoundExceptionView) {
+            response.sendStatus(error.errorCode);
         }
 
         next(error);
