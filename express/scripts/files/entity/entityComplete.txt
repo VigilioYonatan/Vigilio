@@ -2,7 +2,7 @@ import { Column, DataType, Table,Model } from "sequelize-typescript";
 import { ${Props}EntitySchema } from "../schemas/${props}.schema";
 
 @Table({ tableName: "${props}" })
-export class ${Props}Entity  extends Model implement ${Props}EntitySchema{
+export class ${Props}Entity  extends Model implements ${Props}EntitySchema{
     @Column({
         allowNull: false,
         unique: true,

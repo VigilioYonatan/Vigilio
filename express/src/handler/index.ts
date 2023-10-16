@@ -7,7 +7,9 @@ export class NotFoundException extends Error {
         this.props = props;
     }
 }
-export class NotFoundExceptionView extends NotFoundException {}
+export class NotFoundExceptionView extends Error {
+    public readonly errorCode: number = 404;
+}
 
 export class BadRequestException extends NotFoundException {
     public readonly errorCode: number = 400;
