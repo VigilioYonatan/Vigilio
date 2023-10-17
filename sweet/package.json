@@ -1,6 +1,6 @@
 {
     "name": "@vigilio/sweet",
-    "version": "0.0.9",
+    "version": "0.0.10",
     "description": "this library is like sweet but optimized",
     "main": "./dist/cjs/index.js",
     "module": "./dist/esm/index.js",
@@ -18,8 +18,8 @@
             "import": "./dist/esm/vue.js",
             "require": "./dist/cjs/vue.js"
         },
-        "./sweet.css": {
-            "import": "./src/vigilio-sweet.css"
+        "./sweet.min.css": {
+            "import": "./src/vigilio-sweet.min.css"
         }
     },
     "typesVersions": {
