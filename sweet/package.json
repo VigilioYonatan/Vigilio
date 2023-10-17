@@ -30,8 +30,8 @@
             "vue": [
                 "./dist/esm/vue.d.ts"
             ],
-            "sweet.css": [
-                "./src/vigilio-sweet.css"
+            "sweet.min.css": [
+                "./src/vigilio-sweet.min.css"
             ]
         }
     },

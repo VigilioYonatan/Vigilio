@@ -1,6 +1,6 @@
 import { h, icoDanger, icoInfo, icoSuccess, icoWarning } from "./helpers";
 import { type Icon, type SwalProps } from "./types";
-function vigilioSwal({
+function sweet({
     icon = "info",
     text = "¡No podrás revertir esto!",
     html,
@@ -177,4 +177,4 @@ function vigilioSwal({
     });
 }
 
-export default vigilioSwal;
+export default sweet;
