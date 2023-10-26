@@ -95,6 +95,7 @@ export interface UseFormOptionsFile {
         | number;
     types: string[];
     onChange?: (file: File[]) => void;
+    onChangeCustom?: (e: Event) => void;
 }
 export type Errores<T> = Record<
     keyof T,
