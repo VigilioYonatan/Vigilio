@@ -47,6 +47,9 @@ function useForm<T extends Object>(props?: UseFormProps<T>): UseForm<T> {
             if (!options?.onChangeCustom) {
                 setValue(name, value);
                 setValueInput(name, (e.target as HTMLInputElement).value);
+            } else {
+                await validateOne(name as keyof T);
+                options?.onChangeCustom(e);
             }
 
             if (options?.onChange) {
