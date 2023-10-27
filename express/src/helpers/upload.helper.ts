@@ -55,52 +55,45 @@ export interface ValidationProps {
     },
     required = true,
  */
-export function validateUpload(archivos: File[], validation?: ValidationProps) {
+export function validateUpload(archivos: File[], validation: ValidationProps) {
     return new Promise((res, rej) => {
-        const {
-            maxFiles = 1,
-            minFiles = 1,
-            maxSize = 5,
-            minSize = 0,
-            typeFile = {
-                value: ["image/jpg", "image/jpeg", "image/png", "image/webp"],
-            },
-            required = true,
-        } = validation || {
-            minSize: 0,
-            maxSize: 5,
-            maxFiles: 1,
-            minFiles: 1,
-            required: true,
-            typeFile: {
-                value: ["image/jpg", "image/jpeg", "image/png", "image/webp"],
-            },
-        };
-        if (!archivos && required) {
+        if (!archivos && validation.required) {
             rej("Este campo es obligatorio");
             return;
         }
 
-        if (maxFiles instanceof Object && archivos.length > maxFiles.value) {
+        if (
+            validation.maxFiles instanceof Object &&
+            archivos.length > validation.maxFiles.value
+        ) {
             rej(
-                maxFiles.message ||
-                    `Demasiados archivos, máximo ${maxFiles.value} archivos`
+                validation.maxFiles.message ||
+                    `Demasiados archivos, máximo ${validation.maxFiles.value} archivos`
             );
             return;
         }
-        if (typeof maxFiles === "number" && archivos.length > maxFiles) {
-            rej(`Demasiados archivos, máximo ${maxFiles} archivos`);
+        if (
+            typeof validation.maxFiles === "number" &&
+            archivos.length > validation.maxFiles
+        ) {
+            rej(`Demasiados archivos, máximo ${validation.maxFiles} archivos`);
             return;
         }
-        if (minFiles instanceof Object && archivos.length < minFiles.value) {
+        if (
+            validation.minFiles instanceof Object &&
+            archivos.length < validation.minFiles.value
+        ) {
             rej(
-                minFiles.message ||
-                    `Demasiados archivos, máximo ${minFiles.value} archivos`
+                validation.minFiles.message ||
+                    `Demasiados archivos, máximo ${validation.minFiles.value} archivos`
             );
             return;
         }
-        if (typeof minFiles === "number" && archivos.length > minFiles) {
-            rej(`Demasiados archivos, máximo ${minFiles} archivos`);
+        if (
+            typeof validation.minFiles === "number" &&
+            archivos.length > validation.minFiles
+        ) {
+            rej(`Demasiados archivos, máximo ${validation.minFiles} archivos`);
             return;
         }
 
@@ -111,13 +104,13 @@ export function validateUpload(archivos: File[], validation?: ValidationProps) {
                     ? archivo.originalFilename?.slice(0, 16) + "..." + extension
                     : archivo.originalFilename;
             if (
-                typeFile instanceof Object &&
-                !typeFile.value.includes(archivo.mimetype!)
+                validation.typeFile instanceof Object &&
+                !validation.typeFile.value.includes(archivo.mimetype!)
             ) {
                 rej(
-                    typeFile.message ||
+                    validation.typeFile.message ||
                         `Extension de este archivo no es permitido ${nameArchivo} - solo permitidios ${JSON.stringify(
-                            typeFile.value
+                            validation.typeFile.value
                         )}`
                 );
                 return;
@@ -126,36 +119,42 @@ export function validateUpload(archivos: File[], validation?: ValidationProps) {
             const mb = 1000000;
 
             if (
-                minSize instanceof Object &&
-                archivo.size < minSize.value * mb
+                validation.minSize instanceof Object &&
+                archivo.size < validation.minSize.value * mb
             ) {
                 rej(
-                    minSize.message ||
-                        `archivo demasiado pequeño: ${nameArchivo}, min ${minSize.value}MB`
+                    validation.minSize.message ||
+                        `archivo demasiado pequeño: ${nameArchivo}, min ${validation.minSize.value}MB`
                 );
                 return;
             }
-            if (typeof minSize === "number" && archivo.size < minSize * mb) {
+            if (
+                typeof validation.minSize === "number" &&
+                archivo.size < validation.minSize * mb
+            ) {
                 rej(
-                    `archivo demasiado pequeño: ${nameArchivo}, min ${minSize}MB`
+                    `archivo demasiado pequeño: ${nameArchivo}, min ${validation.minSize}MB`
                 );
                 return;
             }
 
             if (
-                maxSize instanceof Object &&
-                archivo.size > maxSize.value * mb
+                validation.maxSize instanceof Object &&
+                archivo.size > validation.maxSize.value * mb
             ) {
                 rej(
-                    maxSize.message ||
-                        `archivo demasiado pequeño: ${nameArchivo}, min ${maxSize.value}MB`
+                    validation.maxSize.message ||
+                        `archivo demasiado pequeño: ${nameArchivo}, min ${validation.maxSize.value}MB`
                 );
                 return;
             }
 
-            if (typeof maxSize === "number" && archivo.size > maxSize * mb) {
+            if (
+                typeof validation.maxSize === "number" &&
+                archivo.size > validation.maxSize * mb
+            ) {
                 rej(
-                    `archivo demasiado pesado: ${nameArchivo}, max ${maxSize}MB`
+                    `archivo demasiado pesado: ${nameArchivo}, max ${validation.maxSize}MB`
                 );
                 return;
             }

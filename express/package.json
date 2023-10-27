@@ -1,6 +1,6 @@
 {
     "name": "@vigilio/express-core",
-    "version": "1.2.12",
+    "version": "1.2.13",
     "main": "dist/cjs/index.js",
     "module": "dist/esm/index.js",
     "types": "dist/esm/index.d.ts",

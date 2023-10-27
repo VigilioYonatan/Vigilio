@@ -3,7 +3,7 @@ import { attachMiddleware } from "@decorators/express";
 import { File, IncomingForm } from "formidable";
 import { ValidationProps, validateUpload } from "../helpers/upload.helper";
 
-export function Upload(validation?: ValidationProps) {
+export function Upload(validation: ValidationProps) {
     return function (
         target: any,
         propertyKey: string,
