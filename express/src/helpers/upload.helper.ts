@@ -58,43 +58,42 @@ export interface ValidationProps {
 export function validateUpload(archivos: File[], validation: ValidationProps) {
     return new Promise((res, rej) => {
         if (!archivos && validation.required) {
-            rej("Este campo es obligatorio");
-            return;
+            return rej("Este campo es obligatorio");
         }
 
         if (
             validation.maxFiles instanceof Object &&
             archivos.length > validation.maxFiles.value
         ) {
-            rej(
+            return rej(
                 validation.maxFiles.message ||
                     `Demasiados archivos, máximo ${validation.maxFiles.value} archivos`
             );
-            return;
         }
         if (
             typeof validation.maxFiles === "number" &&
             archivos.length > validation.maxFiles
         ) {
-            rej(`Demasiados archivos, máximo ${validation.maxFiles} archivos`);
-            return;
+            return rej(
+                `Demasiados archivos, máximo ${validation.maxFiles} archivos`
+            );
         }
         if (
             validation.minFiles instanceof Object &&
             archivos.length < validation.minFiles.value
         ) {
-            rej(
+            return rej(
                 validation.minFiles.message ||
                     `Demasiados archivos, máximo ${validation.minFiles.value} archivos`
             );
-            return;
         }
         if (
             typeof validation.minFiles === "number" &&
             archivos.length > validation.minFiles
         ) {
-            rej(`Demasiados archivos, máximo ${validation.minFiles} archivos`);
-            return;
+            return rej(
+                `Demasiados archivos, máximo ${validation.minFiles} archivos`
+            );
         }
 
         for (const archivo of archivos) {
@@ -107,13 +106,12 @@ export function validateUpload(archivos: File[], validation: ValidationProps) {
                 validation.typeFile instanceof Object &&
                 !validation.typeFile.value.includes(archivo.mimetype!)
             ) {
-                rej(
+                return rej(
                     validation.typeFile.message ||
                         `Extension de este archivo no es permitido ${nameArchivo} - solo permitidios ${JSON.stringify(
                             validation.typeFile.value
                         )}`
                 );
-                return;
             }
 
             const mb = 1000000;
@@ -122,43 +120,39 @@ export function validateUpload(archivos: File[], validation: ValidationProps) {
                 validation.minSize instanceof Object &&
                 archivo.size < validation.minSize.value * mb
             ) {
-                rej(
+                return rej(
                     validation.minSize.message ||
                         `archivo demasiado pequeño: ${nameArchivo}, min ${validation.minSize.value}MB`
                 );
-                return;
             }
             if (
                 typeof validation.minSize === "number" &&
                 archivo.size < validation.minSize * mb
             ) {
-                rej(
+                return rej(
                     `archivo demasiado pequeño: ${nameArchivo}, min ${validation.minSize}MB`
                 );
-                return;
             }
 
             if (
                 validation.maxSize instanceof Object &&
                 archivo.size > validation.maxSize.value * mb
             ) {
-                rej(
+                return rej(
                     validation.maxSize.message ||
                         `archivo demasiado pequeño: ${nameArchivo}, min ${validation.maxSize.value}MB`
                 );
-                return;
             }
 
             if (
                 typeof validation.maxSize === "number" &&
                 archivo.size > validation.maxSize * mb
             ) {
-                rej(
+                return rej(
                     `archivo demasiado pesado: ${nameArchivo}, max ${validation.maxSize}MB`
                 );
-                return;
             }
         }
-        res(archivos);
+        return res(archivos);
     });
 }
