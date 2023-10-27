@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { attachMiddleware } from "@decorators/express";
-import { File, IncomingForm } from "formidable";
+import formidable, { File } from "formidable";
 import { ValidationProps, validateUpload } from "../helpers/upload.helper";
 
 export function Upload(validation: ValidationProps) {
@@ -13,7 +13,7 @@ export function Upload(validation: ValidationProps) {
             target,
             propertyKey,
             async (req: Request, res: Response, next: NextFunction) => {
-                const form = new IncomingForm();
+                const form = formidable();
                 form.parse(req, async (err, fields, files) => {
                     if (err) {
                         return res.status(500).json({
