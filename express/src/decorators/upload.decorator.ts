@@ -29,7 +29,7 @@ export function Upload(validation: ValidationProps) {
                         if (fields.name) {
                             (req as any).filesName = fields.name[0];
                         }
-                        next();
+                        return next();
                     } catch (err) {
                         return res
                             .status(400)
