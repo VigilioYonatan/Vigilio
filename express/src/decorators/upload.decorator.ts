@@ -14,7 +14,7 @@ export function Upload(validation?: ValidationProps) {
             propertyKey,
             async (req: Request, res: Response, next: NextFunction) => {
                 const form = new IncomingForm();
-                form.parse(req, async (err, _fields, files) => {
+                form.parse(req, async (err, fields, files) => {
                     if (err) {
                         return res.status(500).json({
                             success: false,
@@ -26,6 +26,9 @@ export function Upload(validation?: ValidationProps) {
                     try {
                         await validateUpload(archivos, validation);
                         (req as any).files = archivos;
+                        if (fields.name) {
+                            (req as any).filesName = fields.name[0];
+                        }
                         next();
                     } catch (err) {
                         return res
