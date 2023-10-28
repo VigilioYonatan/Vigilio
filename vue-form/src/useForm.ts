@@ -325,7 +325,6 @@ function useForm<T extends Object>(props?: UseFormProps<T>): UseForm<T> {
         if (minValue) {
             if (typeof minValue === "number") {
                 if (typeof value === "number" && value < minValue) {
-                    console.log({ value });
                     setError(name, {
                         type: "minValue",
                         message: `Este campo debe ser mayor a ${minValue}`,
