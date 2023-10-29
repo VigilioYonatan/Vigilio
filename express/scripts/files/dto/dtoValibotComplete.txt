@@ -1,0 +1,43 @@
+import { type Input, omitAsync, ValiError } from "valibot";
+import { ${Props}Entity } from "../entities/${props}.entity";
+import { ${props}Schema } from "../schemas/${props}.schema";
+import { getPipeIssues } from "@vigilio/express-core/valibot";
+
+export const ${props}StoreDto = omitAsync(
+    ${props}Schema,
+    ["id"],
+    [
+        async (input) => {
+            const [byName, bySlug] = await Promise.all([
+                ${Props}Entity.findOne({
+                    where: {
+                        name: input.name,
+                    },
+                    raw: true,
+                }),
+                ${Props}Entity.findOne({
+                    where: {
+                        slug: input.slug,
+                    },
+                    raw: true,
+                }),
+            ]);
+
+            if (byName) {
+                throw getPipeIssues(
+                    input,
+                    "name",
+                    `Ya existe el ${props} con el name: ${input.name}`
+                );
+            }
+            if (bySlug) {
+                throw getPipeIssues(
+                    input,
+                    "slug",
+                    `Ya existe el ${props} con el slug: ${input.slug}`
+                );
+            }
+            return input;
+        },
+    ]
+);

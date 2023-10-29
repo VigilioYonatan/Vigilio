@@ -43,8 +43,16 @@ function create(mode, name, createDir) {
             const pathDir = pro.replace("--path=", "").split(".");
             dir = path.resolve(process.cwd(), "app", ...pathDir);
         }
+        let type = "zod";
+        if (pro.startsWith("zod")) {
+            fileTxt += type;
+        }
+        if (pro.startsWith("valibot")) {
+            type = "Valibot";
+            fileTxt += type;
+        }
         if (pro.startsWith("f")) {
-            fileTxt = `${mode}Complete`;
+            fileTxt += `Complete`;
         }
     }
 

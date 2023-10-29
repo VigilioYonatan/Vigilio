@@ -1,3 +1,4 @@
 import { Pipe } from "./pipe.decorator";
 import { Validator } from "./validator.decorator";
-export { Pipe, Validator };
+import { getPipeIssues } from "./helpers";
+export { Pipe, Validator, getPipeIssues };
