@@ -1,4 +1,4 @@
-import { ${Props}Entity } from "../entities/${props}.entity";
+import { ${Props} } from "../entities/${props}.entity";
 import { ${props}Schema } from "../schemas/${props}.schema";
 import * as z from "zod";
 
@@ -6,13 +6,13 @@ export const ${props}StoreDto = ${props}Schema
     .omit({ id: true })
     .superRefine(async ({ name, slug }, ctx) => {
         const [byName, bySlug] = await Promise.all([
-            ${Props}Entity.findOne({
+            ${Props}.findOne({
                 where: {
                     name,
                 },
                 raw: true,
             }),
-            ${Props}Entity.findOne({
+            ${Props}.findOne({
                 where: {
                     slug,
                 },

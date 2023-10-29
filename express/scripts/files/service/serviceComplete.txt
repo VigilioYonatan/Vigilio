@@ -1,5 +1,5 @@
 import { Injectable } from "@decorators/di";
-import { ${Props}Entity } from "../entities/${props}.entity";
+import { ${Props} } from "../entities/${props}.entity";
 import {
     BadRequestException,
     NotFoundException,
@@ -10,7 +10,7 @@ import { ${Props}UpdateDto } from "../dtos/${props}.update.dto";
 @Injectable()
 export class ${Props}Service {
     async index() {
-        const data = await ${Props}Entity.findAll({ raw: true });
+        const data = await ${Props}.findAll({ raw: true });
         return {
             success: true,
             data,
@@ -18,9 +18,9 @@ export class ${Props}Service {
     }
 
     async show(slug: string) {
-        let ${prop} = await ${Props}Entity.findByPk(slug);
+        let ${prop} = await ${Props}.findByPk(slug);
         if (!${prop}) {
-            ${prop} = await ${Props}Entity.findOne({
+            ${prop} = await ${Props}.findOne({
                 where: {
                     slug,
                 },
@@ -35,7 +35,7 @@ export class ${Props}Service {
     }
 
     async store(${props}StoreDto: ${Props}StoreDto) {
-        const ${prop} = new ${Props}Entity(${props}StoreDto);
+        const ${prop} = new ${Props}(${props}StoreDto);
         await ${prop}.save();
 
         return {

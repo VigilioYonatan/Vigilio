@@ -7,4 +7,4 @@ export const ${props}Schema = objectAsync({
 });
 
 export type ${Props}Schema = Input<typeof ${props}Schema>;
-export type ${Props}EntitySchema = Omit<${props}Schema, "id">;
+export type ${Props}EntitySchema = Omit<${Props}Schema, "id">;
