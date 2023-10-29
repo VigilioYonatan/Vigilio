@@ -80,5 +80,10 @@
         "sequelize",
         "framework"
     ],
-    "license": "ISC"
+    "license": "ISC",
+    "devDependencies": {
+        "@types/express": "^4.17.20",
+        "@types/formidable": "^3.4.4",
+        "@types/node": "^20.8.9"
+    }
 }

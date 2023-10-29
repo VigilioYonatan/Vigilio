@@ -1,7 +1,4 @@
 import { File } from "formidable";
-import fs from "node:fs";
-import path from "node:path";
-import { generateId } from ".";
 
 export interface ValidationProps {
     typeFile?: {
