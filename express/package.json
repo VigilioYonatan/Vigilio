@@ -1,6 +1,6 @@
 {
     "name": "@vigilio/express-core",
-    "version": "1.2.19",
+    "version": "1.3.0",
     "main": "dist/cjs/index.js",
     "module": "dist/esm/index.js",
     "types": "dist/esm/index.d.ts",
@@ -14,6 +14,14 @@
             "require": "./dist/cjs/index.js"
         },
         "./package.json": "./package.json",
+        "./decorators/zod": {
+            "import": "./dist/esm/decorators/zod/index.js",
+            "require": "./dist/cjs/decorators/zod/index.js"
+        },
+        "./decorators/valibot": {
+            "import": "./dist/esm/decorators/valibot/index.js",
+            "require": "./dist/cjs/decorators/valibot/index.js"
+        },
         "./helpers": {
             "import": "./dist/esm/helpers/index.js",
             "require": "./dist/cjs/helpers/index.js"
@@ -37,6 +45,12 @@
             ],
             "client": [
                 "./dist/esm/client/index.d.ts"
+            ],
+            "./decorators/valibot": [
+                "./dist/esm/decorators/valibot/index.d.ts"
+            ],
+            "./decorators/zod": [
+                "./dist/esm/decorators/zod/index.d.ts"
             ]
         }
     },
