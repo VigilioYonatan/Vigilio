@@ -46,10 +46,10 @@
             "client": [
                 "./dist/esm/client/index.d.ts"
             ],
-            "./decorators/valibot": [
+            "valibot": [
                 "./dist/esm/decorators/valibot/index.d.ts"
             ],
-            "./decorators/zod": [
+            "zod": [
                 "./dist/esm/decorators/zod/index.d.ts"
             ]
         }
