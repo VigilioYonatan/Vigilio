@@ -19,10 +19,7 @@ export function Validator<T extends ObjectShapeAsync>(
             target,
             propertyKey,
             async (req: Request, res: Response, next: NextFunction) => {
-                const data = await safeParseAsync(
-                    strictAsync(schema),
-                    req.body
-                );
+                const data = await safeParseAsync(schema, req.body);
                 if (!data.success) {
                     return res.status(400).json({
                         success: false,

@@ -1,7 +1,7 @@
-import { number, minLength, Input, stringAsync, objectAsync } from "valibot";
+import { numberAsync, minLength, Input, stringAsync, objectAsync } from "valibot";
 
 export const ${props}Schema = objectAsync({
-    id: number(),
+    id: numberAsync(),
     name: stringAsync("Este campo es obligatorio", [minLength(3)]),
     slug: stringAsync("Este campo es obligatorio", [minLength(3)]),
 });
