@@ -14,4 +14,5 @@ export interface SwalProps {
     showConfirmButton?: boolean;
     timer?: number;
     position?: "center" | "end" | "start";
+    sweetWidth?: string;
 }

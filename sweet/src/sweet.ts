@@ -14,6 +14,7 @@ function sweet({
     confirmButtonAriaLabel = "ok",
     position = "center",
     customIcon,
+    sweetWidth = "28rem",
     timer,
 }: SwalProps): Promise<{ isConfirmed: boolean }> {
     return new Promise((res) => {
@@ -30,7 +31,7 @@ function sweet({
                             : position === "end"
                             ? "end"
                             : "center"
-                    };`,
+                    };--sweet-width:${sweetWidth};`,
                 } as CSSStyleDeclaration,
                 onclick: () => {
                     onClose();
