@@ -17,8 +17,7 @@ export function Pipe<T extends ObjectShapeAsync>(schema: ObjectSchemaAsync<T>) {
             target,
             propertyKey,
             async (req: Request, res: Response, next: NextFunction) => {
-                const schemas = strictAsync(schema);
-                const data = await safeParseAsync(schemas, req.params);
+                const data = await safeParseAsync(schema, req.params);
 
                 if (!data.success) {
                     return res.status(400).json({
@@ -28,6 +27,7 @@ export function Pipe<T extends ObjectShapeAsync>(schema: ObjectSchemaAsync<T>) {
                         params: data.error.issues[0].path![0].key,
                     });
                 }
+                req.params = data.data;
                 next();
             }
         );
