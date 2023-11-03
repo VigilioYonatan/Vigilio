@@ -1,6 +1,6 @@
 {
     "name": "@vigilio/vue-fetching",
-    "version": "2.1.4",
+    "version": "2.1.5",
     "description": "this is a library to fetch in vue",
     "main": "./dist/cjs/index.js",
     "module": "./dist/esm/index.js",

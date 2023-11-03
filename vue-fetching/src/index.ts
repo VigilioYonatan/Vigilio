@@ -1,4 +1,6 @@
-import useQuery from "./fetching/useQuery";
-import useMutation from "./fetching/useMutation";
-import { UseQuery, OptionsQuery } from "./fetching/useQuery";
-export { useMutation, useQuery, UseQuery, OptionsQuery };
+import useQuery, {
+    type UseQuery,
+    type OptionsQuery,
+} from "./fetching/useQuery";
+import useMutation, { type UseMutation } from "./fetching/useMutation";
+export { useMutation, useQuery, UseQuery, OptionsQuery, UseMutation };
