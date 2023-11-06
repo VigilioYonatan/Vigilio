@@ -15,4 +15,16 @@ export interface SwalProps {
     timer?: number;
     position?: "center" | "end" | "start";
     sweetWidth?: string;
+    hiddeModal?: boolean;
+}
+export interface SwalAlertProps {
+    title: string;
+    icon?: Icon;
+    customIcon?: string | HTMLElement;
+    html?: string | HTMLElement;
+    showCloseButton?: boolean;
+    timer?: number;
+    position?: string;
+    height?: number;
+    width?: number;
 }

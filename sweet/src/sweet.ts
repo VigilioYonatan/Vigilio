@@ -1,6 +1,15 @@
-import { h, icoDanger, icoInfo, icoSuccess, icoWarning } from "./helpers";
+import {
+    bottomBackground,
+    colorIcon,
+    h,
+    icoDanger,
+    icoInfo,
+    icoSuccess,
+    icoWarning,
+} from "./helpers";
 import { type Icon, type SwalProps } from "./types";
-function sweet({
+
+function sweetModal({
     icon = "info",
     text = "¡No podrás revertir esto!",
     html,
@@ -59,9 +68,18 @@ function sweet({
                                           : "none",
                                   } as CSSStyleDeclaration,
                                   onclick: onClose,
+                                  ariaLabel: "button to close modal",
                               },
                               "x"
                           ),
+                          h("div", {
+                              className: "vigilio-loader",
+                              style: {
+                                  cssText: `--bg-loader:${colorIcon(
+                                      icon
+                                  )}; display:${timer ? "block" : "none"};`,
+                              } as CSSStyleDeclaration,
+                          }),
                       ]
                     : [
                           h(
@@ -74,6 +92,7 @@ function sweet({
                                           : "none",
                                   } as CSSStyleDeclaration,
                                   onclick: onClose,
+                                  ariaLabel: "button to close modal",
                               },
                               "x"
                           ),
@@ -142,6 +161,16 @@ function sweet({
                                       },
                                       cancelButtonText
                                   ),
+                                  h("div", {
+                                      className: "vigilio-loader",
+                                      style: {
+                                          cssText: `--bg-loader:${colorIcon(
+                                              icon
+                                          )}; display:${
+                                              timer ? "block" : "none"
+                                          };`,
+                                      } as CSSStyleDeclaration,
+                                  }),
                               ]
                           ),
                       ]
@@ -170,12 +199,18 @@ function sweet({
         setTimeout(() => {
             document.body.appendChild(htmlModal);
         }, 100);
+
         if (timer) {
+            const loader = htmlModal.querySelector(
+                ".vigilio-loader"
+            ) as HTMLDivElement;
+            const timeTotal = timer * 1000;
+            bottomBackground(timeTotal, loader);
             setTimeout(() => {
                 onClose();
-            }, timer * 1000);
+            }, timeTotal + 150);
         }
     });
 }
 
-export default sweet;
+export default sweetModal;

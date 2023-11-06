@@ -1,3 +1,4 @@
+import { type Icon } from "./types";
 
 export function icoInfo() {
     return h(
@@ -79,4 +80,30 @@ export function h<T extends HTMLElement>(
     }
 
     return element;
+}
+export function bottomBackground(timeTotal: number, element: HTMLElement) {
+    const intervalo = 10;
+    const pasos = timeTotal / intervalo;
+    const anchoPorPaso = 100 / pasos;
+
+    let anchoActual = 0;
+    let paso = 0;
+    function animarAncho() {
+        if (paso < pasos) {
+            anchoActual += anchoPorPaso;
+            element.style.width = anchoActual + "%";
+            paso++;
+            setTimeout(animarAncho, intervalo);
+        }
+    }
+    setTimeout(animarAncho, intervalo);
+}
+export function colorIcon(key: Icon) {
+    const icono: Record<Icon, string> = {
+        danger: "#dc2626",
+        success: "#16a34a",
+        info: "#3fc3ee",
+        warning: "#facc15",
+    };
+    return icono[key];
 }
