@@ -56,8 +56,12 @@
     "scripts": {
         "build:esm": "tsc",
         "build:cjs": "tsc --module commonjs --outDir dist/cjs",
-        "build": "rimraf dist && pnpm build:esm && pnpm build:cjs"
+        "build": "rimraf dist && pnpm build:esm && pnpm build:cjs",
+        "public": "pnpm build && npm public"
     },
     "author": "Vigilio",
-    "license": "ISC"
+    "license": "ISC",
+    "dependencies": {
+        "tslib": "^2.6.2"
+    }
 }
