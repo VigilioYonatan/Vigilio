@@ -19,7 +19,7 @@ inquirer
                         type: "list",
                         name: "type",
                         message: "select @express/vigilio package",
-                        choices: ["fullstack", "api"],
+                        choices: ["fullstack-preact", "fullstack-vue", "api"],
                     })
                     .then((result) => {
                         let packs = null;
