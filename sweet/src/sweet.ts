@@ -177,11 +177,13 @@ function sweetModal({
             )
         );
         const modal = htmlModal!.querySelector(".vigilio-modal .modal");
+        document.body.classList.add("overflow-hidden");
 
         function onClose() {
             modal!.classList.add("vigilio-modal-hidde");
             setTimeout(() => {
                 modal?.classList.remove("vigilio-modal-hidde");
+                document.body.classList.remove("overflow-hidden");
                 document.body.removeChild(htmlModal);
             }, 100);
         }
@@ -197,6 +199,7 @@ function sweetModal({
         }
 
         setTimeout(() => {
+            document.body.style.overflow = "hidden";
             document.body.appendChild(htmlModal);
         }, 100);
 
