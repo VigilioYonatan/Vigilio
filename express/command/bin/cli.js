@@ -24,7 +24,10 @@ inquirer
                     .then((result) => {
                         let packs = null;
                         switch (result.type) {
-                            case "fullstack":
+                            case "fullstack-preact":
+                                packs = `git clone --depth 1 https://github.com/VigilioYonatan/-vigilio-express-preact ${projectName}`;
+                                break;
+                            case "fullstack-vue":
                                 packs = `git clone --depth 1 https://github.com/VigilioYonatan/vigilio-express ${projectName}`;
                                 break;
                             case "api":
