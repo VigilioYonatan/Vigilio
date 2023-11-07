@@ -177,7 +177,6 @@ function sweetModal({
             )
         );
         const modal = htmlModal!.querySelector(".vigilio-modal .modal");
-        document.body.classList.add("overflow-hidden");
 
         function onClose() {
             modal!.classList.add("vigilio-modal-hidde");
@@ -199,7 +198,7 @@ function sweetModal({
         }
 
         setTimeout(() => {
-            document.body.style.overflow = "hidden";
+            document.body.classList.add("overflow-hidden");
             document.body.appendChild(htmlModal);
         }, 100);
 
