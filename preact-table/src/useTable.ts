@@ -25,11 +25,55 @@ export interface UseTableProps<
     pagination?: Pagination;
     methods?: Y;
 }
+export interface UseTable<
+    T extends object,
+    K extends string,
+    Y extends object = any
+> {
+    table: {
+        Thead: () => {
+            key: K | keyof T;
+            value: any;
+            isSort: boolean | keyof T | undefined;
+            sorting: (key: K | keyof T) => void;
+        }[];
+        TBody: {
+            Row: () => (T & {
+                index: number;
+            })[];
+            Cell: (data: any) => {
+                key: K | keyof T;
+                value: any;
+            }[];
+        };
+    };
+    updateData: ({
+        result,
+        count,
+        methods,
+    }: {
+        result: T[];
+        count: number;
+        methods?: Y | undefined;
+    }) => void;
+    pagination: Pagination;
+    sort: {
+        value: {
+            [x: string]: string;
+        };
+        sorting: (key: keyof T | K) => void;
+    };
+    search: {
+        value: string;
+        debounceTerm: string;
+        onSearchByName: (term: string) => void;
+    };
+}
 
 function useTable<T extends object, K extends string, Y extends object>(
     props: UseTableProps<T, K, Y>,
     isQueryPage = false
-) {
+): UseTable<T, K, Y> {
     const { pagination: paginationProps, columns } = props || { methods: {} };
     const data = useSignal<T[]>([]);
     const methods = useSignal(props.methods);
@@ -123,7 +167,7 @@ function useTable<T extends object, K extends string, Y extends object>(
         updateData,
         pagination,
         sort: {
-            sort,
+            value: sort.value,
             sorting,
         },
         search,

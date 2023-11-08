@@ -1,4 +1,4 @@
 import useTable from "./useTable";
-import { Columns, UseTableProps } from "./useTable";
+import { Columns, UseTableProps, UseTable } from "./useTable";
 
-export { useTable, Columns, UseTableProps };
+export { useTable, Columns, UseTableProps, UseTable };
