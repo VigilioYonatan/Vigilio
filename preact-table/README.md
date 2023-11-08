@@ -3,7 +3,9 @@
 A simple preact Hooks library for table.
 
 ```bash
-npm add -D tslib
+npm add tslib
+npm add @vigilio/preact-paginator
+npm add @preact/signals
 
 ```
 
@@ -88,7 +90,7 @@ const { pagination, sort, table, updateData } = useTable({
     columns: columns,
     pagination: { limit: 10, offset: 0 },
 });
-// You can use @vigilio/react-fetching
+// You can use @vigilio/preact-fetching
 const { refetch, isLoading } = useQuery(
     "/product",
     async function (url) {

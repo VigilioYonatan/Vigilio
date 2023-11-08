@@ -1,4 +1,4 @@
 import useTable from "./useTable";
-import { Columns, Pagination } from "./useTable";
+import {type  Columns } from "./useTable";
 
-export { useTable, Columns, Pagination };
+export { useTable, Columns, };
