@@ -1,9 +1,11 @@
-import { useState } from "preact/hooks";
 import { delayFetch, timer } from "./helpers";
+import { useSignal } from "@preact/signals";
 
 export interface OptionsQuery {
     skipFetching?: boolean;
     delay?: number | null;
+    retry?: number | null;
+    retryDelay?: number | null;
 }
 
 export interface MoreOptions<Data, Error> {
@@ -18,6 +20,7 @@ export type FetchPropsProps<Data, Error> = {
     isSkip: boolean;
     isError: boolean | null;
     error: Error | null;
+    errorTimes: number;
 };
 export type UseMutation<Data, Body, Error> = {
     [K in keyof FetchPropsProps<Data, Error>]: FetchPropsProps<Data, Error>[K];
@@ -38,58 +41,72 @@ function useMutation<Data, Body, Error>(
     let opciones: Required<OptionsQuery> = {
         skipFetching: false,
         delay: null,
+        retry: 1,
+        retryDelay: null,
     };
     if (options) {
         opciones = { ...opciones, ...options };
     }
-    const { skipFetching, delay } = opciones;
+    const { skipFetching, delay, retry, retryDelay } = opciones;
 
-    const [fetchProps, setFetchProps] = useState<FetchPropsProps<Data, Error>>({
+    const fetchprops = useSignal<FetchPropsProps<Data, Error>>({
         data: null,
         isLoading: null,
         isSuccess: null,
         isError: null,
         error: null,
         isSkip: skipFetching,
+        errorTimes: 0,
     });
 
     async function fetch(
         body: Body,
         moreOption: MoreOptions<Data, Error> | null
     ) {
-        if (fetchProps.isSkip) return;
-        setFetchProps({ ...fetchProps, isLoading: true });
+        if (fetchprops.value.isSkip) return;
+        fetchprops.value = { ...fetchprops.value, isLoading: true };
         if (delay) {
             await delayFetch(timer(delay));
         }
-
+        if (fetchprops.value.errorTimes !== 0) {
+            await delayFetch(timer(retryDelay ?? 3));
+        }
         try {
             const data = await fetching(url, body);
 
             let transform: Data = data;
-            if (moreOption && moreOption.transformData) {
+            if (moreOption?.transformData) {
                 transform = moreOption.transformData(data);
             }
-            if (moreOption && moreOption.onSuccess) {
+            if (moreOption?.onSuccess) {
                 moreOption.onSuccess(transform);
             }
-            setFetchProps({
-                ...fetchProps,
+            fetchprops.value = {
+                ...fetchprops.value,
                 isLoading: false,
                 isSuccess: true,
                 isError: false,
                 data: transform,
-            });
+            };
+
             return transform;
         } catch (error) {
-            setFetchProps({
-                ...fetchProps,
+            fetchprops.value = {
+                ...fetchprops.value,
+                errorTimes: fetchprops.value.errorTimes + 1,
+            };
+            if (retry && fetchprops.value.errorTimes < retry) {
+                await fetch(body, moreOption);
+                return;
+            }
+            fetchprops.value = {
+                ...fetchprops.value,
                 isLoading: false,
                 isSuccess: false,
                 isError: true,
                 error: error as Error,
-            });
-            if (moreOption && moreOption.onError) {
+            };
+            if (moreOption?.onError) {
                 moreOption.onError(error as Error);
             }
             throw error;
@@ -97,8 +114,11 @@ function useMutation<Data, Body, Error>(
     }
 
     function disabledSkip() {
-        if (!fetchProps.isSkip) return;
-        fetchProps.isSkip = false;
+        if (!fetchprops.value.isSkip) return;
+        fetchprops.value = {
+            ...fetchprops.value,
+            isSkip: false,
+        };
     }
 
     async function mutate(
@@ -112,7 +132,7 @@ function useMutation<Data, Body, Error>(
         return result;
     }
     return {
-        ...fetchProps,
+        ...fetchprops.value,
         mutate,
         mutateAsync,
         disabledSkip,

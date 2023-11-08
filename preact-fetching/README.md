@@ -2,6 +2,12 @@
 
 A simple Preact Hooks library for data fetching.
 
+```cmd
+pnpm add @vigilio/preact-fetching
+pnpm add @preact/signals
+pnpm add tslib
+```
+
 ### Getting Started
 
 ### useQuery: to consume data fetching GET

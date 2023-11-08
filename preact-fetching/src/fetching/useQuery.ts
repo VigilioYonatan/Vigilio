@@ -1,5 +1,6 @@
+import { useEffect } from "preact/hooks";
 import { delayFetch, timer } from "./helpers";
-import { useEffect, useState } from "preact/hooks";
+import { useSignal } from "@preact/signals";
 export interface OptionsQuery<Data, Error> {
     skipFetching?: boolean;
     placeholderData?: Data | null;
@@ -7,6 +8,8 @@ export interface OptionsQuery<Data, Error> {
     refetchIntervalInBackground?: boolean;
     refetchOnReconnect?: boolean;
     delay?: number | null;
+    retry?: number | null;
+    retryDelay?: number | null;
     transformData?: ((data: Data) => Data) | null;
     onError?: ((error: Error) => void) | null;
     onSuccess?: ((data: Data) => void) | null;
@@ -15,10 +18,10 @@ export interface OptionsQuery<Data, Error> {
 export type UseQuery<Data, Error> = {
     [K in keyof FetchPropsProps<Data, Error>]: FetchPropsProps<Data, Error>[K];
 } & {
-    refetch: (clean?: boolean) => void;
+    refetch: (clean?: boolean) => Promise<void>;
 };
 
-export type FetchPropsProps<Data, Error> = {
+type FetchPropsProps<Data, Error> = {
     data: Data | null;
     isLoading: boolean | null;
     isSuccess: boolean | null;
@@ -26,6 +29,7 @@ export type FetchPropsProps<Data, Error> = {
     isSkip: boolean;
     isError: boolean | null;
     error: Error | null;
+    errorTimes: number;
 };
 function useQuery<Data, Error>(
     url: string,
@@ -42,6 +46,8 @@ function useQuery<Data, Error>(
         onSuccess: null,
         refetchOnReconnect: false,
         delay: null,
+        retry: 3,
+        retryDelay: null,
         clean: true,
     };
 
@@ -55,12 +61,14 @@ function useQuery<Data, Error>(
         refetchIntervalInBackground,
         refetchOnReconnect,
         delay,
+        retry,
+        retryDelay,
         clean,
         transformData,
         onError,
         onSuccess,
     } = opciones;
-    const [fetchProps, setFetchProps] = useState<FetchPropsProps<Data, Error>>({
+    const fetchProps = useSignal<FetchPropsProps<Data, Error>>({
         data: placeholderData,
         isLoading: null,
         isSuccess: null,
@@ -68,17 +76,28 @@ function useQuery<Data, Error>(
         isSkip: skipFetching,
         isError: null,
         error: null,
+        errorTimes: 0,
     });
 
     async function fetchEndpoint() {
-        if (fetchProps.isFetching === false) {
-            setFetchProps({ ...fetchProps, isFetching: true });
+        if (fetchProps.value.isFetching === false) {
+            fetchProps.value = {
+                ...fetchProps.value,
+                isFetching: true,
+            };
+            fetchProps.value.isFetching = true;
         } else {
-            setFetchProps({ ...fetchProps, isLoading: true });
+            fetchProps.value = {
+                ...fetchProps.value,
+                isLoading: true,
+            };
         }
 
         if (delay) {
             await delayFetch(timer(delay));
+        }
+        if (fetchProps.value.errorTimes !== 0) {
+            await delayFetch(timer(retryDelay ?? 3));
         }
 
         try {
@@ -90,81 +109,103 @@ function useQuery<Data, Error>(
             if (onSuccess) {
                 onSuccess(transform);
             }
-            setFetchProps({
-                ...fetchProps,
+            fetchProps.value = {
+                ...fetchProps.value,
                 isLoading: false,
                 isFetching: false,
                 isSuccess: true,
                 isError: false,
                 data: transform,
-            });
+            };
         } catch (error: unknown) {
-            setFetchProps({
-                ...fetchProps,
+            fetchProps.value = {
+                ...fetchProps.value,
+                errorTimes: fetchProps.value.errorTimes + 1,
+            };
+            if (retry && fetchProps.value.errorTimes < retry) {
+                await fetchEndpoint();
+                return;
+            }
+            fetchProps.value = {
+                ...fetchProps.value,
                 isError: true,
                 isLoading: false,
                 isFetching: false,
                 isSuccess: false,
                 error: error as Error,
-            });
+            };
+
             if (onError) {
                 onError(error as Error);
             }
         }
     }
-
-    useEffect(() => {
-        if (fetchProps.isSkip) return;
+    async function initialFetching() {
+        if (fetchProps.value.isSkip) return;
         if (!staleTime) {
-            fetchEndpoint();
+            await fetchEndpoint();
             return;
         }
-        if (fetchProps.isLoading || fetchProps.isFetching) return;
-        fetchEndpoint();
-        const interval = setInterval(() => {
-            refetch(clean);
+        await fetchEndpoint();
+        const interval = setInterval(async () => {
+            await refetch(clean);
         }, timer(staleTime));
         return () => clearInterval(interval);
+    }
+
+    useEffect(() => {
+        initialFetching();
     }, []);
 
     useEffect(() => {
-        if (!refetchIntervalInBackground) return;
+        if (
+            !refetchIntervalInBackground &&
+            fetchProps.value.isLoading &&
+            fetchProps.value.isFetching
+        )
+            return;
 
-        const evt = () => {
+        const evt = async () => {
             if (
                 document.visibilityState === "visible" &&
                 refetchIntervalInBackground
             ) {
-                refetch(clean);
+                await refetch(clean);
             }
         };
         document.addEventListener("visibilitychange", evt);
     }, []);
 
     useEffect(() => {
-        if (!refetchOnReconnect) return;
-        window.addEventListener("online", () => {
-            refetch(clean);
+        if (
+            !refetchOnReconnect &&
+            fetchProps.value.isLoading &&
+            fetchProps.value.isFetching
+        )
+            return;
+        window.addEventListener("online", async () => {
+            await refetch(clean);
         });
     }, []);
 
     function restart() {
-        setFetchProps({
-            ...fetchProps,
+        fetchProps.value = {
+            ...fetchProps.value,
             isSuccess: null,
             isError: null,
             data: placeholderData,
             error: null,
-        });
+        };
     }
-    function refetch(clean = true) {
+
+    async function refetch(clean = true) {
+        if (fetchProps.value.isLoading || fetchProps.value.isFetching) return;
         if (clean) {
             restart();
         }
-
-        fetchEndpoint();
+        await fetchEndpoint();
     }
 
-    return { ...fetchProps, refetch };
+    return { ...fetchProps.value, refetch };
 }
 export default useQuery;
