@@ -19,6 +19,13 @@
   resolved "https://registry.yarnpkg.com/@vigilio/preact-paginator/-/preact-paginator-0.0.2.tgz#dfd178f391d4419ef77949bb0c26c2698f619efb"
   integrity sha512-Q7736UpUB2xZIXjNEHNQdPa6viwE/FZN1XIa/8OMnFwrSpj07U/izn6yFVdsdbjIaVdLYozBMNwvON6F9RR2ng==
 
+"@vigilio/preact-paginator@^0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@vigilio/preact-paginator/-/preact-paginator-0.0.3.tgz#c7aaee522c4318503361fd14088a0d7d53e5762f"
+  integrity sha512-f8OpbO/5uk/oM5EEQ5O9z56iY+9gpseYabekg1LfptcAtbNc57I9qlrVZaXQ9YjV4nGIc20Q+VVusgimw6APpw==
+  dependencies:
+    "@vigilio/preact-paginator" "^0.0.2"
+
 preact@^10.13.2:
   version "10.18.2"
   resolved "https://registry.yarnpkg.com/preact/-/preact-10.18.2.tgz#e3aeccc292aebbc2e0b76ed76570aa61dd5f75e4"

@@ -1,4 +1,7 @@
-import usePaginator, { type Pagination } from "@vigilio/preact-paginator";
+import usePaginator, {
+    type Pagination,
+    UsePaginator,
+} from "@vigilio/preact-paginator";
 import { useSignal } from "@preact/signals";
 
 type KeyColumn<T, K extends string> = keyof (T & {
@@ -56,7 +59,7 @@ export interface UseTable<
         count: number;
         methods?: Y | undefined;
     }) => void;
-    pagination: Pagination;
+    pagination: UsePaginator["pagination"];
     sort: {
         value: {
             [x: string]: string;
