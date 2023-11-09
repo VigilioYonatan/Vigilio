@@ -7,7 +7,40 @@ export interface Pagination {
     page?: number;
 }
 export type UpdateDate = Pagination & { total: number | null };
-export function usePaginator(props?: Pagination, isQueryPage = false) {
+export type UsePaginator = {
+    updateData: (paginate?: UpdateDate) => void;
+    pagination: {
+        value: Required<Omit<Pagination, "page">> & { total: number | null };
+        page: number;
+        paginator: {
+            totalItems: number | null;
+            currentPage: number;
+            totalPages: number;
+            startPage: number;
+            endPage: number;
+            pages: number[];
+        };
+        startingBreakPointButtonIfCondition: boolean;
+        endingBreakPointButtonIfCondition: boolean;
+        currentPage: number;
+        totalPages: number;
+        onNextPage: (pemittion?: boolean) => void;
+        onBackPage: (pemittion?: boolean) => void;
+        onchangeLimit: (limit?: number) => void;
+        onChangePage: (pag: number) => void;
+        onFinalPage: () => void;
+        backInitialPage: () => void;
+    };
+    search: {
+        value: string;
+        debounceTerm: string;
+        onSearchByName: (term: string) => void;
+    };
+};
+export function usePaginator(
+    props?: Pagination,
+    isQueryPage = false
+): UsePaginator {
     const {
         limit = 10,
         offset = 0,
@@ -167,8 +200,10 @@ export function usePaginator(props?: Pagination, isQueryPage = false) {
             value: pagination.value,
             page: page.value,
             paginator: paginator.value,
-            startingBreakPointButtonIfCondition,
-            endingBreakPointButtonIfCondition,
+            startingBreakPointButtonIfCondition:
+                startingBreakPointButtonIfCondition.value,
+            endingBreakPointButtonIfCondition:
+                endingBreakPointButtonIfCondition.value,
             currentPage: currentPage.value,
             totalPages: totalPages.value,
             onNextPage,

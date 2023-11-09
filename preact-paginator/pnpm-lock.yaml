@@ -1,0 +1,44 @@
+lockfileVersion: '6.1'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+dependencies:
+  '@vigilio/preact-paginator':
+    specifier: ^0.0.2
+    version: 0.0.2(preact@10.18.2)
+
+devDependencies:
+  preact:
+    specifier: ^10.13.2
+    version: 10.18.2
+  tslib:
+    specifier: ^2.6.0
+    version: 2.6.2
+  typescript:
+    specifier: ^5.0.4
+    version: 5.2.2
+
+packages:
+
+  /@vigilio/preact-paginator@0.0.2(preact@10.18.2):
+    resolution: {integrity: sha512-Q7736UpUB2xZIXjNEHNQdPa6viwE/FZN1XIa/8OMnFwrSpj07U/izn6yFVdsdbjIaVdLYozBMNwvON6F9RR2ng==}
+    peerDependencies:
+      preact: '>=10'
+    dependencies:
+      preact: 10.18.2
+    dev: false
+
+  /preact@10.18.2:
+    resolution: {integrity: sha512-X/K43vocUHDg0XhWVmTTMbec4LT/iBMh+csCEqJk+pJqegaXsvjdqN80ZZ3L+93azWCnWCZ+WGwYb8SplxeNjA==}
+
+  /tslib@2.6.2:
+    resolution: {integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==}
+    dev: true
+
+  /typescript@5.2.2:
+    resolution: {integrity: sha512-mI4WrpHsbCIcwT9cF4FZvr80QUeKvsUsUvKDoR+X/7XHQH98xYD8YHZg7ANtz2GtZt/CBq2QJ0thkGJMHfqc1w==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+    dev: true
