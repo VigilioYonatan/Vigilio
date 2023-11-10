@@ -33,8 +33,5 @@
         "preact": "^10.13.2",
         "tslib": "^2.6.0",
         "typescript": "^5.0.4"
-    },
-    "dependencies": {
-        "@preact/signals": "^1.2.1"
     }
 }
