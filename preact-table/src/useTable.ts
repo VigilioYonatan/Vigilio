@@ -19,7 +19,9 @@ export type Columns<T, K extends string = "", Y extends object = any> = {
               },
               data: T[]
           ) => any);
-    cell?: string | ((props: T, index: number, methods: Y) => any);
+    cell?:
+        | string
+        | ((props: T, index: number, methods: Y, checks: number[]) => any);
     isSort?: boolean | keyof T;
 }[];
 export interface UseTableProps<
@@ -172,7 +174,8 @@ function useTable<T extends object, K extends string, Y extends object>(
                     methds as Y & {
                         sorting: (key: keyof T | K) => void;
                         onCheck: (value: number) => void;
-                    }
+                    },
+                    checks.value
                 );
             }
             if (typeof cell === "string") {
