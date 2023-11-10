@@ -23,9 +23,10 @@ export function Validator<T extends ObjectShapeAsync>(
                 if (!data.success) {
                     return res.status(400).json({
                         success: false,
-                        message: data.error.issues[0].message,
-                        // biome-ignore lint/style/noNonNullAssertion: <explanation>
-                        body: data.error.issues[0].path![0].key,
+                        message: data.issues[0].message,
+                        body: data.issues[0].path
+                            ? data.issues[0].path[0].key
+                            : data.issues[0].validation,
                     });
                 }
                 req.body = data.data;
