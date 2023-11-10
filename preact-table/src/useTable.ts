@@ -13,8 +13,10 @@ export type Columns<T, K extends string = "", Y extends object = any> = {
         | string
         | ((
               props: KeyColumn<T, K>,
-              sorting: (key: keyof T | K) => void,
-              methods: Y
+              methods: Y & {
+                  sorting: (key: keyof T | K) => void;
+                  onCheck: (value: number) => void;
+              }
           ) => any);
     cell?: string | ((props: T, index: number, methods: Y) => any);
     isSort?: boolean | keyof T;
@@ -38,7 +40,10 @@ export interface UseTable<
             key: K | keyof T;
             value: any;
             isSort: boolean | keyof T | undefined;
-            sorting: (key: K | keyof T) => void;
+            methods?: Y & {
+                sorting: (key: keyof T | K) => void;
+                onCheck: (value: number) => void;
+            };
         }[];
         TBody: {
             Row: () => (T & {
@@ -71,6 +76,10 @@ export interface UseTable<
         debounceTerm: string;
         onSearchByName: (term: string) => void;
     };
+    checks: {
+        value: number[];
+        onCheck: (value: number) => void;
+    };
 }
 
 function useTable<T extends object, K extends string, Y extends object>(
@@ -80,6 +89,8 @@ function useTable<T extends object, K extends string, Y extends object>(
     const { pagination: paginationProps, columns } = props || { methods: {} };
     const data = useSignal<T[]>([]);
     const methods = useSignal(props.methods);
+    const checks = useSignal<number[]>([]);
+
     const {
         pagination,
         search,
@@ -121,13 +132,20 @@ function useTable<T extends object, K extends string, Y extends object>(
     function Thead() {
         return columns.map(({ key, header, isSort }) => {
             let value: any = key;
+            const methds = { ...methods.value, sorting, onCheck };
             if (header && header instanceof Function) {
-                value = header(key, sorting, methods.value as Y);
+                value = header(
+                    key,
+                    methds as Y & {
+                        sorting: (key: keyof T | K) => void;
+                        onCheck: (value: number) => void;
+                    }
+                );
             }
             if (typeof header === "string") {
                 value = header;
             }
-            return { key, value, isSort, sorting };
+            return { key, value, isSort, methds };
         });
     }
 
@@ -144,10 +162,15 @@ function useTable<T extends object, K extends string, Y extends object>(
         return columns.map(({ key, cell }) => {
             let value = data[key];
             if (cell && cell instanceof Function) {
+                const methds = { ...methods.value, sorting, onCheck };
+
                 value = cell(
                     data,
                     pagination.value.offset + data.index,
-                    methods.value as Y
+                    methds as Y & {
+                        sorting: (key: keyof T | K) => void;
+                        onCheck: (value: number) => void;
+                    }
                 );
             }
             if (typeof cell === "string") {
@@ -157,7 +180,14 @@ function useTable<T extends object, K extends string, Y extends object>(
         });
     }
 
-    // name
+    // checks
+    function onCheck(value: number) {
+        if (checks.value.find((val) => val === value)) {
+            checks.value = checks.value.filter((val) => val !== value);
+        } else {
+            checks.value = [...checks.value, value];
+        }
+    }
 
     return {
         table: {
@@ -174,6 +204,10 @@ function useTable<T extends object, K extends string, Y extends object>(
             sorting,
         },
         search,
+        checks: {
+            value: checks.value,
+            onCheck,
+        },
     };
 }
 
