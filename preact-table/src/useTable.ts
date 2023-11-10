@@ -13,10 +13,7 @@ export type Columns<T, K extends string = "", Y extends object = any> = {
         | string
         | ((
               props: KeyColumn<T, K>,
-              methods: Y & {
-                  sorting: (key: keyof T | K) => void;
-                  onCheck: (value: number) => void;
-              },
+              methods: Y & UseTableMethods<T, K>,
               data: T[]
           ) => any);
     cell?:
@@ -24,6 +21,12 @@ export type Columns<T, K extends string = "", Y extends object = any> = {
         | ((props: T, index: number, methods: Y, checks: number[]) => any);
     isSort?: boolean | keyof T;
 }[];
+export type UseTableMethods<T, K extends string = ""> = {
+    sorting: (key: keyof T | K) => void;
+    onCheck: (value: number) => void;
+    existCheck: (value: number) => boolean;
+    isEmptyCheck: () => boolean;
+};
 export interface UseTableProps<
     T extends object,
     K extends string,
@@ -43,12 +46,7 @@ export interface UseTable<
             key: K | keyof T;
             value: any;
             isSort: boolean | keyof T | undefined;
-            methods?: Y & {
-                sorting: (key: keyof T | K) => void;
-                onCheck: (value: number) => void;
-                existCheck: (value: number) => boolean;
-                isEmptyCheck: () => boolean;
-            };
+            methods?: Y & UseTableMethods<T, K>;
         }[];
         TBody: {
             Row: () => (T & {
@@ -87,6 +85,7 @@ export interface UseTable<
         existCheck: (value: number) => boolean;
         isEmptyCheck: () => boolean;
     };
+    methods: Y;
 }
 
 function useTable<T extends object, K extends string, Y extends object>(
@@ -95,7 +94,7 @@ function useTable<T extends object, K extends string, Y extends object>(
 ): UseTable<T, K, Y> {
     const { pagination: paginationProps, columns } = props || { methods: {} };
     const data = useSignal<T[]>([]);
-    const methods = useSignal(props.methods);
+    const methods = useSignal(props.methods || {});
     const checks = useSignal<number[]>([]);
 
     const {
@@ -149,12 +148,7 @@ function useTable<T extends object, K extends string, Y extends object>(
             if (header && header instanceof Function) {
                 value = header(
                     key,
-                    methds as Y & {
-                        sorting: (key: keyof T | K) => void;
-                        onCheck: (value: number) => void;
-                        existCheck: (value: number) => boolean;
-                        isEmptyCheck: () => boolean;
-                    },
+                    methds as Y & UseTableMethods<T, K>,
                     data.value
                 );
             }
@@ -189,12 +183,7 @@ function useTable<T extends object, K extends string, Y extends object>(
                 value = cell(
                     data,
                     pagination.value.offset + data.index,
-                    methds as Y & {
-                        sorting: (key: keyof T | K) => void;
-                        onCheck: (value: number) => void;
-                        existCheck(value: number): boolean;
-                        isEmptyCheck(): boolean;
-                    },
+                    methds as Y & UseTableMethods<T, K>,
                     checks.value
                 );
             }
@@ -242,6 +231,7 @@ function useTable<T extends object, K extends string, Y extends object>(
             existCheck,
             isEmptyCheck,
         },
+        methods: methods.value as Y,
     };
 }
 
