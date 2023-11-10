@@ -16,7 +16,8 @@ export type Columns<T, K extends string = "", Y extends object = any> = {
               methods: Y & {
                   sorting: (key: keyof T | K) => void;
                   onCheck: (value: number) => void;
-              }
+              },
+              data: T[]
           ) => any);
     cell?: string | ((props: T, index: number, methods: Y) => any);
     isSort?: boolean | keyof T;
@@ -139,7 +140,8 @@ function useTable<T extends object, K extends string, Y extends object>(
                     methds as Y & {
                         sorting: (key: keyof T | K) => void;
                         onCheck: (value: number) => void;
-                    }
+                    },
+                    data.value
                 );
             }
             if (typeof header === "string") {

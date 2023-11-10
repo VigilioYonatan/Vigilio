@@ -1,6 +1,6 @@
 {
     "name": "@vigilio/preact-table",
-    "version": "1.0.7",
+    "version": "1.0.8",
     "description": "this is a table library to preact",
     "main": "./dist/cjs/index.js",
     "module": "./dist/esm/index.js",
