@@ -46,6 +46,8 @@ export interface UseTable<
             methods?: Y & {
                 sorting: (key: keyof T | K) => void;
                 onCheck: (value: number) => void;
+                existCheck: (value: number) => boolean;
+                isEmptyCheck: () => boolean;
             };
         }[];
         TBody: {
@@ -135,13 +137,21 @@ function useTable<T extends object, K extends string, Y extends object>(
     function Thead() {
         return columns.map(({ key, header, isSort }) => {
             let value: any = key;
-            const methds = { ...methods.value, sorting, onCheck };
+            const methds = {
+                ...methods.value,
+                sorting,
+                onCheck,
+                existCheck,
+                isEmptyCheck,
+            };
             if (header && header instanceof Function) {
                 value = header(
                     key,
                     methds as Y & {
                         sorting: (key: keyof T | K) => void;
                         onCheck: (value: number) => void;
+                        existCheck: (value: number) => boolean;
+                        isEmptyCheck: () => boolean;
                     },
                     data.value
                 );
@@ -166,7 +176,13 @@ function useTable<T extends object, K extends string, Y extends object>(
         return columns.map(({ key, cell }) => {
             let value = data[key];
             if (cell && cell instanceof Function) {
-                const methds = { ...methods.value, sorting, onCheck };
+                const methds = {
+                    ...methods.value,
+                    sorting,
+                    onCheck,
+                    existCheck,
+                    isEmptyCheck,
+                };
 
                 value = cell(
                     data,
@@ -174,6 +190,8 @@ function useTable<T extends object, K extends string, Y extends object>(
                     methds as Y & {
                         sorting: (key: keyof T | K) => void;
                         onCheck: (value: number) => void;
+                        existCheck(value: number): boolean;
+                        isEmptyCheck(): boolean;
                     },
                     checks.value
                 );
@@ -187,11 +205,18 @@ function useTable<T extends object, K extends string, Y extends object>(
 
     // checks
     function onCheck(value: number) {
-        if (checks.value.find((val) => val === value)) {
+        if (existCheck(value)) {
             checks.value = checks.value.filter((val) => val !== value);
         } else {
             checks.value = [...checks.value, value];
         }
+    }
+
+    function existCheck(value: number) {
+        return checks.value.some((val) => val === value);
+    }
+    function isEmptyCheck() {
+        return checks.value.length === 0;
     }
 
     return {
