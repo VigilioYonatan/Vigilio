@@ -122,7 +122,7 @@ function useTable<T extends object, K extends string, Y extends object>(
         return columns.map(({ key, header, isSort }) => {
             let value: any = key;
             if (header && header instanceof Function) {
-                value = header(key, sorting, methods as Y);
+                value = header(key, sorting, methods.value as Y);
             }
             if (typeof header === "string") {
                 value = header;
@@ -147,7 +147,7 @@ function useTable<T extends object, K extends string, Y extends object>(
                 value = cell(
                     data,
                     pagination.value.offset + data.index,
-                    methods as Y
+                    methods.value as Y
                 );
             }
             if (typeof cell === "string") {
