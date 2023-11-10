@@ -84,6 +84,8 @@ export interface UseTable<
     checks: {
         value: number[];
         onCheck: (value: number) => void;
+        existCheck: (value: number) => boolean;
+        isEmptyCheck: () => boolean;
     };
 }
 
@@ -237,6 +239,8 @@ function useTable<T extends object, K extends string, Y extends object>(
         checks: {
             value: checks.value,
             onCheck,
+            existCheck,
+            isEmptyCheck,
         },
     };
 }
