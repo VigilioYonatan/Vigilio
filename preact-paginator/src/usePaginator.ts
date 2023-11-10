@@ -76,7 +76,7 @@ export function usePaginator(
         pagination.value = { ...pagination.value, ...paginate };
     }
     effect(() => {
-        if (isQueryPage) {
+        if (isQueryPage && page.value > 1) {
             params.set("page", String(page.value));
             const nuevaURL = `${url.origin}${
                 url.pathname
