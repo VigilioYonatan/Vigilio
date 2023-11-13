@@ -84,6 +84,7 @@ export interface UseTable<
         onCheck: (value: number) => void;
         existCheck: (value: number) => boolean;
         isEmptyCheck: () => boolean;
+        clearChecks: () => void;
     };
     methods: Y;
 }
@@ -209,6 +210,9 @@ function useTable<T extends object, K extends string, Y extends object>(
     function isEmptyCheck() {
         return checks.value.length === 0;
     }
+    function clearChecks() {
+        checks.value = [];
+    }
 
     return {
         table: {
@@ -230,6 +234,7 @@ function useTable<T extends object, K extends string, Y extends object>(
             onCheck,
             existCheck,
             isEmptyCheck,
+            clearChecks,
         },
         methods: methods.value as Y,
     };
