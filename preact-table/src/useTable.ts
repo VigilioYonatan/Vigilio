@@ -45,8 +45,8 @@ export interface UseTable<
         Thead: () => {
             key: K | keyof T;
             value: any;
-            isSort: boolean | keyof T | undefined;
-            methods?: Y & UseTableMethods<T, K>;
+            isSort?: boolean | keyof T;
+            methods?: UseTableMethods<T, K>;
         }[];
         TBody: {
             Row: () => (T & {
@@ -139,7 +139,7 @@ function useTable<T extends object, K extends string, Y extends object>(
     function Thead() {
         return columns.map(({ key, header, isSort }) => {
             let value: any = key;
-            const methds = {
+            const metodos = {
                 ...methods.value,
                 sorting,
                 onCheck,
@@ -149,14 +149,14 @@ function useTable<T extends object, K extends string, Y extends object>(
             if (header && header instanceof Function) {
                 value = header(
                     key,
-                    methds as Y & UseTableMethods<T, K>,
+                    metodos as Y & UseTableMethods<T, K>,
                     data.value
                 );
             }
             if (typeof header === "string") {
                 value = header;
             }
-            return { key, value, isSort, methds };
+            return { key, value, isSort, methods: metodos };
         });
     }
 
