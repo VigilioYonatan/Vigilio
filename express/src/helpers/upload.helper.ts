@@ -59,6 +59,7 @@ export function validateUpload(archivos: File[], validation: ValidationProps) {
         }
 
         if (
+            archivos &&
             validation.maxFiles instanceof Object &&
             archivos.length > validation.maxFiles.value
         ) {
@@ -68,6 +69,7 @@ export function validateUpload(archivos: File[], validation: ValidationProps) {
             );
         }
         if (
+            archivos &&
             typeof validation.maxFiles === "number" &&
             archivos.length > validation.maxFiles
         ) {
@@ -76,6 +78,7 @@ export function validateUpload(archivos: File[], validation: ValidationProps) {
             );
         }
         if (
+            archivos &&
             validation.minFiles instanceof Object &&
             archivos.length < validation.minFiles.value
         ) {
@@ -85,6 +88,7 @@ export function validateUpload(archivos: File[], validation: ValidationProps) {
             );
         }
         if (
+            archivos &&
             typeof validation.minFiles === "number" &&
             archivos.length > validation.minFiles
         ) {
@@ -92,64 +96,68 @@ export function validateUpload(archivos: File[], validation: ValidationProps) {
                 `Demasiados archivos, máximo ${validation.minFiles} archivos`
             );
         }
+        if (archivos) {
+            for (const archivo of archivos) {
+                const extension = archivo.originalFilename!.split(".").at(-1);
+                const nameArchivo =
+                    archivo.originalFilename!.length > 18
+                        ? archivo.originalFilename?.slice(0, 16) +
+                          "..." +
+                          extension
+                        : archivo.originalFilename;
+                if (
+                    validation.typeFile instanceof Object &&
+                    !validation.typeFile.value.includes(archivo.mimetype!)
+                ) {
+                    return rej(
+                        validation.typeFile.message ||
+                            `Extension de este archivo no es permitido ${nameArchivo} - solo permitidios ${JSON.stringify(
+                                validation.typeFile.value
+                            )}`
+                    );
+                }
 
-        for (const archivo of archivos) {
-            const extension = archivo.originalFilename!.split(".").at(-1);
-            const nameArchivo =
-                archivo.originalFilename!.length > 18
-                    ? archivo.originalFilename?.slice(0, 16) + "..." + extension
-                    : archivo.originalFilename;
-            if (
-                validation.typeFile instanceof Object &&
-                !validation.typeFile.value.includes(archivo.mimetype!)
-            ) {
-                return rej(
-                    validation.typeFile.message ||
-                        `Extension de este archivo no es permitido ${nameArchivo} - solo permitidios ${JSON.stringify(
-                            validation.typeFile.value
-                        )}`
-                );
-            }
+                const mb = 1000000;
 
-            const mb = 1000000;
+                if (
+                    validation.minSize instanceof Object &&
+                    archivo.size < validation.minSize.value * mb
+                ) {
+                    return rej(
+                        validation.minSize.message ||
+                            `archivo demasiado pequeño: ${nameArchivo}, min ${validation.minSize.value}MB`
+                    );
+                }
+                if (
+                    typeof validation.minSize === "number" &&
+                    archivo.size < validation.minSize * mb
+                ) {
+                    return rej(
+                        `archivo demasiado pequeño: ${nameArchivo}, min ${validation.minSize}MB`
+                    );
+                }
 
-            if (
-                validation.minSize instanceof Object &&
-                archivo.size < validation.minSize.value * mb
-            ) {
-                return rej(
-                    validation.minSize.message ||
-                        `archivo demasiado pequeño: ${nameArchivo}, min ${validation.minSize.value}MB`
-                );
-            }
-            if (
-                typeof validation.minSize === "number" &&
-                archivo.size < validation.minSize * mb
-            ) {
-                return rej(
-                    `archivo demasiado pequeño: ${nameArchivo}, min ${validation.minSize}MB`
-                );
-            }
+                if (
+                    validation.maxSize instanceof Object &&
+                    archivo.size > validation.maxSize.value * mb
+                ) {
+                    return rej(
+                        validation.maxSize.message ||
+                            `archivo demasiado pequeño: ${nameArchivo}, min ${validation.maxSize.value}MB`
+                    );
+                }
 
-            if (
-                validation.maxSize instanceof Object &&
-                archivo.size > validation.maxSize.value * mb
-            ) {
-                return rej(
-                    validation.maxSize.message ||
-                        `archivo demasiado pequeño: ${nameArchivo}, min ${validation.maxSize.value}MB`
-                );
-            }
-
-            if (
-                typeof validation.maxSize === "number" &&
-                archivo.size > validation.maxSize * mb
-            ) {
-                return rej(
-                    `archivo demasiado pesado: ${nameArchivo}, max ${validation.maxSize}MB`
-                );
+                if (
+                    typeof validation.maxSize === "number" &&
+                    archivo.size > validation.maxSize * mb
+                ) {
+                    return rej(
+                        `archivo demasiado pesado: ${nameArchivo}, max ${validation.maxSize}MB`
+                    );
+                }
             }
         }
+
         return res(archivos);
     });
 }
