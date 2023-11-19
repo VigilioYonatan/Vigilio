@@ -90,7 +90,7 @@ export function validateUpload(archivos: File[], validation: ValidationProps) {
         if (
             archivos &&
             typeof validation.minFiles === "number" &&
-            archivos.length > validation.minFiles
+            archivos.length < validation.minFiles
         ) {
             return rej(
                 `Demasiados archivos, máximo ${validation.minFiles} archivos`

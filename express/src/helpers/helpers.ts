@@ -36,7 +36,10 @@ export function slug(text: string) {
     return slugText;
 }
 
-export function formatDate(date: string, lang: string | string[] = "es-ES") {
+export function formatDate(
+    date: string | Date | number,
+    lang: string | string[] = "es-ES"
+) {
     const fechaObjeto = new Date(date);
     const opciones: Intl.DateTimeFormatOptions = {
         day: "numeric",
