@@ -23,18 +23,11 @@ export function Upload(validation: ValidationProps) {
                         });
                     }
                     const archivos = files.file as File[];
-                    try {
-                        await validateUpload(archivos, validation);
                         (req as any).files = archivos;
                         if (fields.name) {
                             (req as any).filesName = fields.name[0];
                         }
                         next();
-                    } catch (err) {
-                        return res
-                            .status(400)
-                            .json({ success: false, message: err });
-                    }
                 });
             }
         );

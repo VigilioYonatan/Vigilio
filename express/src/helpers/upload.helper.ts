@@ -52,7 +52,29 @@ export interface ValidationProps {
     },
     required = true,
  */
-export function validateUpload(archivos: File[], validation: ValidationProps) {
+export function validateUpload(archivos: File[], val: ValidationProps) {
+    const {
+        typeFile = {
+            value: [
+                "image/jpg",
+                "image/jpeg",
+                "image/png",
+                "image/webp",
+                "image/gif",
+            ],
+        },
+        ...validation
+    } = val || {
+        typeFile: {
+            value: [
+                "image/jpg",
+                "image/jpeg",
+                "image/png",
+                "image/webp",
+                "image/gif",
+            ],
+        },
+    };
     return new Promise((res, rej) => {
         if (!archivos && validation.required) {
             return rej("Este campo es obligatorio");
@@ -106,13 +128,13 @@ export function validateUpload(archivos: File[], validation: ValidationProps) {
                           extension
                         : archivo.originalFilename;
                 if (
-                    validation.typeFile instanceof Object &&
-                    !validation.typeFile.value.includes(archivo.mimetype!)
+                    typeFile instanceof Object &&
+                    !typeFile.value.includes(archivo.mimetype!)
                 ) {
                     return rej(
-                        validation.typeFile.message ||
+                        typeFile.message ||
                             `Extension de este archivo no es permitido ${nameArchivo} - solo permitidios ${JSON.stringify(
-                                validation.typeFile.value
+                                typeFile.value
                             )}`
                     );
                 }
