@@ -12,6 +12,7 @@ function sweetAlert({
     width = 350,
     position,
     hiddenBottomAnimation = false,
+    colorAnimation,
 }: SwalAlertProps): Promise<{ isConfirmed: boolean }> {
     return new Promise((res) => {
         const htmlModal = h(
@@ -44,10 +45,12 @@ function sweetAlert({
                       h("div", {
                           className: "vigilio-loader",
                           style: {
-                              cssText: `--bg-loader:${colorIcon(icon)}`,
-                              display: `${
-                                  hiddenBottomAnimation ? "hidden" : ""
+                              cssText: `--bg-loader:${
+                                  colorAnimation
+                                      ? colorAnimation
+                                      : colorIcon(icon)
                               }`,
+                              display: `${hiddenBottomAnimation ? "none" : ""}`,
                           } as CSSStyleDeclaration,
                       }),
                   ]
@@ -78,10 +81,12 @@ function sweetAlert({
                       h("div", {
                           className: "vigilio-loader",
                           style: {
-                              cssText: `--bg-loader:${colorIcon(icon)}`,
-                              display: `${
-                                  hiddenBottomAnimation ? "hidden" : ""
+                              cssText: `--bg-loader:${
+                                  colorAnimation
+                                      ? colorAnimation
+                                      : colorIcon(icon)
                               }`,
+                              display: `${hiddenBottomAnimation ? "none" : ""}`,
                           } as CSSStyleDeclaration,
                       }),
                   ]

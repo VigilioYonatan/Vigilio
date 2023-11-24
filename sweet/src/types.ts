@@ -27,5 +27,6 @@ export interface SwalAlertProps {
     position?: string;
     height?: number;
     width?: number;
-    hiddenBottomAnimation?:boolean
+    hiddenBottomAnimation?: boolean;
+    colorAnimation?: string;
 }
