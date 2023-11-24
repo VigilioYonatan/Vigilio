@@ -4,13 +4,14 @@ import { type Icon, type SwalAlertProps } from "./types";
 function sweetAlert({
     icon = "info",
     html,
-    title,
+    title = "",
     showCloseButton = false,
     customIcon,
     timer = 3,
     height = 50,
     width = 350,
     position,
+    hiddenBottomAnimation = false,
 }: SwalAlertProps): Promise<{ isConfirmed: boolean }> {
     return new Promise((res) => {
         const htmlModal = h(
@@ -40,6 +41,15 @@ function sweetAlert({
                           },
                           "x"
                       ),
+                      h("div", {
+                          className: "vigilio-loader",
+                          style: {
+                              cssText: `--bg-loader:${colorIcon(icon)}`,
+                              display: `${
+                                  hiddenBottomAnimation ? "hidden" : ""
+                              }`,
+                          } as CSSStyleDeclaration,
+                      }),
                   ]
                 : [
                       h(
@@ -69,6 +79,9 @@ function sweetAlert({
                           className: "vigilio-loader",
                           style: {
                               cssText: `--bg-loader:${colorIcon(icon)}`,
+                              display: `${
+                                  hiddenBottomAnimation ? "hidden" : ""
+                              }`,
                           } as CSSStyleDeclaration,
                       }),
                   ]

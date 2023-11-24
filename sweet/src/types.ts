@@ -18,7 +18,7 @@ export interface SwalProps {
     hiddeModal?: boolean;
 }
 export interface SwalAlertProps {
-    title: string;
+    title?: string;
     icon?: Icon;
     customIcon?: string | HTMLElement;
     html?: string | HTMLElement;
@@ -27,4 +27,5 @@ export interface SwalAlertProps {
     position?: string;
     height?: number;
     width?: number;
+    hiddenBottomAnimation?:boolean
 }

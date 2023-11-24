@@ -1,6 +1,6 @@
 {
     "name": "@vigilio/sweet",
-    "version": "1.0.6",
+    "version": "1.0.7",
     "description": "this library is like sweet and toastify but optimized",
     "main": "./dist/cjs/index.js",
     "module": "./dist/esm/index.js",
@@ -57,7 +57,7 @@
         "build:esm": "tsc",
         "build:cjs": "tsc --module commonjs --outDir dist/cjs",
         "build": "rimraf dist && pnpm build:esm && pnpm build:cjs",
-        "public": "pnpm build && npm public"
+        "public": "pnpm build && npm publish"
     },
     "author": "Vigilio",
     "license": "ISC",
