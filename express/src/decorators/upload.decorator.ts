@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 import { attachMiddleware } from "@decorators/express";
 import formidable, { File } from "formidable";
-import { ValidationProps, validateUpload } from "../helpers/upload.helper";
+import { ValidationProps } from "../helpers/upload.helper";
 
-export function Upload(validation: ValidationProps) {
+export function Upload() {
     return function (
         target: any,
         propertyKey: string,
@@ -23,11 +23,11 @@ export function Upload(validation: ValidationProps) {
                         });
                     }
                     const archivos = files.file as File[];
-                        (req as any).files = archivos;
-                        if (fields.name) {
-                            (req as any).filesName = fields.name[0];
-                        }
-                        next();
+                    (req as any).files = archivos;
+                    if (fields.name) {
+                        (req as any).filesName = fields.name[0];
+                    }
+                    next();
                 });
             }
         );

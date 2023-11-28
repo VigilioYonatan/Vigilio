@@ -68,6 +68,7 @@ function getManifest() {
         process.cwd(),
         "public",
         "dist",
+        ".vite",
         "manifest.json"
     );
     const content = fs.readFileSync(manifestPath, "utf-8");
