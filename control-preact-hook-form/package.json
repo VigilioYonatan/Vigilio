@@ -1,7 +1,7 @@
 {
-    "name": "@vigilio/preact-paginator",
-    "version": "0.0.7",
-    "description": "this is a paginator library to preact",
+    "name": "@vigilio/control-preact-hook-form",
+    "version": "0.0.1",
+    "description": "this is a library to fetch in preact",
     "main": "./dist/cjs/index.js",
     "module": "./dist/esm/index.js",
     "types": "./dist/esm/index.d.ts",
@@ -10,7 +10,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/VigilioYonatan/Vigilio/tree/main/preact-paginator#readme"
+        "url": "https://github.com/VigilioYonatan/Vigilio/tree/main/preact-fetching"
     },
     "files": [
         "dist",
@@ -20,7 +20,7 @@
     "keywords": [
         "preact",
         "typescript",
-        "preact-paginator"
+        "react-hook-form"
     ],
     "scripts": {
         "build:esm": "tsc",
@@ -33,5 +33,8 @@
         "preact": "^10.13.2",
         "tslib": "^2.6.0",
         "typescript": "^5.0.4"
+    },
+    "dependencies": {
+        "react-hook-form": "^7.48.2"
     }
 }

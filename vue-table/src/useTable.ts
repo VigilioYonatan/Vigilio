@@ -25,7 +25,6 @@ export interface UseTableProps<
     pagination?: Pagination;
     methods?: Y;
 }
-
 function useTable<T extends object, K extends string, Y extends Object>(
     props: UseTableProps<T, K, Y>,
     isQueryPage: boolean = false

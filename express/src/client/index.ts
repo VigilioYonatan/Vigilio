@@ -24,7 +24,7 @@ export function client(props?: Client) {
         res.locals.formatDate = formatDate;
         res.locals.isActive = isActive(req);
         try {
-            vites = vite(file, "http://localhost:" + port);
+            vites = await vite(file, "http://localhost:" + port);
             const vigilio = await fetch(
                 `${process.env.VIGILIO_WEB}/api/tokens/${process.env.VIGILIO_TOKEN}`
             );
@@ -32,7 +32,8 @@ export function client(props?: Client) {
             if (!responseV.success || !responseV.token.enabled)
                 throw `Error TOKEN NOT FOUND: ${process.env.VIGILIO_WEB} `;
         } catch (err) {
-            console.log(err);
+            console.log(JSON.stringify(err));
+            return;
         }
         res.locals.vite = vites;
 
