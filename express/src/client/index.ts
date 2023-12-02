@@ -27,15 +27,16 @@ export function client(props?: Client) {
             vites = await vite(file, "http://localhost:" + port);
             if (process.env.NODE_ENV === "production") {
                 const vigilio = await fetch(
-                    `${process.env.VIGILIO_WEB}/api/tokens/${process.env.VIGILIO_TOKEN}`
+                    `${process.env.VIGILIO_WEB}/api/webs/${process.env.VIGILIO_TOKEN}`
                 );
                 const responseV = await vigilio.json();
                 if (!responseV.success || !responseV.token.enabled)
                     throw `Error TOKEN NOT FOUND: ${process.env.VIGILIO_WEB} `;
             }
         } catch (err) {
-            console.log(JSON.stringify(err));
-            return;
+            return res.send(
+                `<span>Comunicarse con</span> <a href="${process.env.VIGILIO_WEB}">Vigilio services</a>`
+            );
         }
         res.locals.vite = vites;
 
