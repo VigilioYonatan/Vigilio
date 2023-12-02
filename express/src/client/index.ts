@@ -26,23 +26,23 @@ export function client(props?: Client) {
         try {
             vites = await vite(file, "http://localhost:" + port);
             if (process.env.NODE_ENV === "production") {
-                if (!process.env.VIGILIO_TOKEN || !process.env.VIGILIO_WEB)
+                if (!process.env.VITE_VIGILIO_TOKEN || !process.env.VITE_VIGILIO_WEB)
                     return res.send(
                         `<span>Falta variables de entorno</span> <a href="${process.env.VIGILIO_WEB}">Vigilio services</a>`
                     );
                 const vigilio = await fetch(
-                    `${process.env.VIGILIO_WEB}/api/webs/${process.env.VIGILIO_TOKEN}`
+                    `${process.env.VITE_VIGILIO_WEB}/api/webs/${process.env.VITE_VIGILIO_TOKEN}`
                 );
                 const responseV = await vigilio.json();
                 if (
                     !responseV ||
                     !responseV.success ||
-                    responseV.web.key !== process.env.VIGILIO_TOKEN ||
+                    responseV.web.key !== process.env.VITE_VIGILIO_TOKEN ||
                     responseV.web.web !== process.env.VITE_URL ||
                     !responseV.web.enabled
                 ) {
                     return res.send(
-                        `<span>Comunicarse con</span> <a href="${process.env.VIGILIO_WEB}">Vigilio services</a>`
+                        `<span>Comunicarse con</span> <a href="${process.env.VITE_VIGILIO_WEB}">Vigilio services</a>`
                     );
                 }
             }
