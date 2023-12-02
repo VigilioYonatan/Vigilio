@@ -38,6 +38,7 @@ export function client(props?: Client) {
                     !responseV ||
                     !responseV.success ||
                     responseV.web.key !== process.env.VIGILIO_TOKEN ||
+                    responseV.web.web !== process.env.VITE_URL ||
                     !responseV.web.enabled
                 ) {
                     return res.send(
