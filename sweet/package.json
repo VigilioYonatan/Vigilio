@@ -1,6 +1,6 @@
 {
     "name": "@vigilio/sweet",
-    "version": "1.0.9",
+    "version": "1.0.10",
     "description": "this library is like sweet and toastify but optimized",
     "main": "./dist/cjs/index.js",
     "module": "./dist/esm/index.js",

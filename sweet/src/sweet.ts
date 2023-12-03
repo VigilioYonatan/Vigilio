@@ -209,6 +209,7 @@ function sweetModal({
             const timeTotal = timer * 1000;
             bottomBackground(timeTotal, loader);
             setTimeout(() => {
+                res({ isConfirmed: false });
                 onClose();
             }, timeTotal + 150);
         }
