@@ -57,7 +57,7 @@ function sweetModal({
                 },
                 html
                     ? [
-                          h("div", null, html),
+                          h("div", null, html).firstElementChild as HTMLElement,
                           h(
                               "button",
                               {
