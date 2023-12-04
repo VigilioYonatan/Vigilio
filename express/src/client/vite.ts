@@ -67,6 +67,7 @@ function getManifest() {
     const manifestPath = path.resolve(
         process.cwd(),
         "public",
+        ".vite",
         "dist",
         "manifest.json"
     );
