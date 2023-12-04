@@ -67,7 +67,10 @@ function sweetModal({
                                           ? "block"
                                           : "none",
                                   } as CSSStyleDeclaration,
-                                  onclick: onClose,
+                                  onclick: () => {
+                                      onClose();
+                                      res({ isConfirmed: true });
+                                  },
                                   ariaLabel: "button to close modal",
                               },
                               "x"
@@ -91,7 +94,10 @@ function sweetModal({
                                           ? "block"
                                           : "none",
                                   } as CSSStyleDeclaration,
-                                  onclick: onClose,
+                                  onclick: () => {
+                                      onClose();
+                                      res({ isConfirmed: true });
+                                  },
                                   ariaLabel: "button to close modal",
                               },
                               "x"

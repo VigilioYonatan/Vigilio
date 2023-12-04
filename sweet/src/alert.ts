@@ -38,7 +38,10 @@ function sweetAlert({
                                   display: showCloseButton ? "block" : "none",
                               } as CSSStyleDeclaration,
                               ariaLabel: "button to close alert",
-                              onclick: onClose,
+                              onclick: () => {
+                                  onClose();
+                                  res({ isConfirmed: true });
+                              },
                           },
                           "x"
                       ),
