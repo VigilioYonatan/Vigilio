@@ -121,10 +121,18 @@ export function usePaginator(
         page.value = pag;
     }
     function onFinalPage() {
+        pagination.value = {  
+            ...pagination.value,
+            offset: (totalPages.value - 1) * pagination.value.limit,
+        };
         page.value = totalPages.value;
     }
 
     function backInitialPage() {
+        pagination.value = {
+            ...pagination.value,
+            offset: (page.value - 1) * pagination.value.limit,
+        };
         page.value = 1;
     }
     const currentPage = computed(
