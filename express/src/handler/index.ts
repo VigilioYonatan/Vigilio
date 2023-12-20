@@ -17,10 +17,14 @@ export class BadRequestException extends NotFoundException {
 export class UnauthorizedException extends NotFoundException {
     public readonly errorCode: number = 401;
 }
+export class PaymentRequiredException extends NotFoundException {
+    public readonly errorCode: number = 402;
+}
 export class ForbiddenException extends NotFoundException {
     public readonly errorCode: number = 403;
 }
-export class InternatServerErrorException extends NotFoundException {
+
+export class InternalServerErrorException extends NotFoundException {
     public readonly errorCode: number = 500;
 }
 

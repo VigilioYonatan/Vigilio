@@ -25,12 +25,14 @@ async function checkViteEntry(entry: string, host: string) {
 }
 
 async function jsTag(entry: string, host: string) {
-    const url = (await isDev(entry, host))
-        ? host + "/" + entry
-        : assetUrl(entry);
+    const isDevelopment = await isDev(entry, host);
+    const url = isDevelopment ? host + "/" + entry : assetUrl(entry);
 
     if (!url) {
         return "";
+    }
+    if (isDevelopment) {
+        return `<script type="module" crossorigin src="${host}/@vite/client"></script>\n<script type="module" src="${url}"></script>`;
     }
     return `<script type="module" crossorigin src="${url}"></script>`;
 }
@@ -67,8 +69,8 @@ function getManifest() {
     const manifestPath = path.resolve(
         process.cwd(),
         "public",
-        ".vite",
         "dist",
+        ".vite",
         "manifest.json"
     );
     const content = fs.readFileSync(manifestPath, "utf-8");
