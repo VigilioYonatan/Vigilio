@@ -22,7 +22,9 @@
 
 ### CLI COMMAND EXTRAS
 
-| N°  | command                       | description                                        |
-| --- | ----------------------------- | -------------------------------------------------- |
-| 1   | npm vigilio --command --path= | you can customize your path dir                    |
-| 2   | npm vigilio --command -f      | you can use complete entities,services,controllers |
+| N°  | command                       | description                                                |
+| --- | ----------------------------- | ---------------------------------------------------------- |
+| 1   | npm vigilio --command --path= | you can customize your path dir                            |
+| 2   | npm vigilio --command -f      | you can use complete entities,services,controllers         |
+| 3   | npm vigilio --command f  zod     | you can use complete entities,services,controllers zod |
+| 4  | npm vigilio --command f  valibot     | you can use complete entities,services,controllers zod |

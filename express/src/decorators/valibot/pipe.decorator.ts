@@ -1,13 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import { attachMiddleware } from "@decorators/express";
-import {
-    ObjectSchemaAsync,
-    ObjectShapeAsync,
-    safeParseAsync,
-    strictAsync,
-} from "valibot";
+import { ObjectSchemaAsync, safeParseAsync } from "valibot";
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-export function Pipe<T extends ObjectShapeAsync>(schema: ObjectSchemaAsync<T>) {
+export function Pipe(schema: ObjectSchemaAsync<any>) {
     return function (
         target: unknown,
         propertyKey: string,

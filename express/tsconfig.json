@@ -4,7 +4,6 @@
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
         "module": "commonjs" /* Specify what module code is generated. */,
-        "moduleResolution": "Node16" /* Specify how TypeScript looks up a file from a given module specifier. */,
         "resolveJsonModule": true /* Enable importing .json files. */,
         "outDir": "./dist/esm",
         "removeComments": true /* Disable emitting comments. */,
@@ -16,7 +15,9 @@
         "noUnusedParameters": true /* Raise an error when a function parameter isn't read. */,
         "skipLibCheck": true /* Skip type checking all .d.ts files. */,
         "strictPropertyInitialization": false,
-        "declaration": true
+        "declaration": true,
+        "jsx": "react-jsx",
+        "jsxImportSource": "preact"
     },
-    "include": ["src"]
+    "include": ["src", "src/**/*.tsx"]
 }

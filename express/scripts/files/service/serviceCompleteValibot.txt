@@ -46,15 +46,32 @@ export class ${Props}Service {
 
     async update(id: string, ${props}UpdateDto: ${Props}UpdateDto) {
         const { ${prop} } = await this.show(id);
-        if (${prop}.name === ${props}UpdateDto.name)
-            throw new BadRequestException(
-                `Este ${prop} con el name ${props}UpdateDto.name ya existe`
-            );
-        if (${prop}.slug === ${props}UpdateDto.slug) {
-            throw new BadRequestException(
-                `Este ${prop} con el slug ${props}UpdateDto.name ya existe`
-            );
-        }
+       		const [existByName, existBySlug] = await Promise.all([
+			${Props}.findOne({
+				where: {
+					name: ${props}UpdateDto.name,
+					id: { [Op.not]: id },
+				},
+				raw: true,
+			}),
+			${Props}.findOne({
+				where: {
+					slug: ${props}UpdateDto.name,
+					id: { [Op.not]: id },
+				},
+				raw: true,
+			}),
+		]);
+        if (existByName) {
+			throw new BadRequestException(
+				`Este ${prop} con el nombre ${productsUpdateDto.name} ya existe`,
+			);
+		}
+		if (existBySlug) {
+			throw new BadRequestException(
+				`Este ${prop} con el slug ${productsUpdateDto.name} ya existe`,
+			);
+		}
         await ${prop}.update(${props}UpdateDto);
         return {
             success: true,

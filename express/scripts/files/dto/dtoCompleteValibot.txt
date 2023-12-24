@@ -1,7 +1,6 @@
-import { type Input, omitAsync, ValiError } from "valibot";
+import { type Input, omitAsync, ValiError,getPipeIssues,getOutput } from "valibot";
 import { ${Props} } from "../entities/${props}.entity";
 import { ${props}Schema } from "../schemas/${props}.schema";
-import { getPipeIssues } from "@vigilio/express-core/valibot";
 
 export const ${props}StoreDto = omitAsync(
     ${props}Schema,
@@ -37,7 +36,7 @@ export const ${props}StoreDto = omitAsync(
                     `Ya existe el ${props} con el slug: ${input.slug}`
                 );
             }
-            return input;
+            return  getOutput(input);
         },
     ]
 );

@@ -1,6 +1,6 @@
 {
     "name": "@vigilio/express-core",
-    "version": "1.7.0",
+    "version": "1.7.1",
     "main": "dist/cjs/index.js",
     "module": "dist/esm/index.js",
     "types": "dist/esm/index.d.ts",
@@ -30,9 +30,17 @@
             "import": "./dist/esm/handler/index.js",
             "require": "./dist/cjs/handler/index.js"
         },
+        "./cache": {
+            "import": "./dist/esm/cache/index.js",
+            "require": "./dist/cjs/cache/index.js"
+        },
         "./client": {
             "import": "./dist/esm/client/index.js",
             "require": "./dist/cjs/client/index.js"
+        },
+        "./client/preact": {
+            "import": "./dist/esm/client/preact/index.js",
+            "require": "./dist/cjs/client/preact/index.js"
         }
     },
     "typesVersions": {
@@ -43,8 +51,14 @@
             "handler": [
                 "./dist/esm/handler/index.d.ts"
             ],
+            "cache": [
+                "./dist/esm/cache/index.d.ts"
+            ],
             "client": [
                 "./dist/esm/client/index.d.ts"
+            ],
+            "client/preact": [
+                "./dist/esm/client/preact/index.d.ts"
             ],
             "valibot": [
                 "./dist/esm/decorators/valibot/index.d.ts"
@@ -84,6 +98,6 @@
     "devDependencies": {
         "@types/express": "^4.17.20",
         "@types/formidable": "^3.4.4",
-        "@types/node": "^20.8.9"
+        "typescript": "^5.3.3"
     }
 }

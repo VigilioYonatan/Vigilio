@@ -10,7 +10,7 @@ import {
     Put,
     Status,
 } from "@decorators/express";
-import { Validator, Pipe } from "@vigilio/express-core";
+import { Validator, Pipe } from "@vigilio/express-core/zod";
 import { ${Props}StoreDto, ${props}StoreDto } from "../dtos/${props}.store.dto";
 import { ${Props}UpdateDto, ${props}UpdateDto } from "../dtos/${props}.update.dto";
 

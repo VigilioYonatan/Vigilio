@@ -1,15 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import { attachMiddleware } from "@decorators/express";
-import {
-    safeParseAsync,
-    strictAsync,
-    ObjectShapeAsync,
-    ObjectSchemaAsync,
-} from "valibot";
+import { safeParseAsync, ObjectSchemaAsync } from "valibot";
 
-export function Validator<T extends ObjectShapeAsync>(
-    schema: ObjectSchemaAsync<T>
-) {
+export function Validator(schema: ObjectSchemaAsync<any>) {
     return function (
         target: any,
         propertyKey: string,
