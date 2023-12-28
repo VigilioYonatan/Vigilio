@@ -6,9 +6,10 @@ import {
 } from "@vigilio/express-core/handler";
 import { ${Props}StoreDto } from "../dtos/${props}.store.dto";
 import { ${Props}UpdateDto } from "../dtos/${props}.update.dto";
+import { Op } from "sequelize";
 
 @Injectable()
-export class ${Props}Service {
+export class ${Props}ApiService {
     async index() {
         const data = await ${Props}.findAll({ raw: true });
         return {
@@ -27,7 +28,7 @@ export class ${Props}Service {
             });
         }
         if (!${prop})
-            throw new NotFoundException(`No se encontró un ${props} con ${slug}`);
+            throw new NotFoundException(`No se encontró un ${prop} con ${slug}`);
         return {
             success: true,
             ${prop},
@@ -64,12 +65,12 @@ export class ${Props}Service {
 		]);
         if (existByName) {
 			throw new BadRequestException(
-				`Este ${prop} con el nombre ${productsUpdateDto.name} ya existe`,
+				`Este ${prop} con el nombre ${props}UpdateDto.name ya existe`,
 			);
 		}
 		if (existBySlug) {
 			throw new BadRequestException(
-				`Este ${prop} con el slug ${productsUpdateDto.name} ya existe`,
+				`Este ${prop} con el slug ${props}UpdateDto.slug ya existe`,
 			);
 		}
         await ${prop}.update(${props}UpdateDto);
@@ -84,7 +85,7 @@ export class ${Props}Service {
         await ${prop}.destroy();
         return {
             success: true,
-            message: `El user con el id ${id} fue eliminado`,
+            message: `El ${prop} con el id ${id} fue eliminado`,
         };
     }
 }

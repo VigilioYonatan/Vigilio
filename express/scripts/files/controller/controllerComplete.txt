@@ -16,7 +16,7 @@ import { ${Props}UpdateDto, ${props}UpdateDto } from "../dtos/${props}.update.dt
 
 @Injectable()
 @Controller("/${props}")
-export class ${Props}Controller {
+export class ${Props}ApiController {
     constructor(private readonly ${props}Service: ${Props}Service) {}
 
     @Get("/")

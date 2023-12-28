@@ -1,7 +1,7 @@
 import { Injectable } from "@decorators/di";
 
 @Injectable()
-export class ${Props}Service {
+export class ${Props}ApiService {
     async index() {}
 
     async show(id: string) {

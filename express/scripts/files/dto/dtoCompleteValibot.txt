@@ -23,20 +23,22 @@ export const ${props}StoreDto = omitAsync(
             ]);
 
             if (byName) {
-                throw getPipeIssues(
-                    input,
+                return getPipeIssues(
                     "name",
-                    `Ya existe el ${props} con el name: ${input.name}`
+                    `Ya existe el ${prop} con el name: ${input.name}`,
+                    input,
                 );
             }
             if (bySlug) {
-                throw getPipeIssues(
-                    input,
+                return getPipeIssues(
                     "slug",
-                    `Ya existe el ${props} con el slug: ${input.slug}`
+                    `Ya existe el ${prop} con el slug: ${input.slug}`,
+                    input,
                 );
             }
             return  getOutput(input);
         },
     ]
 );
+
+export type ${Props}StoreDto = Input<typeof ${props}StoreDto>;

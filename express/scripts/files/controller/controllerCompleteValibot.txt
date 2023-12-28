@@ -17,7 +17,7 @@ import { objectAsync, string } from "valibot";
 
 @Injectable()
 @Controller("/${props}")
-export class ${Props}Controller {
+export class ${Props}ApiController {
     constructor(private readonly ${props}Service: ${Props}Service) {}
 
     @Get("/")
