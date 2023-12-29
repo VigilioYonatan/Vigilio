@@ -11,8 +11,8 @@ import {
     Status,
 } from "@decorators/express";
 import { Pipe, Validator } from "@vigilio/express-core/valibot";
-//import { ${Props}StoreDto, ${props}StoreDto } from "../dtos/${props}.store.dto";
-//import { ${Props}UpdateDto, ${props}UpdateDto } from "../dtos/${props}.update.dto";
+import { ${Props}StoreDto, ${props}StoreDto } from "../dtos/${props}.store.dto";
+import { ${Props}UpdateDto, ${props}UpdateDto } from "../dtos/${props}.update.dto";
 import { objectAsync, string } from "valibot";
 
 @Injectable()
@@ -37,11 +37,11 @@ export class ${Props}ApiController {
         return result;
     }
 
-    //@Validator(${props}StoreDto)
+    @Validator(${props}StoreDto)
     @Status(201)
     @Post("/")
-    async store(@Body() ${props}StoreDto: ${Props}StoreDto) {
-        const result = await this.${props}ApiService.store(${props}StoreDto);
+    async store(@Body() body: ${Props}StoreDto) {
+        const result = await this.${props}ApiService.store(body);
         return result;
     }
 
@@ -50,14 +50,14 @@ export class ${Props}ApiController {
             id: string(),
         })
     )
-    //@Validator(${props}UpdateDto)
+    @Validator(${props}UpdateDto)
     @Status(200)
     @Put("/:id")
     async update(
         @Params("id") id: string,
-        @Body() ${props}UpdateDto: ${Props}UpdateDto
+        @Body() body: ${Props}UpdateDto
     ) {
-        const result = await this.${props}ApiService.update(id, ${props}UpdateDto);
+        const result = await this.${props}ApiService.update(id,body);
         return result;
     }
 
