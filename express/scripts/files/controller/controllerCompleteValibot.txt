@@ -1,5 +1,5 @@
 import { Injectable } from "@decorators/di";
-import { ${Props}Service } from "../services/${props}.service";
+import { ${Props}ApiService } from "../services/${props}.api.service";
 import {
     Body,
     Controller,
@@ -11,18 +11,18 @@ import {
     Status,
 } from "@decorators/express";
 import { Pipe, Validator } from "@vigilio/express-core/valibot";
-import { ${Props}StoreDto, ${props}StoreDto } from "../dtos/${props}.store.dto";
-import { ${Props}UpdateDto, ${props}UpdateDto } from "../dtos/${props}.update.dto";
+//import { ${Props}StoreDto, ${props}StoreDto } from "../dtos/${props}.store.dto";
+//import { ${Props}UpdateDto, ${props}UpdateDto } from "../dtos/${props}.update.dto";
 import { objectAsync, string } from "valibot";
 
 @Injectable()
 @Controller("/${props}")
 export class ${Props}ApiController {
-    constructor(private readonly ${props}Service: ${Props}Service) {}
+    constructor(private readonly ${props}ApiService: ${Props}ApiService) {}
 
     @Get("/")
     async index() {
-        const result = await this.${props}Service.index();
+        const result = await this.${props}ApiService.index();
         return result;
     }
 
@@ -33,15 +33,15 @@ export class ${Props}ApiController {
     )
     @Get("/:slug")
     async show(@Params("slug") slug: string) {
-        const result = await this.${props}Service.show(slug);
+        const result = await this.${props}ApiService.show(slug);
         return result;
     }
 
-    @Validator(${props}StoreDto)
+    //@Validator(${props}StoreDto)
     @Status(201)
     @Post("/")
     async store(@Body() ${props}StoreDto: ${Props}StoreDto) {
-        const result = await this.${props}Service.store(${props}StoreDto);
+        const result = await this.${props}ApiService.store(${props}StoreDto);
         return result;
     }
 
@@ -50,14 +50,14 @@ export class ${Props}ApiController {
             id: string(),
         })
     )
-    @Validator(${props}UpdateDto)
+    //@Validator(${props}UpdateDto)
     @Status(200)
     @Put("/:id")
     async update(
         @Params("id") id: string,
         @Body() ${props}UpdateDto: ${Props}UpdateDto
     ) {
-        const result = await this.${props}Service.update(id, ${props}UpdateDto);
+        const result = await this.${props}ApiService.update(id, ${props}UpdateDto);
         return result;
     }
 
@@ -69,7 +69,7 @@ export class ${Props}ApiController {
     @Status(201)
     @Delete("/:id")
     async destroy(@Params("id") id: string) {
-        const result = await this.${props}Service.destroy(id);
+        const result = await this.${props}ApiService.destroy(id);
         return result;
     }
 }
