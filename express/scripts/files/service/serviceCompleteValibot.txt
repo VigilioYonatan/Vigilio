@@ -57,7 +57,7 @@ export class ${Props}ApiService {
 			}),
 			${Props}.findOne({
 				where: {
-					slug: ${props}UpdateDto.name,
+					slug: ${props}UpdateDto.slug,
 					id: { [Op.not]: id },
 				},
 				raw: true,

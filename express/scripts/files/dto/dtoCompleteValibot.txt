@@ -1,4 +1,4 @@
-import { type Input, omitAsync, ValiError,getPipeIssues,getOutput } from "valibot";
+import { type Input, omitAsync,getPipeIssues,getOutput } from "valibot";
 import { ${Props} } from "../entities/${props}.entity";
 import { ${props}Schema,type ${Props}Schema } from "../schemas/${props}.schema";
 
