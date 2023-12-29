@@ -65,12 +65,12 @@ export class ${Props}ApiService {
 		]);
         if (existByName) {
 			throw new BadRequestException(
-				`Este ${prop} con el nombre ${props}UpdateDto.name ya existe`,
+				`Este ${prop} con el nombre ${${props}UpdateDto.name} ya existe`,
 			);
 		}
 		if (existBySlug) {
 			throw new BadRequestException(
-				`Este ${prop} con el slug ${props}UpdateDto.slug ya existe`,
+				`Este ${prop} con el slug ${${props}UpdateDto.slug} ya existe`,
 			);
 		}
         await ${prop}.update(${props}UpdateDto);
