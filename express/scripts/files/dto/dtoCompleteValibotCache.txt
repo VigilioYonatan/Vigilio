@@ -1,0 +1,44 @@
+import { type Input, omitAsync,getPipeIssues,getOutput } from "valibot";
+import { ${Props} } from "../entities/${props}.entity";
+import { ${props}Schema,type ${Props}Schema } from "../schemas/${props}.schema";
+
+export const ${props}StoreDto = omitAsync(
+    ${props}Schema,
+    ["id"],
+    [
+        async (input) => {
+            const [byName, bySlug] = await Promise.all([
+                ${Props}.findOne({
+                    where: {
+                        name: input.name,
+                    },
+                    raw: true,
+                }),
+                ${Props}.findOne({
+                    where: {
+                        slug: input.slug,
+                    },
+                    raw: true,
+                }),
+            ]);
+
+            if (byName) {
+                return getPipeIssues(
+                    "name" as keyof ${Props}Schema,
+                    `Ya existe el ${prop} con el name: ${input.name}`,
+                    input,
+                );
+            }
+            if (bySlug) {
+                return getPipeIssues(
+                    "slug" as keyof ${Props}Schema,
+                    `Ya existe el ${prop} con el slug: ${input.slug}`,
+                    input,
+                );
+            }
+            return  getOutput(input);
+        },
+    ]
+);
+
+export type ${Props}StoreDto = Input<typeof ${props}StoreDto>;
