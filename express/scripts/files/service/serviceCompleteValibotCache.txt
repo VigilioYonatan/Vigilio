@@ -30,7 +30,7 @@ export class ${Props}ApiService {
 
     async show(slug: string) {
          let ${prop} = JSON.parse(
-            cache.get(`${productCacheName()}/${slug}`) || "null"
+            cache.get(`${${props}Cache()}/${slug}`) || "null"
         );
         if(!${prop}){
             // verify that slug is id o slug
