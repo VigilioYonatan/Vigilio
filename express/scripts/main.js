@@ -49,6 +49,9 @@ function create(mode, name, createDir) {
         }
         if (pro.startsWith("valibot")) {
             type = "Valibot";
+            if (pro.startsWith("cache")) {
+                type += "Cache";
+            }
             fileTxt += type;
         }
         if (pro.startsWith("f")) {

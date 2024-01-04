@@ -7,11 +7,21 @@ import {
 import { ${Props}StoreDto } from "../dtos/${props}.store.dto";
 import { ${Props}UpdateDto } from "../dtos/${props}.update.dto";
 import { Op } from "sequelize";
+import cache from "@vigilio/express-core/cache";
 
+export function ${props}Cache() {
+    return "${props}";
+}
 @Injectable()
 export class ${Props}ApiService {
     async index() {
-        const data = await ${Props}.findAll({ raw: true });
+         let data: string | null | ${Props}[] = JSON.parse(
+            cache.get(${props}Cache()) || "null"
+        );
+         if (!data) {
+            data = await ${Props}.findAll();
+            cache.set(${props}Cache(), JSON.stringify(data));
+         }
         return {
             success: true,
             data,
@@ -19,17 +29,29 @@ export class ${Props}ApiService {
     }
 
     async show(slug: string) {
-         let ${prop} = null;
-         // verify that slug is id o slug
-         if (!Number.isNaN(Number(slug))) {
-            ${prop} = await ${Props}.findByPk(slug);
-         }else{
-            ${prop} = await ${Props}.findOne({where:{
-                slug
-            }});
-         }
-        if (!${prop})
-            throw new NotFoundException(`No se encontró un ${prop} con ${slug}`);
+         let ${prop} = JSON.parse(
+            cache.get(`${productCacheName()}/${slug}`) || "null"
+        );
+        if(!${prop}){
+            // verify that slug is id o slug
+            if (!Number.isNaN(Number(slug))) {
+                ${prop} = await ${Props}.findByPk(slug);
+            }else{
+                ${prop} = await ${Props}.findOne({where:{
+                    slug
+                }});
+            }
+            if (!${prop})
+                throw new NotFoundException(`No se encontró un ${prop} con ${slug}`);
+        }
+         cache.set(
+            `${${props}Cache()}/${${prop}.id}`,
+            JSON.stringify(${prop})
+        );
+        cache.set(
+            `${${props}Cache()}/${${prop}.slug}`,
+            JSON.stringify(${prop})
+        );
         return {
             success: true,
             ${prop},
@@ -39,7 +61,7 @@ export class ${Props}ApiService {
     async store(${props}StoreDto: ${Props}StoreDto) {
         const ${prop} = new ${Props}(${props}StoreDto);
         await ${prop}.save();
-
+        cache.delete(${props}Cache());
         return {
             success: true,
             ${prop},
@@ -74,7 +96,10 @@ export class ${Props}ApiService {
 				`Este ${prop} con el slug ${${props}UpdateDto.slug} ya existe`,{body:"slug"}
 			);
 		}
+        cache.delete(`${${props}Cache()}/${${prop}.id}`);
+        cache.delete(`${${props}Cache()}/${${prop}.slug}`);
         await ${prop}.update(${props}UpdateDto);
+        cache.delete(${props}Cache());
         return {
             success: true,
             ${prop},
@@ -83,6 +108,9 @@ export class ${Props}ApiService {
 
     async destroy(id: string) {
         const { ${prop} } = await this.show(id);
+        cache.delete(`${${props}Cache()}/${${prop}.id}`);
+        cache.delete(`${${props}Cache()}/${${prop}.slug}`);
+        cache.delete(${props}Cache());
         await ${prop}.destroy();
         return {
             success: true,
