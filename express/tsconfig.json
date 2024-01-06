@@ -17,7 +17,7 @@
         "strictPropertyInitialization": false,
         "declaration": true,
         "jsx": "react-jsx",
-        "jsxImportSource": "preact"
+        "jsxImportSource": "preact",
     },
     "include": ["src", "src/**/*.tsx"]
 }
