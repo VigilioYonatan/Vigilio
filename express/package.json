@@ -1,6 +1,6 @@
 {
     "name": "@vigilio/express-core",
-    "version": "1.7.9",
+    "version": "1.7.10",
     "main": "dist/cjs/index.js",
     "module": "dist/esm/index.js",
     "types": "dist/esm/index.d.ts",
@@ -41,6 +41,10 @@
         "./client/preact": {
             "import": "./dist/esm/client/preact/index.js",
             "require": "./dist/cjs/client/preact/index.js"
+        },
+        "./i18next": {
+            "import": "./dist/esm/i18next/index.js",
+            "require": "./dist/cjs/i18next/index.js"
         }
     },
     "typesVersions": {
@@ -65,6 +69,9 @@
             ],
             "zod": [
                 "./dist/esm/decorators/zod/index.d.ts"
+            ],
+            "i18next": [
+                "./dist/esm/i18next/index.d.ts"
             ]
         }
     },
