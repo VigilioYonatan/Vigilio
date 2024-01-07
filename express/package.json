@@ -1,6 +1,6 @@
 {
     "name": "@vigilio/express-core",
-    "version": "1.7.15",
+    "version": "1.7.16",
     "main": "dist/cjs/index.js",
     "module": "dist/esm/index.js",
     "types": "dist/esm/index.d.ts",
@@ -103,8 +103,6 @@
     ],
     "license": "ISC",
     "devDependencies": {
-        "@types/express": "^4.17.20",
-        "@types/formidable": "^3.4.4",
         "typescript": "^5.3.3"
     }
 }

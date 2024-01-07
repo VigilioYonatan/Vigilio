@@ -15,11 +15,18 @@ export function Pipe(schema: ObjectSchemaAsync<any>) {
                 const data = await safeParseAsync(schema, req.params);
 
                 if (!data.success) {
+                    const message =
+                        JSON.parse(data.issues[0].message) instanceof Array
+                            ? (req as any).t(
+                                  ...JSON.parse(data.issues[0].message)
+                              )
+                            : data.issues[0].message;
                     return res.status(400).json({
                         success: false,
-                        message: data.error.issues[0].message,
-                        // biome-ignore lint/style/noNonNullAssertion: <explanation>
-                        params: data.error.issues[0].path![0].key,
+                        message,
+                        body: data.issues[0].path
+                            ? data.issues[0].path[0].key
+                            : data.issues[0].validation,
                     });
                 }
                 req.params = data.data;
