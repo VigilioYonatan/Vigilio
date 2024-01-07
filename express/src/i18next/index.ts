@@ -1,6 +1,6 @@
 import { InterpolationMap, TOptionsBase } from "i18next";
 
-type Join<S1, S2> = S1 extends string
+export type Join<S1, S2> = S1 extends string
     ? S2 extends string
         ? `${S1}.${S2}`
         : never
@@ -12,11 +12,12 @@ export type Paths<T> = {
         : K;
 }[keyof T];
 
-export type I18nextFunction<T extends Record<string, any>> = (
-    s: T extends Record<string, any>
-        ? {
-              [K in keyof T]: `${K & string}:${Paths<T[K & string]>}`;
+export type I18nextFunction<T extends Record<string, unknown>> = (
+    s:
+        | {
+              [K in keyof T]: `${K & string}:${T[K] & string}`;
           }[keyof T]
-        : "" | TemplateStringsArray | (string | TemplateStringsArray)[],
+        | TemplateStringsArray
+        | TemplateStringsArray[],
     options?: (TOptionsBase & InterpolationMap<string>) | undefined
 ) => string;
