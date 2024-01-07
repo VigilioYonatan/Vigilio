@@ -16,7 +16,9 @@ export function Pipe(schema: ObjectSchemaAsync<any>) {
 
                 if (!data.success) {
                     const message =
-                        JSON.parse(data.issues[0].message) instanceof Array
+                        JSON.parse(
+                            JSON.stringify(data.issues[0].message)
+                        ) instanceof Array
                             ? (req as any).t(
                                   ...JSON.parse(data.issues[0].message)
                               )

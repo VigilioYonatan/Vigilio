@@ -15,7 +15,7 @@ export function Validator(schema: ObjectSchemaAsync<any>) {
                 const data = await safeParseAsync(schema, req.body);
                 if (!data.success) {
                     const message =
-                        JSON.parse(data.issues[0].message) instanceof Array
+                        JSON.parse(JSON.stringify(data.issues[0].message)) instanceof Array
                             ? (req as any).t(
                                   ...JSON.parse(data.issues[0].message)
                               )
