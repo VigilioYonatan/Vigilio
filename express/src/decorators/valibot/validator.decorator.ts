@@ -14,12 +14,17 @@ export function Validator(schema: ObjectSchemaAsync<any>) {
             async (req: Request, res: Response, next: NextFunction) => {
                 const data = await safeParseAsync(schema, req.body);
                 if (!data.success) {
-                    const message =
-                        JSON.parse(JSON.stringify(data.issues[0].message)) instanceof Array
-                            ? (req as any).t(
-                                  ...JSON.parse(data.issues[0].message)
-                              )
-                            : data.issues[0].message;
+                    let message: string | null = null;
+                    try {
+                        message =
+                            JSON.parse(data.issues[0].message) instanceof Array
+                                ? (req as any).t(
+                                      ...JSON.parse(data.issues[0].message)
+                                  )
+                                : data.issues[0].message;
+                    } catch (error) {
+                        message = data.issues[0].message;
+                    }
                     return res.status(400).json({
                         success: false,
                         message,

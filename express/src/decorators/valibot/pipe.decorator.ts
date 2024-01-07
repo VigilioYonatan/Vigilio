@@ -15,14 +15,18 @@ export function Pipe(schema: ObjectSchemaAsync<any>) {
                 const data = await safeParseAsync(schema, req.params);
 
                 if (!data.success) {
-                    const message =
-                        JSON.parse(
-                            JSON.stringify(data.issues[0].message)
-                        ) instanceof Array
-                            ? (req as any).t(
-                                  ...JSON.parse(data.issues[0].message)
-                              )
-                            : data.issues[0].message;
+                    let message: string | null = null;
+                    try {
+                        message =
+                            JSON.parse(data.issues[0].message) instanceof Array
+                                ? (req as any).t(
+                                      ...JSON.parse(data.issues[0].message)
+                                  )
+                                : data.issues[0].message;
+                    } catch (error) {
+                        message = data.issues[0].message;
+                    }
+
                     return res.status(400).json({
                         success: false,
                         message,
