@@ -12,7 +12,7 @@ export type Paths<T> = {
         : K;
 }[keyof T];
 
-export type I18nextFunction<T extends Record<string, unknown>> = (
+export type I18nextFunction<T extends object> = (
     s:
         | {
               [K in keyof T]: `${K & string}:${T[K] & string}`;
