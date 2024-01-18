@@ -20,7 +20,7 @@ inquirer
             })
             .then((result) => {
                 let packs = null;
-                let pack = "npm";
+                let pack = null;
                 switch (result.type) {
                     case "fullstack-preact":
                         packs = `git clone --depth 1 https://github.com/VigilioYonatan/-vigilio-express-preact ${projectName}`;
@@ -38,15 +38,17 @@ inquirer
                     default:
                         break;
                 }
-                const installPackageNpm = `cd ${projectName} && ${pack} install`;
-                console.log("cloning project");
-                const clonning = runCommand(packs);
-                if (!clonning) process.exit(-1);
-                console.log(`Installing packages ${pack.package}`);
-                const installPackage = runCommand(installPackageNpm);
-                if (!installPackage) process.exit(-1);
-                const removeGit = runCommand("rm -rf .git/");
-                if (!removeGit) process.exit(-1);
+                if (pack) {
+                    const installPackageNpm = `cd ${projectName} && ${pack} install`;
+                    console.log("cloning project");
+                    const clonning = runCommand(packs);
+                    if (!clonning) process.exit(-1);
+                    console.log(`Installing packages ${pack}`);
+                    const installPackage = runCommand(installPackageNpm);
+                    if (!installPackage) process.exit(-1);
+                    const removeGit = runCommand("rm -rf .git/");
+                    if (!removeGit) process.exit(-1);
+                }
                 console.log("Congratulations...");
             });
     });
