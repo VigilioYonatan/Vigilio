@@ -31,7 +31,7 @@ inquirer
                     case "api":
                         packs = `git clone --depth 1 https://github.com/VigilioYonatan/express-api ${projectName}`;
                         break;
-                    case "api":
+                    case "fullstack-preact@bun":
                         packs = `git clone --depth 1 https://github.com/VigilioYonatan/VIGILIO-EXPRESS-BUN ${projectName}`;
                         pack = "bun";
                         break;
