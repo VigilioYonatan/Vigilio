@@ -9,45 +9,45 @@ inquirer
         inquirer
             .prompt({
                 type: "list",
-                name: "package",
-                message: "select a package",
-                choices: ["npm", "yarn", "pnpm"],
+                name: "type",
+                message: "select @express/vigilio package",
+                choices: [
+                    "fullstack-preact",
+                    "fullstack-vue",
+                    "api",
+                    "fullstack-preact@bun",
+                ],
             })
-            .then((pack) => {
-                inquirer
-                    .prompt({
-                        type: "list",
-                        name: "type",
-                        message: "select @express/vigilio package",
-                        choices: ["fullstack-preact", "fullstack-vue", "api"],
-                    })
-                    .then((result) => {
-                        let packs = null;
-                        switch (result.type) {
-                            case "fullstack-preact":
-                                packs = `git clone --depth 1 https://github.com/VigilioYonatan/-vigilio-express-preact ${projectName}`;
-                                break;
-                            case "fullstack-vue":
-                                packs = `git clone --depth 1 https://github.com/VigilioYonatan/vigilio-express ${projectName}`;
-                                break;
-                            case "api":
-                                packs = `git clone --depth 1 https://github.com/VigilioYonatan/express-api ${projectName}`;
-
-                                break;
-                            default:
-                                break;
-                        }
-                        const installPackageNpm = `cd ${projectName} && ${pack.package} install`;
-                        console.log("cloning project");
-                        const clonning = runCommand(packs);
-                        if (!clonning) process.exit(-1);
-                        console.log(`Installing packages ${pack.package}`);
-                        const installPackage = runCommand(installPackageNpm);
-                        if (!installPackage) process.exit(-1);
-                        const removeGit = runCommand("rimraf .git");
-                        if (!removeGit) process.exit(-1);
-                        console.log("Congratulations...");
-                    });
+            .then((result) => {
+                let packs = null;
+                let pack = "npm";
+                switch (result.type) {
+                    case "fullstack-preact":
+                        packs = `git clone --depth 1 https://github.com/VigilioYonatan/-vigilio-express-preact ${projectName}`;
+                        break;
+                    case "fullstack-vue":
+                        packs = `git clone --depth 1 https://github.com/VigilioYonatan/vigilio-express ${projectName}`;
+                        break;
+                    case "api":
+                        packs = `git clone --depth 1 https://github.com/VigilioYonatan/express-api ${projectName}`;
+                        break;
+                    case "api":
+                        packs = `git clone --depth 1 https://github.com/VigilioYonatan/VIGILIO-EXPRESS-BUN ${projectName}`;
+                        pack = "bun";
+                        break;
+                    default:
+                        break;
+                }
+                const installPackageNpm = `cd ${projectName} && ${pack} install`;
+                console.log("cloning project");
+                const clonning = runCommand(packs);
+                if (!clonning) process.exit(-1);
+                console.log(`Installing packages ${pack.package}`);
+                const installPackage = runCommand(installPackageNpm);
+                if (!installPackage) process.exit(-1);
+                const removeGit = runCommand("rm -rf .git/");
+                if (!removeGit) process.exit(-1);
+                console.log("Congratulations...");
             });
     });
 
