@@ -49,6 +49,7 @@ inquirer
                     const removeGit = runCommand("rm -rf .git/");
                     if (!removeGit) process.exit(-1);
                 }
+
                 console.log("Congratulations...");
             });
     });
