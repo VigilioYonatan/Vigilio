@@ -1,6 +1,6 @@
 {
     "name": "@vigilio/preact-fetching",
-    "version": "2.0.7",
+    "version": "2.0.8",
     "description": "this is a library to fetch in preact",
     "main": "./dist/cjs/index.js",
     "module": "./dist/esm/index.js",
@@ -36,5 +36,8 @@
         "preact": "^10.13.2",
         "tslib": "^2.6.0",
         "typescript": "^5.0.4"
+    },
+    "dependencies": {
+        "@preact/signals": "^1.2.2"
     }
 }

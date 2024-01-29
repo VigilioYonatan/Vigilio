@@ -55,7 +55,8 @@ const options = {
     onSuccess: null, // callback when the fetch is  success (data)=>{} //default null
     refetchOnReconnect: false, // when the net back it fetching // default false
     delay: null, // delay to consume fetch //default null
-    clean: true, // it no clean when refetch data //default clean
+    clean: true, // it no clean when refetch data //default clean,
+    transformData: (data) => Data, // callback that modify data
 };
 ```
 

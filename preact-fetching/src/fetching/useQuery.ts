@@ -19,6 +19,7 @@ export type UseQuery<Data, Error> = {
     [K in keyof FetchPropsProps<Data, Error>]: FetchPropsProps<Data, Error>[K];
 } & {
     refetch: (clean?: boolean) => Promise<void>;
+    transformData: (cb: (data: Data) => Data) => void;
 };
 
 type FetchPropsProps<Data, Error> = {
@@ -206,6 +207,14 @@ function useQuery<Data, Error>(
         await fetchEndpoint();
     }
 
-    return { ...fetchProps.value, refetch };
+    function transform(cb: (data: Data) => Data) {
+        const data = cb(fetchProps.value.data!);
+        fetchProps.value = {
+            ...fetchProps.value,
+            data,
+        };
+    }
+
+    return { ...fetchProps.value, transformData: transform, refetch };
 }
 export default useQuery;
