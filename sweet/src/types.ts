@@ -15,7 +15,9 @@ export interface SwalProps {
     timer?: number;
     position?: "center" | "end" | "start";
     sweetWidth?: string;
-    hiddeModal?: boolean;
+    hiddeBackground?: boolean;
+    isCloseInBackground?: boolean;
+    backgroundStyle?: string;
 }
 export interface SwalAlertProps {
     title?: string;

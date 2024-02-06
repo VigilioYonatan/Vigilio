@@ -25,6 +25,9 @@ function sweetModal({
     customIcon,
     sweetWidth = "28rem",
     timer,
+    hiddeBackground = false,
+    isCloseInBackground = true,
+    backgroundStyle = "background-color: #0006;",
 }: SwalProps): Promise<{ isConfirmed: boolean }> {
     return new Promise((res) => {
         const htmlModal = h(
@@ -40,11 +43,15 @@ function sweetModal({
                             : position === "end"
                             ? "end"
                             : "center"
-                    };--sweet-width:${sweetWidth};`,
+                    };--sweet-width:${sweetWidth}; ${
+                        hiddeBackground ? "" : backgroundStyle
+                    }`,
                 } as CSSStyleDeclaration,
                 onclick: () => {
-                    onClose();
-                    res({ isConfirmed: false });
+                    if (isCloseInBackground) {
+                        onClose();
+                        res({ isConfirmed: false });
+                    }
                 },
             },
             h(
