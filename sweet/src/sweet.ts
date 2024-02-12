@@ -59,6 +59,7 @@ function sweetModal(
                 onclick: () => {
                     if (isCloseInBackground) {
                         onClose();
+                        res({ isConfirmed: false });
                     }
                 },
             },
@@ -84,6 +85,7 @@ function sweetModal(
                                   } as CSSStyleDeclaration,
                                   onclick: () => {
                                       onClose();
+                                      res({ isConfirmed: false });
                                   },
                                   ariaLabel: "button to close modal",
                               },
@@ -110,6 +112,7 @@ function sweetModal(
                                   } as CSSStyleDeclaration,
                                   onclick: () => {
                                       onClose();
+                                      res({ isConfirmed: false });
                                   },
                                   ariaLabel: "button to close modal",
                               },
@@ -154,6 +157,7 @@ function sweetModal(
                                           } as CSSStyleDeclaration,
                                           onclick: () => {
                                               onClose();
+                                              res({ isConfirmed: true });
                                           },
                                       },
                                       confirmButtonText
@@ -174,6 +178,7 @@ function sweetModal(
                                           type: "button",
                                           onclick: () => {
                                               onClose();
+                                              res({ isConfirmed: false });
                                           },
                                       },
                                       cancelButtonText
@@ -201,7 +206,6 @@ function sweetModal(
                 modal?.classList.remove("vigilio-modal-hidde");
                 document.body.classList.remove("overflow-hidden");
                 document.body.removeChild(htmlModal);
-                res({ isConfirmed: false });
             }, 100);
         }
 

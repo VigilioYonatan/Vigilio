@@ -40,6 +40,9 @@ export interface SwalProps {
     timer?: number;
     position?: "center" | "end" | "start";
 }
+
+// YOU CAN USE callback
+sweetModal((onclose)=>{...swallprops})
 ```
 
 ### ALERT
