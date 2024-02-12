@@ -9,27 +9,36 @@ import {
 } from "./helpers";
 import { type Icon, type SwalProps } from "./types";
 
-function sweetModal({
-    icon = "info",
-    text = "¡No podrás revertir esto!",
-    html,
-    title = "¿Estas seguro?",
-    showCancelButton = false,
-    cancelButtonText = "Cancelar",
-    showCloseButton = false,
-    showConfirmButton = true,
-    confirmButtonText = "OK!",
-    cancelButtonAriaLabel = "cancel",
-    confirmButtonAriaLabel = "ok",
-    position = "center",
-    customIcon,
-    sweetWidth = "28rem",
-    timer,
-    hiddeBackground = false,
-    isCloseInBackground = true,
-    backgroundStyle = "background-color: #0006;",
-}: SwalProps): Promise<{ isConfirmed: boolean }> {
+function sweetModal(
+    props: SwalProps | ((onClose: () => void) => SwalProps)
+): Promise<{ isConfirmed: boolean }> {
     return new Promise((res) => {
+        let properties = props;
+        if (props instanceof Function) {
+            properties = props(onClose);
+        } else {
+            properties = props;
+        }
+        const {
+            icon = "info",
+            text = "¡No podrás revertir esto!",
+            html,
+            title = "¿Estas seguro?",
+            showCancelButton = false,
+            cancelButtonText = "Cancelar",
+            showCloseButton = false,
+            showConfirmButton = true,
+            confirmButtonText = "OK!",
+            cancelButtonAriaLabel = "cancel",
+            confirmButtonAriaLabel = "ok",
+            position = "center",
+            customIcon,
+            sweetWidth = "28rem",
+            timer,
+            hiddeBackground = false,
+            isCloseInBackground = true,
+            backgroundStyle = "background-color: #0006;",
+        } = properties;
         const htmlModal = h(
             "div",
             {
@@ -50,7 +59,6 @@ function sweetModal({
                 onclick: () => {
                     if (isCloseInBackground) {
                         onClose();
-                        res({ isConfirmed: false });
                     }
                 },
             },
@@ -76,7 +84,6 @@ function sweetModal({
                                   } as CSSStyleDeclaration,
                                   onclick: () => {
                                       onClose();
-                                      res({ isConfirmed: false });
                                   },
                                   ariaLabel: "button to close modal",
                               },
@@ -103,7 +110,6 @@ function sweetModal({
                                   } as CSSStyleDeclaration,
                                   onclick: () => {
                                       onClose();
-                                      res({ isConfirmed: false });
                                   },
                                   ariaLabel: "button to close modal",
                               },
@@ -148,7 +154,6 @@ function sweetModal({
                                           } as CSSStyleDeclaration,
                                           onclick: () => {
                                               onClose();
-                                              res({ isConfirmed: true });
                                           },
                                       },
                                       confirmButtonText
@@ -169,7 +174,6 @@ function sweetModal({
                                           type: "button",
                                           onclick: () => {
                                               onClose();
-                                              res({ isConfirmed: false });
                                           },
                                       },
                                       cancelButtonText
@@ -197,6 +201,7 @@ function sweetModal({
                 modal?.classList.remove("vigilio-modal-hidde");
                 document.body.classList.remove("overflow-hidden");
                 document.body.removeChild(htmlModal);
+                res({ isConfirmed: false });
             }, 100);
         }
 
@@ -222,7 +227,6 @@ function sweetModal({
             const timeTotal = timer * 1000;
             bottomBackground(timeTotal, loader);
             setTimeout(() => {
-                res({ isConfirmed: false });
                 onClose();
             }, timeTotal + 150);
         }
