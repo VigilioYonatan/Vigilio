@@ -1,6 +1,6 @@
 {
     "name": "@vigilio/express-core",
-    "version": "1.7.18",
+    "version": "1.8.0",
     "main": "dist/cjs/index.js",
     "module": "dist/esm/index.js",
     "types": "dist/esm/index.d.ts",
@@ -38,10 +38,6 @@
             "import": "./dist/esm/client/index.js",
             "require": "./dist/cjs/client/index.js"
         },
-        "./client/preact": {
-            "import": "./dist/esm/client/preact/index.js",
-            "require": "./dist/cjs/client/preact/index.js"
-        },
         "./i18next": {
             "import": "./dist/esm/i18next/index.js",
             "require": "./dist/cjs/i18next/index.js"
@@ -60,9 +56,6 @@
             ],
             "client": [
                 "./dist/esm/client/index.d.ts"
-            ],
-            "client/preact": [
-                "./dist/esm/client/preact/index.d.ts"
             ],
             "valibot": [
                 "./dist/esm/decorators/valibot/index.d.ts"
@@ -101,8 +94,5 @@
         "sequelize",
         "framework"
     ],
-    "license": "ISC",
-    "devDependencies": {
-        "typescript": "^5.3.3"
-    }
+    "license": "ISC"
 }

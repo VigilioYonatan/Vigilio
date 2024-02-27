@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { vite } from "./vite";
 import { formatDate, isActive } from "../helpers/helpers";
+import { Web } from "./app";
 interface Client {
     file?: string;
     port?: number;
@@ -26,25 +27,36 @@ export function client(props?: Client) {
         try {
             vites = await vite(file, "http://localhost:" + port);
             if (process.env.NODE_ENV === "production") {
-                if (!process.env.VITE_VIGILIO_TOKEN || !process.env.VITE_VIGILIO_WEB)
+                if (
+                    !process.env.VITE_VIGILIO_TOKEN ||
+                    !process.env.VITE_VIGILIO_WEB
+                )
                     return res.send(
                         `<span>Falta variables de entorno</span> <a href="${process.env.VIGILIO_WEB}">Vigilio services</a>`
                     );
                 const vigilio = await fetch(
                     `${process.env.VITE_VIGILIO_WEB}/api/webs/${process.env.VITE_VIGILIO_TOKEN}`
                 );
-                const responseV = await vigilio.json();
+                const responseV: Web = await vigilio.json();
                 if (
                     !responseV ||
                     !responseV.success ||
-                    responseV.web.key !== process.env.VITE_VIGILIO_TOKEN ||
-                    responseV.web.web !== process.env.VITE_URL ||
+                    responseV.web.token !== process.env.VITE_VIGILIO_TOKEN ||
+                    responseV.web.url !== process.env.VITE_URL ||
                     !responseV.web.enabled
                 ) {
                     return res.send(
-                        `<span>Comunicarse con</span> <a href="${process.env.VITE_VIGILIO_WEB}">Vigilio services</a>`
+                        `<div style="background-color:#1F1F1F;width:100%;height:100vh;display:flex;justify-content:center;align-items:center;color:white;padding:0;margin:0;"><span>Comunicarse con</span> <a style="margin-left:1rem;" href="${process.env.VITE_VIGILIO_WEB}">Vigilio services</a>`
                     );
                 }
+                const clean = responseV.web.technologies.map((tech) => {
+                    const { technology, ...rest } = tech as any;
+                    return {
+                        ...rest,
+                    };
+                });
+
+                req.$web = { ...responseV.web, technologies: clean };
             }
         } catch (err) {}
         res.locals.vite = vites;
