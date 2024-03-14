@@ -31,6 +31,7 @@ export type UseMutation<Data, Body, Error> = {
     ) => Promise<void>;
     mutateAsync: (body: Body) => Promise<Data | undefined>;
     disabledSkip: () => void;
+    transformData: (cb: (data: Data) => Data) => void;
 };
 
 function useMutation<Data, Body, Error>(
@@ -131,11 +132,19 @@ function useMutation<Data, Body, Error>(
         const result = await fetch(body, null);
         return result;
     }
+    function transform(cb: (data: Data) => Data) {
+        const data = cb(fetchprops.value.data!);
+        fetchprops.value = {
+            ...fetchprops.value,
+            data,
+        };
+    }
     return {
         ...fetchprops.value,
         mutate,
         mutateAsync,
         disabledSkip,
+        transformData: transform,
     };
 }
 export default useMutation;

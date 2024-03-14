@@ -20,7 +20,7 @@ pnpm add tslib
     }
 
 
-    const { isLoading, data, isSuccess,isError,...rest} = useQuery("/users", getUsers);
+    const { isLoading, data, isSuccess,isError,transformData,...rest} = useQuery("/users", getUsers);
 
     let component = null
 
@@ -78,7 +78,7 @@ async function addUser(url: string, body: Body) {
     return data;
 }
 
-const { mutate, isLoading, isSuccess, ...rest } = useMutation(
+const { mutate, isLoading, isSuccess,transformData, ...rest } = useMutation(
     "/users",
     addUser
 );
