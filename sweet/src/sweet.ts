@@ -224,6 +224,10 @@ function sweetModal(
             document.body.appendChild(htmlModal);
         }, 100);
 
+        window.addEventListener("popstate", () => {
+            onClose();
+        });
+
         if (timer) {
             const loader = htmlModal.querySelector(
                 ".vigilio-loader"
