@@ -48,8 +48,8 @@
     "scripts": {
         "build:esm": "tsc",
         "build:cjs": "tsc --module commonjs --outDir dist/cjs",
-        "build": "rimraf dist && pnpm build:esm && pnpm build:cjs",
-        "public": "pnpm build && npm publish"
+        "build": "rimraf dist && bun build:esm && bun build:cjs",
+        "public": "bun build && bun publish"
     },
     "author": "Vigilio",
     "license": "ISC",

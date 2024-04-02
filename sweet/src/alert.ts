@@ -102,7 +102,9 @@ function sweetAlert({
                 htmlModal.remove();
             }, 300);
         }
-
+        window.addEventListener("popstate", () => {
+            onClose();
+        });
         function isIco(key: Icon): HTMLElement {
             const icono: Record<Icon, HTMLElement> = {
                 danger: h(
