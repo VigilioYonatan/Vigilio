@@ -159,6 +159,7 @@ function useQuery<Data, Error>(
     }, []);
 
     useEffect(() => {
+        let mounted = true; // Variable para verificar si el componente está montado
         if (
             !refetchIntervalInBackground &&
             fetchProps.value.isLoading &&
@@ -168,6 +169,7 @@ function useQuery<Data, Error>(
 
         async function evt() {
             if (
+                mounted &&
                 document.visibilityState === "visible" &&
                 refetchIntervalInBackground
             ) {
@@ -177,11 +179,13 @@ function useQuery<Data, Error>(
         document.addEventListener("visibilitychange", evt);
         // Devuelve una función de limpieza para eliminar el evento cuando el componente se desmonta
         return () => {
+            mounted = false;
             document.removeEventListener("visibilitychange", evt);
         };
     }, [refetch]);
 
     useEffect(() => {
+        let mounted = true;
         if (
             !refetchOnReconnect &&
             fetchProps.value.isLoading &&
@@ -189,10 +193,13 @@ function useQuery<Data, Error>(
         )
             return;
         async function evt() {
-            await refetch(clean);
+            if (mounted) {
+                await refetch(clean);
+            }
         }
         document.addEventListener("online", evt);
         return () => {
+            mounted = false;
             document.removeEventListener("online", evt);
         };
     }, [refetch]);
