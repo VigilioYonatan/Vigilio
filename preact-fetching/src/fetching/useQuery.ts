@@ -166,16 +166,20 @@ function useQuery<Data, Error>(
         )
             return;
 
-        const evt = async () => {
+        async function evt() {
             if (
                 document.visibilityState === "visible" &&
                 refetchIntervalInBackground
             ) {
                 await refetch(clean);
             }
-        };
+        }
         document.addEventListener("visibilitychange", evt);
-    }, []);
+        // Devuelve una función de limpieza para eliminar el evento cuando el componente se desmonta
+        return () => {
+            document.removeEventListener("visibilitychange", evt);
+        };
+    }, [refetch]);
 
     useEffect(() => {
         if (
@@ -184,10 +188,14 @@ function useQuery<Data, Error>(
             fetchProps.value.isFetching
         )
             return;
-        window.addEventListener("online", async () => {
+        async function evt() {
             await refetch(clean);
-        });
-    }, []);
+        }
+        document.addEventListener("online", evt);
+        return () => {
+            document.removeEventListener("online", evt);
+        };
+    }, [refetch]);
 
     function restart() {
         fetchProps.value = {
@@ -204,7 +212,7 @@ function useQuery<Data, Error>(
         if (clean) {
             restart();
         }
-        await fetchEndpoint();
+        return await fetchEndpoint();
     }
 
     function transform(cb: (data: Data) => Data) {
