@@ -161,7 +161,7 @@ function Millones(num: number) {
  */
 function numeroALetras(
     num: number,
-    isMoney: boolean = true,
+    isMoney: boolean = false,
     moneda?: {
         Monedasingular?: string;
         Monedaplural?: string;
