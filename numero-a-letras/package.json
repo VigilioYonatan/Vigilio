@@ -18,8 +18,7 @@
     "files": [
         "dist",
         "LICENSE",
-        "README.md",
-        "./logo.png"
+        "README.md"
     ],
     "keywords": [
         "typescript",
