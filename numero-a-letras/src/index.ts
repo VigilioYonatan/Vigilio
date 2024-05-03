@@ -196,7 +196,7 @@ function numeroALetras(
     };
 
     if (data.centavos > 0)
-        data.letrasCentavos = `${isInvoice ? "" : "CON "}${(function () {
+        data.letrasCentavos = `${isInvoice ? " " : "CON "}${(function () {
             if (data.centavos > 9)
                 return isInvoice
                     ? data.centavos + "/100 " + data.letrasMonedaPlural
@@ -213,22 +213,25 @@ function numeroALetras(
 
     let resultado: string;
     if (data.enteros == 0)
-        resultado =
-            "CERO " + data.letrasMonedaPlural + " " + data.letrasCentavos;
+        resultado = isInvoice
+            ? "CERO" + data.letrasCentavos
+            : "CERO " + data.letrasMonedaPlural + " " + data.letrasCentavos;
     if (data.enteros == 1)
-        resultado =
-            Millones(data.enteros) +
-            " " +
-            data.letrasMonedaSingular +
-            " " +
-            data.letrasCentavos;
+        resultado = isInvoice
+            ? Millones(data.enteros) + data.letrasCentavos
+            : Millones(data.enteros) +
+              " " +
+              data.letrasMonedaSingular +
+              " " +
+              data.letrasCentavos;
     else
-        resultado =
-            Millones(data.enteros) +
-            " " +
-            data.letrasMonedaPlural +
-            " " +
-            data.letrasCentavos;
+        resultado = isInvoice
+            ? Millones(data.enteros) + data.letrasCentavos
+            : Millones(data.enteros) +
+              " " +
+              data.letrasMonedaPlural +
+              " " +
+              data.letrasCentavos;
     return resultado.replaceAll("  ", " ");
 }
 export default numeroALetras;
