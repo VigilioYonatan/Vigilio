@@ -1,7 +1,7 @@
 {
-    "name": "@vigilio/sweet",
-    "version": "1.1.0",
-    "description": "this library is like sweet and toastify but optimized",
+    "name": "@vigilio/numeros-a-letras",
+    "version": "0.0.1",
+    "description": "Convert numbers a letters customizable - spanish",
     "main": "./dist/cjs/index.js",
     "module": "./dist/esm/index.js",
     "types": "./dist/esm/index.d.ts",
@@ -9,22 +9,6 @@
         ".": {
             "import": "./dist/esm/index.js",
             "require": "./dist/cjs/index.js"
-        },
-        "./sweet.min.css": {
-            "import": "./src/vigilio-sweet.min.css"
-        }
-    },
-    "typesVersions": {
-        "*": {
-            "react": [
-                "./dist/esm/react.d.ts"
-            ],
-            "vue": [
-                "./dist/esm/vue.d.ts"
-            ],
-            "sweet.min.css": [
-                "./src/vigilio-sweet.min.css"
-            ]
         }
     },
     "repository": {
@@ -34,16 +18,15 @@
     "files": [
         "dist",
         "LICENSE",
-        "README.md",
-        "./src/vigilio-sweet.min.css",
-        "./src/sweet.min.js"
+        "README.md"
     ],
     "keywords": [
         "typescript",
-        "sweet alert",
-        "modal",
-        "react",
-        "toastify"
+        "converir numeros a letras",
+        "español",
+        "soles",
+        "pesos",
+        "ligero"
     ],
     "scripts": {
         "build:esm": "tsc",
