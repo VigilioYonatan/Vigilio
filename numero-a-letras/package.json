@@ -1,0 +1,46 @@
+{
+    "name": "@vigilio/numeros-a-letras",
+    "version": "0.0.1",
+    "description": "Convert numbers a letters customizable - spanish",
+    "main": "./dist/cjs/index.js",
+    "module": "./dist/esm/index.js",
+    "types": "./dist/esm/index.d.ts",
+    "exports": {
+        ".": {
+            "import": "./dist/esm/index.js",
+            "require": "./dist/cjs/index.js"
+        }
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/VigilioYonatan/Vigilio/blob/main/sweetREADME.md"
+    },
+    "files": [
+        "dist",
+        "LICENSE",
+        "README.md"
+    ],
+    "keywords": [
+        "typescript",
+        "converir numeros a letras",
+        "español",
+        "soles",
+        "pesos",
+        "ligero"
+    ],
+    "scripts": {
+        "build:esm": "tsc",
+        "build:cjs": "tsc --module commonjs --outDir dist/cjs",
+        "build": "rimraf dist && bun build:esm && bun build:cjs",
+        "public": "bun build && npm publish"
+    },
+    "author": "Vigilio",
+    "license": "ISC",
+    "dependencies": {
+        "tslib": "^2.6.2"
+    },
+    "devDependencies": {
+        "rimraf": "^5.0.5",
+        "typescript": "^5.3.3"
+    }
+}
