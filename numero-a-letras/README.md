@@ -6,8 +6,6 @@ A simple library to convert number  to string money - custom money to spanish
 
 ### Getting Started
 
-### MODAL
-
 ```ts
 import numeroALetras from "@vigilio/numeros-a-letras";
 console.log(numeroALetras(1040.34)); // UN MIL CUARENTA CON TREINTA Y CUATRO
