@@ -1,6 +1,6 @@
 # NUMERO A LETRAS
 
-<img src="./logo.png" width="150"/>
+<img src="../logo.png" width="150"/>
 <br/>
 A simple library to convert number  to string money - custom money to spanish
 
@@ -9,7 +9,7 @@ A simple library to convert number  to string money - custom money to spanish
 ### MODAL
 
 ```ts
-import numeroALetras from "@vigilio/sweet";
+import numeroALetras from "@vigilio/numeros-a-letras";
 console.log(numeroALetras(1040.34)); // UN MIL CUARENTA CON TREINTA Y CUATRO
 console.log(numeroALetras(1040.34, true)); // UN MIL CUARENTA SOL CON TREINTA Y CUATRO CENTIMO
 console.log(numeroALetras(100.34, false)); // CIEN SOL CON TREINTA Y CUATRO CENTIMO
