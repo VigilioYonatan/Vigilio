@@ -38,7 +38,7 @@ export function astro(_props?: Client) {
                 };
             });
             req.$web = { ...responseV.web, technologies: clean };
-            next();
         }
+        next();
     };
 }
