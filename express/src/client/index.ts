@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { vite } from "./vite";
 import { formatDate, isActive } from "../helpers/helpers";
 import { Web } from "./app";
+import { astro } from "./astro";
 interface Client {
     file?: string;
     port?: number;
@@ -64,3 +65,4 @@ export function client(props?: Client) {
         next();
     };
 }
+export { astro };
