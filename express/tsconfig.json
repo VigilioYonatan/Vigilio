@@ -9,7 +9,6 @@
         "moduleResolution": "node",
         "noEmitOnError": true,
         "noImplicitAny": false,
-        "rootDir": ".",
         "inlineSourceMap": true,
         "target": "es6",
         "inlineSources": true,
@@ -17,7 +16,8 @@
         "pretty": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
-        "esModuleInterop": true
+        "esModuleInterop": true,
+        "rootDir": "./src"
     },
     "include": ["src", "src/**/*.ts"],
     "exclude": ["node_module"]
