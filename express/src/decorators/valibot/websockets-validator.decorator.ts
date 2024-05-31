@@ -1,4 +1,4 @@
-import { ObjectSchemaAsync, safeParseAsync } from "valibot";
+import { ObjectSchemaAsync } from "valibot";
 import { MiddlewareFunction } from "@decorators/socket/lib/src/middleware";
 import { validator } from "./validator";
 export function IoValidator(

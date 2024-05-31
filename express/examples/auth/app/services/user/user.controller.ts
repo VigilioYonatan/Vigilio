@@ -1,4 +1,4 @@
-import { Injectable } from "@decorators/di";
+import { Injectable } from "@vigilio/express-core";
 import {
     Controller,
     Delete,

@@ -1,4 +1,4 @@
-import { Injectable } from "@decorators/di";
+import { Injectable } from "@vigilio/express-core";
 import { Controller, Get, Req, Res } from "@decorators/express";
 import { NextFunction, Request, Response } from "express";
 import { UserEntity } from "../user/entities/user.entity";

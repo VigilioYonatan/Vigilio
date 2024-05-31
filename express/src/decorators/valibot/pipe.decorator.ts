@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import { attachMiddleware } from "@decorators/express";
 import { ObjectSchemaAsync, safeParseAsync } from "valibot";
+import { attachMiddleware } from "../../server";
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export function Pipe(schema: ObjectSchemaAsync<any>) {
     return function (
@@ -18,21 +18,25 @@ export function Pipe(schema: ObjectSchemaAsync<any>) {
                     let message: string | null = null;
                     try {
                         message =
-                            JSON.parse(data.issues[0].message) instanceof Array
+                            JSON.parse(
+                                (data as any).issues[0].message
+                            ) instanceof Array
                                 ? (req as any).t(
-                                      ...JSON.parse(data.issues[0].message)
+                                      ...JSON.parse(
+                                          (data as any).issues[0].message
+                                      )
                                   )
-                                : data.issues[0].message;
+                                : (data as any).issues[0].message;
                     } catch (error) {
-                        message = data.issues[0].message;
+                        message = (data as any).issues[0].message;
                     }
 
                     return res.status(400).json({
                         success: false,
                         message,
-                        body: data.issues[0].path
-                            ? data.issues[0].path[0].key
-                            : data.issues[0].validation,
+                        body: (data as any).issues[0].path
+                            ? (data as any).issues[0].path[0].key
+                            : (data as any).issues[0].validation,
                     });
                 }
                 req.params = data.data;

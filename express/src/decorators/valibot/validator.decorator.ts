@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { attachMiddleware } from "@decorators/express";
+import { attachMiddleware } from "../../server";
 import { safeParseAsync, ObjectSchemaAsync } from "valibot";
 
 export function Validator(schema: ObjectSchemaAsync<any>) {
@@ -17,20 +17,24 @@ export function Validator(schema: ObjectSchemaAsync<any>) {
                     let message: string | null = null;
                     try {
                         message =
-                            JSON.parse(data.issues[0].message) instanceof Array
+                            JSON.parse(
+                                (data as any).issues[0].message
+                            ) instanceof Array
                                 ? (req as any).t(
-                                      ...JSON.parse(data.issues[0].message)
+                                      ...JSON.parse(
+                                          (data as any).issues[0].message
+                                      )
                                   )
-                                : data.issues[0].message;
+                                : (data as any).issues[0].message;
                     } catch (error) {
-                        message = data.issues[0].message;
+                        message = (data as any).issues[0].message;
                     }
                     return res.status(400).json({
                         success: false,
                         message,
-                        body: data.issues[0].path
-                            ? data.issues[0].path[0].key
-                            : data.issues[0].validation,
+                        body: (data as any).issues[0].path
+                            ? (data as any).issues[0].path[0].key
+                            : (data as any).issues[0].validation,
                     });
                 }
                 req.body = data.data;

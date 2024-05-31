@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import { attachMiddleware } from "@decorators/express";
 import formidable, { File } from "formidable";
-import { ValidationProps } from "../helpers/upload.helper";
+import { attachMiddleware } from "../server";
 
 export function Upload() {
     return function (

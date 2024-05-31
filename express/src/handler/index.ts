@@ -1,4 +1,3 @@
-import type { ErrorMiddleware } from "@decorators/express";
 import type { NextFunction, Request, Response } from "express";
 export class NotFoundException extends Error {
     public readonly errorCode: number = 404;
@@ -31,7 +30,7 @@ export class InternalServerErrorException extends NotFoundException {
     public readonly errorCode: number = 500;
 }
 
-export class ServerErrorMiddleware implements ErrorMiddleware {
+export class ServerErrorMiddleware {
     use(error: Error, _req: Request, response: Response, next: NextFunction) {
         if (error instanceof NotFoundException) {
             return responseData(response, error);

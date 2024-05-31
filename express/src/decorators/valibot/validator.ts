@@ -4,10 +4,10 @@ export async function validator(schema: ObjectSchemaAsync<any>, body: any) {
     if (!data.success) {
         const errors = {
             success: false,
-            message: data.issues[0].message,
-            body: data.issues[0].path
-                ? data.issues[0].path[0].key
-                : data.issues[0].validation,
+            message: (data as any).issues[0].message,
+            body: (data as any).issues[0].path
+                ? (data as any).issues[0].path[0].key
+                : (data as any).issues[0].validation,
         };
 
         return errors;

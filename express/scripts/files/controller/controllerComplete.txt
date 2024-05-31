@@ -1,4 +1,4 @@
-import { Injectable } from "@decorators/di";
+import { Injectable } from "@vigilio/express-core";
 import { ${Props}Service } from "../services/${props}.service";
 import {
     Body,

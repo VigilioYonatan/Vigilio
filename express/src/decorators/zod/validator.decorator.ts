@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { attachMiddleware } from "@decorators/express";
+import { attachMiddleware } from "../../server";
 import * as z from "zod";
 
 export function Validator<T extends z.ZodType>(schema: T) {

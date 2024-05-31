@@ -6,7 +6,7 @@ import { ERROR_MIDDLEWARE, attachControllers } from "@decorators/express";
 import { enviroments } from "~/config/enviroments.config";
 import { connectDB } from "~/config/db.config";
 import { apiRouters } from "~/routers/api";
-import { Container } from "@decorators/di";
+import { Container } from "@vigilio/express-core";
 import { ServerErrorMiddleware } from "@vigilio/express-core/handler";
 import { logger } from "@vigilio/express-core/helpers";
 import { client } from "@vigilio/express-core/client";

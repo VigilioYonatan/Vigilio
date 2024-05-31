@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { attachMiddleware } from "@decorators/express";
+import { attachMiddleware } from "../../server";
 import * as z from "zod";
 import path from "node:path";
 
