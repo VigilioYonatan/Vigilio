@@ -10,7 +10,7 @@
         "noEmitOnError": true,
         "noImplicitAny": false,
         "inlineSourceMap": true,
-        "target": "es6",
+        "target": "ES2016",
         "inlineSources": true,
         "typeRoots": ["node_modules/@types"],
         "pretty": true,
