@@ -1,9 +1,6 @@
 import { ObjectSchemaAsync } from "valibot";
-import { MiddlewareFunction } from "@decorators/socket/lib/src/middleware";
 import { validator } from "./validator";
-export function IoValidator(
-    schema: ObjectSchemaAsync<any>
-): MiddlewareFunction {
+export function IoValidator(schema: ObjectSchemaAsync<any>) {
     return async (io, _socket, args, next: () => void) => {
         const body = args as { data: any; event: string };
         const data = await validator(schema, body.data);
@@ -14,9 +11,7 @@ export function IoValidator(
         next();
     };
 }
-export function SocketValidator(
-    schema: ObjectSchemaAsync<any>
-): MiddlewareFunction {
+export function SocketValidator(schema: ObjectSchemaAsync<any>) {
     return async (_io, socket, args, next: () => void) => {
         const body = args as { data: any; event: string };
         const data = await validator(schema, body.data);

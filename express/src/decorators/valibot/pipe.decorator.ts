@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { ObjectSchemaAsync, safeParseAsync } from "valibot";
-import { attachMiddleware } from "../../server";
+import { attachMiddleware } from "../../server/express";
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export function Pipe(schema: ObjectSchemaAsync<any>) {
     return function (

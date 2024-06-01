@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import formidable, { File } from "formidable";
-import { attachMiddleware } from "../server";
+import { attachMiddleware } from "../server/express";
 
 export function Upload() {
     return function (

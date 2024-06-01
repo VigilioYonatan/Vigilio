@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import { attachMiddleware } from "../../server";
 import { safeParseAsync, ObjectSchemaAsync } from "valibot";
+import { attachMiddleware } from '../../server/express/express';
 
 export function Validator(schema: ObjectSchemaAsync<any>) {
     return function (

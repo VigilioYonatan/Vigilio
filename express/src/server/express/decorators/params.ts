@@ -1,20 +1,20 @@
-import { type ExpressMeta, ParameterType, getMeta } from "../meta";
+import { ExpressMeta, ParameterType, getMeta } from '../meta';
 
 /**
  * Parameter decorator factory, creates parameter decorator
  */
 function decoratorFactory(type: ParameterType) {
-    return function (name?: string): any {
-        return function (target: object, methodName: string, index: number) {
-            const meta: ExpressMeta = getMeta(target);
+  return function (name?: string): ParameterDecorator {
+    return function (target: object, methodName: string, index: number) {
+      const meta: ExpressMeta = getMeta(target);
 
-            if (meta.params[methodName] === undefined) {
-                meta.params[methodName] = [];
-            }
+      if (meta.params[methodName] === undefined) {
+        meta.params[methodName] = [];
+      }
 
-            meta.params[methodName].push({ index, type, name });
-        };
+      meta.params[methodName].push({ index, type, name });
     };
+  };
 }
 
 /**
@@ -66,13 +66,3 @@ export const Headers = decoratorFactory(ParameterType.HEADERS);
  * Express req.body object or single cookies param, if cookies param name was specified
  */
 export const Cookies = decoratorFactory(ParameterType.COOKIES);
-
-/**
- * Express req.information  - get information web
- */
-export const Information = decoratorFactory(ParameterType.INFORMATION);
-
-/**
- * Express req.user  - get information web
- */
-export const User = decoratorFactory(ParameterType.USER);

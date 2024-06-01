@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
-import { attachMiddleware } from "../../server";
 import * as z from "zod";
 import path from "node:path";
+import { attachMiddleware } from "../../server/express";
 
 export function Pipe<T extends z.ZodRawShape>(cb: (zod: typeof z) => T) {
     return function (
