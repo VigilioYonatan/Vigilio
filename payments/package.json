@@ -1,0 +1,45 @@
+{
+    "name": "@vigilio/payments",
+    "version": "0.0.1",
+    "description": "Payments niubiz, paypal, etc.",
+    "main": "./dist/cjs/index.js",
+    "module": "./dist/esm/index.js",
+    "types": "./dist/esm/index.d.ts",
+    "exports": {
+        ".": {
+            "import": "./dist/esm/index.js",
+            "require": "./dist/cjs/index.js"
+        }
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/VigilioYonatan/Vigilio/blob/main/numero-a-letras/README.md"
+    },
+    "files": [
+        "dist",
+        "LICENSE",
+        "README.md"
+    ],
+    "keywords": [
+        "typescript",
+        "niubiz",
+        "paypal",
+        "soles",
+        "ligero"
+    ],
+    "scripts": {
+        "build:esm": "tsc",
+        "build:cjs": "tsc --module commonjs --outDir dist/cjs",
+        "build": "rimraf dist && bun build:esm && bun build:cjs",
+        "public": "bun build && npm publish"
+    },
+    "author": "Vigilio",
+    "license": "ISC",
+    "dependencies": {
+        "tslib": "^2.6.2"
+    },
+    "devDependencies": {
+        "rimraf": "^5.0.5",
+        "typescript": "^5.3.3"
+    }
+}
