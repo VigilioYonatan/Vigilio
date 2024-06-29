@@ -66,3 +66,5 @@ export const Headers = decoratorFactory(ParameterType.HEADERS);
  * Express req.body object or single cookies param, if cookies param name was specified
  */
 export const Cookies = decoratorFactory(ParameterType.COOKIES);
+export const Information = decoratorFactory(ParameterType.INFORMATION);
+export const User = decoratorFactory(ParameterType.USER);

@@ -1,6 +1,6 @@
-import { RouterOptions } from 'express';
+import { RouterOptions } from "express";
 
-import { Middleware } from './middleware';
+import { Middleware } from "./middleware";
 
 /**
  * All possible parameter decorator types
@@ -9,14 +9,16 @@ import { Middleware } from './middleware';
  * @enum {number}
  */
 export enum ParameterType {
-  REQUEST,
-  RESPONSE,
-  PARAMS,
-  QUERY,
-  BODY,
-  HEADERS,
-  COOKIES,
-  NEXT
+    REQUEST,
+    RESPONSE,
+    PARAMS,
+    QUERY,
+    BODY,
+    HEADERS,
+    COOKIES,
+    NEXT,
+    INFORMATION,
+    USER,
 }
 
 /**
@@ -26,10 +28,10 @@ export enum ParameterType {
  * @interface ParameterConfiguration
  */
 export interface ParameterConfiguration {
-  index: number;
-  type: ParameterType;
-  name?: string;
-  data?: any;
+    index: number;
+    type: ParameterType;
+    name?: string;
+    data?: any;
 }
 
 /**
@@ -39,17 +41,17 @@ export interface ParameterConfiguration {
  * @interface Route
  */
 export interface Route {
-  method: string;
-  url: string;
-  middleware: Middleware[];
+    method: string;
+    url: string;
+    middleware: Middleware[];
 }
 
 /**
  * Method metadata object
  */
 export interface MethodMeta {
-  routes: Route[];
-  status?: number;
+    routes: Route[];
+    status?: number;
 }
 
 /**
@@ -59,19 +61,19 @@ export interface MethodMeta {
  * @interface ExpressMeta
  */
 export interface ExpressMeta {
-  url: string;
+    url: string;
 
-  routerOptions?: RouterOptions;
+    routerOptions?: RouterOptions;
 
-  routes: {
-    [instanceMethodName: string]: MethodMeta;
-  };
+    routes: {
+        [instanceMethodName: string]: MethodMeta;
+    };
 
-  middleware: Middleware[];
+    middleware: Middleware[];
 
-  params: {
-    [key: string]: ParameterConfiguration[];
-  };
+    params: {
+        [key: string]: ParameterConfiguration[];
+    };
 }
 
 /**
@@ -81,7 +83,7 @@ export interface ExpressMeta {
  * @interface ExpressMeta
  */
 export interface ExpressClass {
-  __express_meta__?: ExpressMeta;
+    __express_meta__?: ExpressMeta;
 }
 
 /**
@@ -91,13 +93,13 @@ export interface ExpressClass {
  * @returns {ExpressMeta}
  */
 export function getMeta(target: ExpressClass): ExpressMeta {
-  if (!target.__express_meta__) {
-    target.__express_meta__ = {
-      url: '',
-      middleware: [],
-      routes: {},
-      params: {},
-    };
-  }
-  return target.__express_meta__;
+    if (!target.__express_meta__) {
+        target.__express_meta__ = {
+            url: "",
+            middleware: [],
+            routes: {},
+            params: {},
+        };
+    }
+    return target.__express_meta__;
 }

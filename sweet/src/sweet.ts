@@ -68,7 +68,14 @@ function sweetModal(
                 {
                     className: "modal vigilio-modal-show",
                     onclick: (e) => {
-                        e.stopPropagation();
+                        if (
+                            !(e.currentTarget as HTMLDivElement).contains(
+                                e.target as Node
+                            )
+                        ) {
+                            onClose();
+                            res({ isConfirmed: false });
+                        }
                     },
                 },
                 html
