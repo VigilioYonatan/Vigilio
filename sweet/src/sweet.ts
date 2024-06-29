@@ -56,8 +56,8 @@ function sweetModal(
                         hiddeBackground ? "" : backgroundStyle
                     }`,
                 } as CSSStyleDeclaration,
-                onclick: () => {
-                    if (isCloseInBackground) {
+                onclick: (e) => {
+                    if (e.target === e.currentTarget && isCloseInBackground) {
                         onClose();
                         res({ isConfirmed: false });
                     }
@@ -67,16 +67,6 @@ function sweetModal(
                 "div",
                 {
                     className: "modal vigilio-modal-show",
-                    onclick: (e) => {
-                        if (
-                            !(e.currentTarget as HTMLDivElement).contains(
-                                e.target as Node
-                            )
-                        ) {
-                            onClose();
-                            res({ isConfirmed: false });
-                        }
-                    },
                 },
                 html
                     ? [
