@@ -1,6 +1,6 @@
 {
     "name": "@vigilio/valibot",
-    "version": "0.0.1",
+    "version": "0.0.3",
     "description": "form validation valibot - spanish.",
     "main": "./dist/cjs/index.js",
     "module": "./dist/esm/index.js",
