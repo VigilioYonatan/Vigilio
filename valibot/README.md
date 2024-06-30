@@ -82,3 +82,9 @@ export const usersStoreDto = omit(
 # MORE INFORMATION
 
 https://valibot.dev/guides/introduction/ -- i recommend find 0.20.1 version
+
+### REACT HOOK FORM RESOLVER
+
+```
+
+```

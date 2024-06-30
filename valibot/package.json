@@ -9,6 +9,17 @@
         ".": {
             "import": "./dist/esm/index.js",
             "require": "./dist/cjs/index.js"
+        },
+        "./resolver": {
+            "import": "./dist/esm/resolver/index.js",
+            "require": "./dist/cjs/resolver/index.js"
+        }
+    },
+    "typesVersions": {
+        "*": {
+            "resolver": [
+                "./dist/esm/resolver/index.d.ts"
+            ]
         }
     },
     "repository": {
@@ -38,6 +49,7 @@
     "author": "Vigilio",
     "license": "ISC",
     "dependencies": {
+        "@hookform/resolvers": "3.4.2",
         "tslib": "^2.6.2"
     },
     "devDependencies": {
