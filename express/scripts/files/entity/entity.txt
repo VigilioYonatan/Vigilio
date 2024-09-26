@@ -1,0 +1,6 @@
+import { Column, DataType, Table,Model } from "sequelize-typescript";
+
+@Table
+export class ${Props} extends Model{
+   
+}

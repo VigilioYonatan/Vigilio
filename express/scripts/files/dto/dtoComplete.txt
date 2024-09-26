@@ -1,0 +1,36 @@
+import { ${Props} } from "../entities/${props}.entity";
+import { ${props}Schema } from "../schemas/${props}.schema";
+import * as z from "zod";
+
+export const ${props}StoreDto = ${props}Schema
+    .omit({ id: true })
+    .superRefine(async ({ name, slug }, ctx) => {
+        const [byName, bySlug] = await Promise.all([
+            ${Props}.findOne({
+                where: {
+                    name,
+                },
+                raw: true,
+            }),
+            ${Props}.findOne({
+                where: {
+                    slug,
+                },
+                raw: true,
+            }),
+        ]);
+        if (byName) {
+            return ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: `Ya existe el user con el nombre ${name}`,
+            });
+        }
+        if (bySlug) {
+            return ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: `Ya existe el user con el slug ${slug}`,
+            });
+        }
+    });
+
+export type ${Props}StoreDto = z.infer<typeof ${props}StoreDto>;

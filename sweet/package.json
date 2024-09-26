@@ -1,0 +1,63 @@
+{
+    "name": "@vigilio/sweet",
+    "version": "1.1.2",
+    "description": "this library is like sweet and toastify but optimized",
+    "main": "./dist/cjs/index.js",
+    "module": "./dist/esm/index.js",
+    "types": "./dist/esm/index.d.ts",
+    "exports": {
+        ".": {
+            "import": "./dist/esm/index.js",
+            "require": "./dist/cjs/index.js"
+        },
+        "./sweet.min.css": {
+            "import": "./src/vigilio-sweet.min.css"
+        }
+    },
+    "typesVersions": {
+        "*": {
+            "react": [
+                "./dist/esm/react.d.ts"
+            ],
+            "vue": [
+                "./dist/esm/vue.d.ts"
+            ],
+            "sweet.min.css": [
+                "./src/vigilio-sweet.min.css"
+            ]
+        }
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/VigilioYonatan/Vigilio/blob/main/sweetREADME.md"
+    },
+    "files": [
+        "dist",
+        "LICENSE",
+        "README.md",
+        "./src/vigilio-sweet.min.css",
+        "./src/sweet.min.js"
+    ],
+    "keywords": [
+        "typescript",
+        "sweet alert",
+        "modal",
+        "react",
+        "toastify"
+    ],
+    "scripts": {
+        "build:esm": "tsc",
+        "build:cjs": "tsc --module commonjs --outDir dist/cjs",
+        "build": "rimraf dist && bun build:esm && bun build:cjs",
+        "public": "bun build && npm publish"
+    },
+    "author": "Vigilio",
+    "license": "ISC",
+    "dependencies": {
+        "tslib": "^2.6.2"
+    },
+    "devDependencies": {
+        "rimraf": "^5.0.5",
+        "typescript": "^5.3.3"
+    }
+}

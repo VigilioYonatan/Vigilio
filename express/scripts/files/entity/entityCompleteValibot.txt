@@ -1,0 +1,19 @@
+import { Column, DataType, Table,Model } from "sequelize-typescript";
+import { ${Props}EntitySchema } from "../schemas/${props}.schema";
+
+@Table
+export class ${Props}  extends Model implements ${Props}EntitySchema{
+    @Column({
+        allowNull: false,
+        unique: true,
+        type: DataType.STRING,
+    })
+    name: string;
+
+    @Column({
+        allowNull: false,
+        unique: true,
+        type: DataType.STRING,
+    })
+    slug: string;
+}

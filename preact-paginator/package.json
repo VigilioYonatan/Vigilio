@@ -1,0 +1,32 @@
+{
+    "name": "@vigilio/preact-paginator",
+    "version": "0.0.10",
+    "description": "this is a paginator library to preact",
+    "main": "./dist/cjs/index.js",
+    "module": "./dist/esm/index.js",
+    "types": "./dist/esm/index.d.ts",
+    "peerDependencies": {
+        "preact": ">=10"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/VigilioYonatan/Vigilio/tree/main/preact-paginator#readme"
+    },
+    "files": [
+        "dist",
+        "LICENSE",
+        "README.md"
+    ],
+    "keywords": [
+        "preact",
+        "typescript",
+        "preact-paginator"
+    ],
+    "scripts": {
+        "build:esm": "tsc",
+        "build:cjs": "tsc --module commonjs --outDir dist/cjs",
+        "build": "pnpm build:esm && pnpm build:cjs"
+    },
+    "author": "Vigilio",
+    "license": "ISC"
+}

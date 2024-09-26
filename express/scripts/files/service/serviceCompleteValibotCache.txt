@@ -1,0 +1,120 @@
+import { Injectable } from "@vigilio/express-core";
+import { ${Props} } from "../entities/${props}.entity";
+import {
+    BadRequestException,
+    NotFoundException,
+} from "@vigilio/express-core/handler";
+import { ${Props}StoreDto } from "../dtos/${props}.store.dto";
+import { ${Props}UpdateDto } from "../dtos/${props}.update.dto";
+import { Op } from "sequelize";
+import cache from "@vigilio/express-core/cache";
+
+export function ${props}Cache() {
+    return "${props}";
+}
+@Injectable()
+export class ${Props}ApiService {
+    async index() {
+         let data: string | null | ${Props}[] = JSON.parse(
+            cache.get(${props}Cache()) || "null"
+        );
+         if (!data) {
+            data = await ${Props}.findAll();
+            cache.set(${props}Cache(), JSON.stringify(data));
+         }
+        return {
+            success: true,
+            data,
+        };
+    }
+
+    async show(slug: string) {
+         let ${prop} = JSON.parse(
+            cache.get(`${${props}Cache()}/${slug}`) || "null"
+        );
+        if(!${prop}){
+            // verify that slug is id o slug
+            if (!Number.isNaN(Number(slug))) {
+                ${prop} = await ${Props}.findByPk(slug);
+            }else{
+                ${prop} = await ${Props}.findOne({where:{
+                    slug
+                }});
+            }
+            if (!${prop})
+                throw new NotFoundException(`No se encontró un ${prop} con ${slug}`);
+        }
+         cache.set(
+            `${${props}Cache()}/${${prop}.id}`,
+            JSON.stringify(${prop})
+        );
+        cache.set(
+            `${${props}Cache()}/${${prop}.slug}`,
+            JSON.stringify(${prop})
+        );
+        return {
+            success: true,
+            ${prop},
+        };
+    }
+
+    async store(${props}StoreDto: ${Props}StoreDto) {
+        const ${prop} = new ${Props}(${props}StoreDto);
+        await ${prop}.save();
+        cache.delete(${props}Cache());
+        return {
+            success: true,
+            ${prop},
+        };
+    }
+
+    async update(id: string, ${props}UpdateDto: ${Props}UpdateDto) {
+        const { ${prop} } = await this.show(id);
+       		const [existByName, existBySlug] = await Promise.all([
+			${Props}.findOne({
+				where: {
+					name: ${props}UpdateDto.name,
+					id: { [Op.not]: id },
+				},
+				raw: true,
+			}),
+			${Props}.findOne({
+				where: {
+					slug: ${props}UpdateDto.slug,
+					id: { [Op.not]: id },
+				},
+				raw: true,
+			}),
+		]);
+        if (existByName) {
+			throw new BadRequestException(
+				`Este ${prop} con el nombre ${${props}UpdateDto.name} ya existe`,{body:"name"}
+			);
+		}
+		if (existBySlug) {
+			throw new BadRequestException(
+				`Este ${prop} con el slug ${${props}UpdateDto.slug} ya existe`,{body:"slug"}
+			);
+		}
+        cache.delete(`${${props}Cache()}/${${prop}.id}`);
+        cache.delete(`${${props}Cache()}/${${prop}.slug}`);
+        await ${prop}.update(${props}UpdateDto);
+        cache.delete(${props}Cache());
+        return {
+            success: true,
+            ${prop},
+        };
+    }
+
+    async destroy(id: string) {
+        const { ${prop} } = await this.show(id);
+        cache.delete(`${${props}Cache()}/${${prop}.id}`);
+        cache.delete(`${${props}Cache()}/${${prop}.slug}`);
+        cache.delete(${props}Cache());
+        await ${prop}.destroy();
+        return {
+            success: true,
+            message: `El ${prop} con el id: ${id} fue eliminado`,
+        };
+    }
+}

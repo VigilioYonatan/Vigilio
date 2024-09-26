@@ -1,0 +1,59 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    dependencies:
+      '@preact/signals':
+        specifier: ^1.2.3
+        version: 1.2.3(preact@10.22.0)
+      preact:
+        specifier: '>=10'
+        version: 10.22.0
+      tslib:
+        specifier: ^2.6.2
+        version: 2.6.2
+    devDependencies:
+      typescript:
+        specifier: ^5.4.5
+        version: 5.4.5
+
+packages:
+
+  '@preact/signals-core@1.6.0':
+    resolution: {integrity: sha512-O/XGxwP85h1F7+ouqTMOIZ3+V1whfaV9ToIVcuyGriD4JkSD00cQo54BKdqjvBJxbenvp7ynfqRHEwI6e+NIhw==}
+
+  '@preact/signals@1.2.3':
+    resolution: {integrity: sha512-M2DXse3Wi8HwjI1d2vQWOLJ3lHogvqTsJYvl4ofXRXgMFQzJ7kmlZvlt5i8x5S5VwgZu0ghru4HkLqOoFfU2JQ==}
+    peerDependencies:
+      preact: 10.x
+
+  preact@10.22.0:
+    resolution: {integrity: sha512-RRurnSjJPj4rp5K6XoP45Ui33ncb7e4H7WiOHVpjbkvqvA3U+N8Z6Qbo0AE6leGYBV66n8EhEaFixvIu3SkxFw==}
+
+  tslib@2.6.2:
+    resolution: {integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==}
+
+  typescript@5.4.5:
+    resolution: {integrity: sha512-vcI4UpRgg81oIRUFwR0WSIHKt11nJ7SAVlYNIu+QpqeyXP+gpQJy/Z4+F0aGxSE4MqwjyXvW/TzgkLAx2AGHwQ==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+
+snapshots:
+
+  '@preact/signals-core@1.6.0': {}
+
+  '@preact/signals@1.2.3(preact@10.22.0)':
+    dependencies:
+      '@preact/signals-core': 1.6.0
+      preact: 10.22.0
+
+  preact@10.22.0: {}
+
+  tslib@2.6.2: {}
+
+  typescript@5.4.5: {}

@@ -1,0 +1,65 @@
+import { Injectable,Body,Controller,Delete, Get,Params,Post,Put,Status, } from "@vigilio/express-core";
+import { ${Props}ApiService } from "../services/${props}.api.service";
+import { Pipe, Validator } from "@vigilio/express-core/valibot";
+import { ${Props}StoreDto, ${props}StoreDto } from "../dtos/${props}.store.dto";
+import { ${Props}UpdateDto, ${props}UpdateDto } from "../dtos/${props}.update.dto";
+import { objectAsync, string } from "@vigilio/valibot";
+
+@Injectable()
+@Controller("/${props}")
+export class ${Props}ApiController {
+    constructor(private readonly ${props}ApiService: ${Props}ApiService) {}
+
+    @Get("/")
+    async index() {
+        const result = await this.${props}ApiService.index();
+        return result;
+    }
+
+     @Pipe(
+        objectAsync({
+            slug: string(),
+        })
+    )
+    @Get("/:slug")
+    async show(@Params("slug") slug: string) {
+        const result = await this.${props}ApiService.show(slug);
+        return result;
+    }
+
+    @Validator(${props}StoreDto)
+    @Status(201)
+    @Post("/")
+    async store(@Body() body: ${Props}StoreDto) {
+        const result = await this.${props}ApiService.store(body);
+        return result;
+    }
+
+    @Pipe(
+        objectAsync({
+            id: string(),
+        })
+    )
+    @Validator(${props}UpdateDto)
+    @Status(200)
+    @Put("/:id")
+    async update(
+        @Params("id") id: string,
+        @Body() body: ${Props}UpdateDto
+    ) {
+        const result = await this.${props}ApiService.update(id,body);
+        return result;
+    }
+
+      @Pipe(
+        objectAsync({
+            id: string(),
+        })
+    )
+    @Status(201)
+    @Delete("/:id")
+    async destroy(@Params("id") id: string) {
+        const result = await this.${props}ApiService.destroy(id);
+        return result;
+    }
+}

@@ -1,0 +1,25 @@
+{
+    "include": ["src"],
+    "exclude": ["dist", "node_modules", "src/table"],
+    "compilerOptions": {
+        "module": "esnext",
+        "lib": ["DOM", "DOM.Iterable", "ESNext"],
+        "importHelpers": true,
+        "declaration": true,
+        "sourceMap": true,
+        "rootDir": "./src",
+        "outDir": "./dist/esm",
+        "strict": true,
+        "noFallthroughCasesInSwitch": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "moduleResolution": "node",
+        "jsx": "preserve",
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "paths": {
+            "tslib": ["./node_modules/tslib/tslib.d.ts"]
+        }
+    }
+}

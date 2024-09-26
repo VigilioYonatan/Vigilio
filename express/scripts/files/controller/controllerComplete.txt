@@ -1,0 +1,58 @@
+import { Injectable, Body, Controller, Delete, Get, Params, Post, Put, Status } from "@vigilio/express-core";
+import { ${Props}Service } from "../services/${props}.service";
+import { Validator, Pipe } from "@vigilio/express-core/zod";
+import { ${Props}StoreDto, ${props}StoreDto } from "../dtos/${props}.store.dto";
+import { ${Props}UpdateDto, ${props}UpdateDto } from "../dtos/${props}.update.dto";
+
+@Injectable()
+@Controller("/${props}")
+export class ${Props}ApiController {
+    constructor(private readonly ${props}Service: ${Props}Service) {}
+
+    @Get("/")
+    async index() {
+        const result = await this.${props}Service.index();
+        return result;
+    }
+
+    @Pipe((z) => ({
+        slug: z.string(),
+    }))
+    @Get("/:slug")
+    async show(@Params("slug") slug: string) {
+        const result = await this.${props}Service.show(slug);
+        return result;
+    }
+
+    @Validator(${props}StoreDto)
+    @Status(201)
+    @Post("/")
+    async store(@Body() ${props}StoreDto: ${Props}StoreDto) {
+        const result = await this.${props}Service.store(${props}StoreDto);
+        return result;
+    }
+
+    @Pipe((z) => ({
+        id: z.string(),
+    }))
+    @Validator(${props}UpdateDto)
+    @Status(200)
+    @Put("/:id")
+    async update(
+        @Params("id") id: string,
+        @Body() ${props}UpdateDto: ${Props}UpdateDto
+    ) {
+        const result = await this.${props}Service.update(id, ${props}UpdateDto);
+        return result;
+    }
+
+    @Pipe((z) => ({
+        id: z.string(),
+    }))
+    @Status(204)
+    @Delete("/:id")
+    async destroy(@Params("id") id: string) {
+        const result = await this.${props}Service.destroy(id);
+        return result;
+    }
+}

@@ -1,0 +1,73 @@
+import { Injectable } from "@vigilio/express-core";
+import { ${Props} } from "../entities/${props}.entity";
+import {
+    BadRequestException,
+    NotFoundException,
+} from "@vigilio/express-core/handler";
+import { ${Props}StoreDto } from "../dtos/${props}.store.dto";
+import { ${Props}UpdateDto } from "../dtos/${props}.update.dto";
+
+@Injectable()
+export class ${Props}ApiService {
+    async index() {
+        const data = await ${Props}.findAll({ raw: true });
+        return {
+            success: true,
+            data,
+        };
+    }
+
+    async show(slug: string) {
+        let ${prop} = await ${Props}.findByPk(slug);
+        if (!${prop}) {
+            ${prop} = await ${Props}.findOne({
+                where: {
+                    slug,
+                },
+            });
+        }
+        if (!${prop})
+            throw new NotFoundException(`No se encontró un ${prop} con ${slug}`);
+        return {
+            success: true,
+            ${prop},
+        };
+    }
+
+    async store(${props}StoreDto: ${Props}StoreDto) {
+        const ${prop} = new ${Props}(${props}StoreDto);
+        await ${prop}.save();
+
+        return {
+            success: true,
+            ${prop},
+        };
+    }
+
+    async update(id: string, ${props}UpdateDto: ${Props}UpdateDto) {
+        const { ${prop} } = await this.show(id);
+        if (${prop}.name === ${props}UpdateDto.name)
+            throw new BadRequestException(
+                `Este ${prop} con el nombre ${props}UpdateDto.name ya existe`
+            );
+        if (${prop}.slug === ${props}UpdateDto.slug) {
+            throw new BadRequestException(
+                `Este ${prop} con el slug ${props}UpdateDto.name ya existe`
+            );
+        }
+        await ${prop}.update(${props}UpdateDto);
+        return {
+            success: true,
+            ${prop},
+        };
+    }
+
+    async destroy(id: string) {
+        const { ${prop} } = await this.show(id);
+        await ${prop}.destroy();
+        return {
+            success: true,
+            message: `El ${prop} con el id ${id} fue eliminado`,
+        };
+    }
+}

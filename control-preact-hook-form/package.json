@@ -1,0 +1,40 @@
+{
+    "name": "@vigilio/control-preact-hook-form",
+    "version": "0.0.1",
+    "description": "this is a library to fetch in preact",
+    "main": "./dist/cjs/index.js",
+    "module": "./dist/esm/index.js",
+    "types": "./dist/esm/index.d.ts",
+    "peerDependencies": {
+        "preact": ">=10"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/VigilioYonatan/Vigilio/tree/main/preact-fetching"
+    },
+    "files": [
+        "dist",
+        "LICENSE",
+        "README.md"
+    ],
+    "keywords": [
+        "preact",
+        "typescript",
+        "react-hook-form"
+    ],
+    "scripts": {
+        "build:esm": "tsc",
+        "build:cjs": "tsc --module commonjs --outDir dist/cjs",
+        "build": "pnpm build:esm && pnpm build:cjs"
+    },
+    "author": "Vigilio",
+    "license": "ISC",
+    "devDependencies": {
+        "preact": "^10.13.2",
+        "tslib": "^2.6.0",
+        "typescript": "^5.0.4"
+    },
+    "dependencies": {
+        "react-hook-form": "^7.48.2"
+    }
+}

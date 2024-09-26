@@ -1,0 +1,35 @@
+{
+    "name": "@vigilio/preact-fetching",
+    "version": "2.0.15",
+    "description": "this is a library to fetch in preact",
+    "main": "./dist/cjs/index.js",
+    "module": "./dist/esm/index.js",
+    "types": "./dist/esm/index.d.ts",
+    "peerDependencies": {
+        "preact": ">=10"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/VigilioYonatan/Vigilio/tree/main/preact-fetching"
+    },
+    "files": [
+        "dist",
+        "LICENSE",
+        "README.md"
+    ],
+    "keywords": [
+        "preact",
+        "typescript",
+        "preact-fetching",
+        "react-query",
+        "swr",
+        "syncronize"
+    ],
+    "scripts": {
+        "build:esm": "tsc",
+        "build:cjs": "tsc --module commonjs --outDir dist/cjs",
+        "build": "bun run build:esm && bun run build:cjs"
+    },
+    "author": "Vigilio",
+    "license": "ISC"
+}

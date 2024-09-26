@@ -1,0 +1,8 @@
+import { ${Props}Entity } from "../entities/${props}.entity";
+import { ${props}Schema } from "../schemas/${props}.schema";
+import * as z from "zod";
+
+export const ${props}StoreDto = ${props}Schema
+    .omit({ id: true });
+
+export type ${Props}StoreDto = z.infer<typeof ${props}StoreDto>;

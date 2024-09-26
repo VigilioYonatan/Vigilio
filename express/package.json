@@ -1,0 +1,98 @@
+{
+    "name": "@vigilio/express-core",
+    "version": "1.9.23",
+    "main": "dist/cjs/index.js",
+    "module": "dist/esm/index.js",
+    "types": "dist/esm/index.d.ts",
+    "description": "express decorators api",
+    "bin": {
+        "vigilio": "./scripts/main.js"
+    },
+    "exports": {
+        ".": {
+            "import": "./dist/esm/index.js",
+            "require": "./dist/cjs/index.js"
+        },
+        "./package.json": "./package.json",
+        "./zod": {
+            "import": "./dist/esm/decorators/zod/index.js",
+            "require": "./dist/cjs/decorators/zod/index.js"
+        },
+        "./valibot": {
+            "import": "./dist/esm/decorators/valibot/index.js",
+            "require": "./dist/cjs/decorators/valibot/index.js"
+        },
+        "./helpers": {
+            "import": "./dist/esm/helpers/index.js",
+            "require": "./dist/cjs/helpers/index.js"
+        },
+        "./handler": {
+            "import": "./dist/esm/handler/index.js",
+            "require": "./dist/cjs/handler/index.js"
+        },
+        "./cache": {
+            "import": "./dist/esm/cache/index.js",
+            "require": "./dist/cjs/cache/index.js"
+        },
+        "./client": {
+            "import": "./dist/esm/client/index.js",
+            "require": "./dist/cjs/client/index.js"
+        },
+        "./i18next": {
+            "import": "./dist/esm/i18next/index.js",
+            "require": "./dist/cjs/i18next/index.js"
+        }
+    },
+    "typesVersions": {
+        "*": {
+            "helpers": [
+                "./dist/esm/helpers/index.d.ts"
+            ],
+            "handler": [
+                "./dist/esm/handler/index.d.ts"
+            ],
+            "cache": [
+                "./dist/esm/cache/index.d.ts"
+            ],
+            "client": [
+                "./dist/esm/client/index.d.ts"
+            ],
+            "valibot": [
+                "./dist/esm/decorators/valibot/index.d.ts"
+            ],
+            "zod": [
+                "./dist/esm/decorators/zod/index.d.ts"
+            ],
+            "i18next": [
+                "./dist/esm/i18next/index.d.ts"
+            ]
+        }
+    },
+    "scripts": {
+        "build:esm": "tsc",
+        "build:cjs": "tsc --module commonjs --outDir dist/cjs",
+        "build": "rimraf dist && pnpm build:esm && pnpm build:cjs",
+        "public": "pnpm build && npm publish"
+    },
+    "peerDependencies": {
+        "express": ">=4"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/VigilioYonatan/Vigilio/tree/main/preact-table#readme"
+    },
+    "files": [
+        "dist",
+        "LICENSE",
+        "README.md",
+        "scripts",
+        "locales"
+    ],
+    "keywords": [
+        "nest js",
+        "express",
+        "sequelize",
+        "framework"
+    ],
+    "license": "ISC"
+}

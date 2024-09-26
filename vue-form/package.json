@@ -1,0 +1,58 @@
+{
+    "name": "@vigilio/vue-form",
+    "version": "2.1.11",
+    "description": "Now you can use this vue form library",
+    "main": "./dist/cjs/index.js",
+    "module": "./dist/esm/index.js",
+    "types": "./dist/esm/index.d.ts",
+    "exports": {
+        ".": {
+            "import": "./dist/esm/index.js",
+            "require": "./dist/cjs/index.js"
+        },
+        "./package.json": "./package.json",
+        "./resolvers/zod": {
+            "import": "./dist/esm/resolvers/zod.js",
+            "require": "./dist/cjs/resolvers/zod.js"
+        },
+        "./resolvers/valibot": {
+            "import": "./dist/esm/resolvers/valibot.js",
+            "require": "./dist/cjs/resolvers/valibot.js"
+        }
+    },
+    "typesVersions": {
+        "*": {
+            "resolvers/zod": [
+                "./dist/esm/resolvers/zod.d.ts"
+            ],
+            "resolvers/valibot": [
+                "./dist/esm/resolvers/valibot.d.ts"
+            ]
+        }
+    },
+    "peerDependencies": {
+        "vue": ">=3.2"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/VigilioYonatan/Vigilio/tree/main/vue-form#readme"
+    },
+    "files": [
+        "dist",
+        "LICENSE",
+        "README.md"
+    ],
+    "keywords": [
+        "vue",
+        "typescript",
+        "vue-form"
+    ],
+    "scripts": {
+        "build:esm": "tsc",
+        "build:cjs": "tsc --module commonjs --outDir dist/cjs",
+        "build": "rimraf dist && pnpm build:esm && pnpm build:cjs",
+        "public": "npm publish"
+    },
+    "author": "Vigilio",
+    "license": "ISC"
+}

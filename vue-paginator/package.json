@@ -1,0 +1,40 @@
+{
+    "name": "@vigilio/vue-paginator",
+    "version": "0.0.1",
+    "description": "this is a paginator library  to vue",
+    "main": "./dist/cjs/index.js",
+    "module": "./dist/esm/index.js",
+    "types": "./dist/esm/index.d.ts",
+    "peerDependencies": {
+        "vue": ">=3.2"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/VigilioYonatan/Vigilio/tree/main/vue-paginator#readme"
+    },
+    "files": [
+        "dist",
+        "LICENSE",
+        "README.md"
+    ],
+    "keywords": [
+        "vue",
+        "typescript",
+        "vue-paginator",
+        "vigilio"
+    ],
+    "scripts": {
+        "build:esm": "tsc",
+        "build:cjs": "tsc --module commonjs --outDir dist/cjs",
+        "build": "rimraf dist && pnpm build:esm && pnpm build:cjs"
+    },
+    "author": "Vigilio",
+    "license": "ISC",
+    "devDependencies": {
+        "@types/node": "^20.7.0",
+        "typescript": "^5.0.4"
+    },
+    "dependencies": {
+        "tslib": "^2.6.2"
+    }
+}

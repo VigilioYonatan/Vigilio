@@ -1,0 +1,32 @@
+{
+    "name": "@vigilio/preact-table",
+    "version": "1.0.19",
+    "description": "this is a table library to preact",
+    "main": "./dist/cjs/index.js",
+    "module": "./dist/esm/index.js",
+    "types": "./dist/esm/index.d.ts",
+    "peerDependencies": {
+        "preact": ">=10"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/VigilioYonatan/Vigilio/tree/main/preact-table#readme"
+    },
+    "files": [
+        "dist",
+        "LICENSE",
+        "README.md"
+    ],
+    "keywords": [
+        "preact",
+        "typescript",
+        "preact-table"
+    ],
+    "scripts": {
+        "build:esm": "tsc",
+        "build:cjs": "tsc --module commonjs --outDir dist/cjs",
+        "build": "pnpm build:esm && pnpm build:cjs"
+    },
+    "author": "Vigilio",
+    "license": "ISC"
+}
