@@ -1,10 +1,11 @@
-import { delayFetch, timer } from "./helpers";
+import { cache, delayFetch, timer } from "./helpers";
 import { useSignal } from "@preact/signals";
 
 export interface OptionsQuery {
     skipFetching?: boolean;
     delay?: number | null;
     retry?: number | null;
+    isCaching?: boolean | number | null;
     retryDelay?: number | null;
 }
 
@@ -35,7 +36,7 @@ export type UseMutation<Data, Body, Error> = {
 };
 
 function useMutation<Data, Body, Error>(
-    url: string,
+    key: string,
     fetching: (url: string, body: Body) => Promise<Data>,
     options: OptionsQuery | null = null
 ): UseMutation<Data, Body, Error> {
@@ -43,12 +44,13 @@ function useMutation<Data, Body, Error>(
         skipFetching: false,
         delay: null,
         retry: 1,
+        isCaching: null,
         retryDelay: null,
     };
     if (options) {
         opciones = { ...opciones, ...options };
     }
-    const { skipFetching, delay, retry, retryDelay } = opciones;
+    const { skipFetching, delay, retry, retryDelay, isCaching } = opciones;
 
     const fetchprops = useSignal<FetchPropsProps<Data, Error>>({
         data: null,
@@ -73,7 +75,18 @@ function useMutation<Data, Body, Error>(
             await delayFetch(timer(retryDelay ?? 3));
         }
         try {
-            const data = await fetching(url, body);
+            const cche = cache.get(key);
+            if (cche) {
+                fetchprops.value = {
+                    ...fetchprops.value,
+                    isLoading: false,
+                    isSuccess: true,
+                    isError: false,
+                    data: cche,
+                };
+                return;
+            }
+            const data = await fetching(key, body);
 
             let transform: Data = data;
             if (moreOption?.transformData) {
@@ -81,6 +94,13 @@ function useMutation<Data, Body, Error>(
             }
             if (moreOption?.onSuccess) {
                 moreOption.onSuccess(transform);
+            }
+            if (isCaching) {
+                cache.set(
+                    key,
+                    transform,
+                    typeof isCaching === "number" ? isCaching : null
+                );
             }
             fetchprops.value = {
                 ...fetchprops.value,
