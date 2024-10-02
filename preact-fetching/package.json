@@ -1,6 +1,6 @@
 {
     "name": "@vigilio/preact-fetching",
-    "version": "2.0.15",
+    "version": "2.1.2",
     "description": "this is a library to fetch in preact",
     "main": "./dist/cjs/index.js",
     "module": "./dist/esm/index.js",

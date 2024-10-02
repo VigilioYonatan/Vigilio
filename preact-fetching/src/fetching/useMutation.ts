@@ -77,12 +77,19 @@ function useMutation<Data, Body, Error>(
         try {
             const cche = cache.get(key);
             if (cche) {
+                let transform: Data = cche;
+                if (moreOption?.transformData) {
+                    transform = moreOption?.transformData(transform);
+                }
+                if (moreOption?.onSuccess) {
+                    moreOption?.onSuccess(transform);
+                }
                 fetchprops.value = {
                     ...fetchprops.value,
                     isLoading: false,
                     isSuccess: true,
                     isError: false,
-                    data: cche,
+                    data: transform,
                 };
                 return;
             }

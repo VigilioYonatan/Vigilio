@@ -107,13 +107,20 @@ function useQuery<Data, Error>(
         try {
             const cche = cache.get(key);
             if (cche) {
+                let transform: Data = cche;
+                if (transformData) {
+                    transform = transformData(transform);
+                }
+                if (onSuccess) {
+                    onSuccess(transform);
+                }
                 fetchProps.value = {
                     ...fetchProps.value,
                     isLoading: false,
                     isFetching: false,
                     isSuccess: true,
                     isError: false,
-                    data: cche,
+                    data: transform,
                 };
                 return;
             }
@@ -125,7 +132,6 @@ function useQuery<Data, Error>(
             if (onSuccess) {
                 onSuccess(transform);
             }
-            console.log({ isCaching });
             if (isCaching) {
                 cache.set(
                     key,
