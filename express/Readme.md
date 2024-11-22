@@ -10,3 +10,16 @@
     }
 }
 ```
+{# lñatest #}
+"devDependencies": {
+        "@types/node": "^22.9.1",
+        "typescript": "^5.7.2"
+    },
+    "dependencies": {
+        "@vigilio/valibot": "^0.0.8",
+        "formidable": "^3.5.2",
+        "i18next": "^24.0.0",
+        "reflect-metadata": "^0.2.2",
+        "socket.io": "^4.8.1",
+        "zod": "3.23.8"
+    }

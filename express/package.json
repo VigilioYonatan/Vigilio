@@ -1,6 +1,6 @@
 {
     "name": "@vigilio/express-core",
-    "version": "1.9.23",
+    "version": "1.9.24",
     "main": "dist/cjs/index.js",
     "module": "dist/esm/index.js",
     "types": "dist/esm/index.d.ts",
@@ -71,8 +71,8 @@
     "scripts": {
         "build:esm": "tsc",
         "build:cjs": "tsc --module commonjs --outDir dist/cjs",
-        "build": "rimraf dist && pnpm build:esm && pnpm build:cjs",
-        "public": "pnpm build && npm publish"
+        "build": "bun run build:esm && bun run build:cjs",
+        "public": "bun run build && npm publish"
     },
     "peerDependencies": {
         "express": ">=4"
@@ -94,5 +94,9 @@
         "sequelize",
         "framework"
     ],
-    "license": "ISC"
+    "license": "ISC",
+    "devDependencies": {
+        "@types/node": "^22.9.1",
+        "typescript": "^5.7.2"
+    }
 }

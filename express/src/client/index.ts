@@ -61,7 +61,7 @@ export function client(props?: Client) {
                     });
                     data = { ...responseV.web, technologies: clean };
                     const hours = 24;
-                    const seconds = hours * 3600;
+                    const seconds = hours * 3600 * 1000;
                     cache.set("data", JSON.stringify(data), seconds);
                 }
                 req.$web = data;
