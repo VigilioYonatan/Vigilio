@@ -1,11 +1,12 @@
 import { Ref, UnwrapRef, reactive, toRefs } from "vue";
-import { delayFetch, timer } from "./helpers";
+import { cache, delayFetch, timer } from "./helpers";
 
 export interface OptionsQuery {
     skipFetching?: boolean;
     delay?: number | null;
     retry?: number | null;
     retryDelay?: number | null;
+    isCaching?: boolean | number | null;
 }
 
 export interface MoreOptions<Data, Error> {
@@ -36,7 +37,7 @@ export type UseMutation<Data, Body, Error> = {
 };
 
 function useMutation<Data, Body, Error>(
-    url: string,
+    key: string,
     fetching: (url: string, body: Body) => Promise<Data>,
     options: OptionsQuery | null = null
 ): UseMutation<Data, Body, Error> {
@@ -45,11 +46,12 @@ function useMutation<Data, Body, Error>(
         delay: null,
         retry: 1,
         retryDelay: null,
+        isCaching: null,
     };
     if (options) {
         opciones = { ...opciones, ...options };
     }
-    const { skipFetching, delay, retry, retryDelay } = opciones;
+    const { skipFetching, delay, retry, retryDelay, isCaching } = opciones;
 
     const fetchProps: FetchPropsProps<Data, Error> = reactive({
         data: null,
@@ -75,7 +77,29 @@ function useMutation<Data, Body, Error>(
         }
 
         try {
-            const data = await fetching(url, body);
+            const cche = cache.get(key);
+            if (cche) {
+                let transform: Data = cche;
+                if (moreOption?.transformData) {
+                    transform = moreOption?.transformData(transform);
+                }
+                if (moreOption?.onSuccess) {
+                    moreOption?.onSuccess(transform);
+                }
+                if (isCaching) {
+                    cache.set(
+                        key,
+                        transform,
+                        typeof isCaching === "number" ? isCaching : null
+                    );
+                }
+                fetchProps.isLoading = false;
+                fetchProps.isSuccess = true;
+                fetchProps.isError = false;
+                fetchProps.data = transform;
+                return;
+            }
+            const data = await fetching(key, body);
             fetchProps.isLoading = false;
             fetchProps.isSuccess = true;
             fetchProps.isError = false;

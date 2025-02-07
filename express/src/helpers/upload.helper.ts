@@ -4,7 +4,7 @@ export interface ValidationProps {
     typeFile?: {
         value: string[];
         message?: string;
-    };
+    } ;
 
     minSize?:
         | {
@@ -127,6 +127,7 @@ export function validateUpload(archivos: File[], val: ValidationProps) {
                           "..." +
                           extension
                         : archivo.originalFilename;
+
                 if (
                     typeFile instanceof Object &&
                     !typeFile.value.includes(archivo.mimetype!)

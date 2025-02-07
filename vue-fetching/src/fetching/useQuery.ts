@@ -1,5 +1,5 @@
 import { reactive, UnwrapRef, toRefs, Ref, onMounted } from "vue";
-import { delayFetch, timer } from "./helpers";
+import { cache, delayFetch, timer } from "./helpers";
 export interface OptionsQuery<Data, Error> {
     skipFetching?: boolean;
     placeholderData?: Data | null;
@@ -13,6 +13,7 @@ export interface OptionsQuery<Data, Error> {
     onError?: ((error: Error) => void) | null;
     onSuccess?: ((data: Data) => void) | null;
     clean?: boolean;
+    isCaching?: boolean | number | null;
 }
 export type UseQuery<Data, Error> = {
     [K in keyof FetchPropsProps<Data, Error>]: Ref<
@@ -33,7 +34,7 @@ type FetchPropsProps<Data, Error> = {
     errorTimes: number;
 };
 function useQuery<Data, Error>(
-    url: string,
+    key: string,
     fetching: (url: string) => Promise<Data>,
     options: OptionsQuery<Data, Error> | null = null
 ): UseQuery<Data, Error> {
@@ -50,6 +51,7 @@ function useQuery<Data, Error>(
         retry: 3,
         retryDelay: null,
         clean: true,
+        isCaching: null,
     };
 
     if (options) {
@@ -95,7 +97,23 @@ function useQuery<Data, Error>(
         }
 
         try {
-            const data = await fetching(url);
+            const cche = cache.get(key);
+            if (cche) {
+                let transform: Data = cche;
+                if (transformData) {
+                    transform = transformData(transform);
+                }
+                if (onSuccess) {
+                    onSuccess(transform);
+                }
+                fetchProps.isFetching = false;
+                fetchProps.isLoading = false;
+                fetchProps.isSuccess = true;
+                fetchProps.isError = false;
+                fetchProps.data = transform;
+                return;
+            }
+            const data = await fetching(key);
             fetchProps.isFetching = false;
             fetchProps.isLoading = false;
             fetchProps.isSuccess = true;
@@ -178,7 +196,7 @@ function useQuery<Data, Error>(
         if (clean) {
             restart();
         }
-        await fetchEndpoint();
+        return await fetchEndpoint();
     }
 
     return { ...(toRefs(fetchProps) as any), refetch };
