@@ -1,6 +1,6 @@
 {
     "name": "@vigilio/valibot",
-    "version": "0.0.8",
+    "version": "0.1.0",
     "description": "form validation valibot - spanish.",
     "main": "./dist/cjs/index.js",
     "module": "./dist/esm/index.js",
@@ -10,9 +10,13 @@
             "import": "./dist/esm/index.js",
             "require": "./dist/cjs/index.js"
         },
-        "./resolver": {
-            "import": "./dist/esm/resolver/index.js",
-            "require": "./dist/cjs/resolver/index.js"
+        "./resolver/react-hook-form": {
+            "import": "./dist/esm/resolver/react-hook-form/index.js",
+            "require": "./dist/cjs/resolver/react-hook-form/index.js"
+        },
+        "./resolver/vue-hook-form": {
+            "import": "./dist/esm/resolver/vue-hook-form/index.js",
+            "require": "./dist/cjs/resolver/vue-hook-form/index.js"
         }
     },
     "typesVersions": {
@@ -49,7 +53,8 @@
     "author": "Vigilio",
     "license": "ISC",
     "dependencies": {
-        "tslib": "^2.6.2"
+        "tslib": "^2.6.2",
+        "type-fest": "^4.34.1"
     },
     "devDependencies": {
         "rimraf": "^5.0.5",
