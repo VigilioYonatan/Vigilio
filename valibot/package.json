@@ -1,6 +1,6 @@
 {
     "name": "@vigilio/valibot",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "form validation valibot - spanish.",
     "main": "./dist/cjs/index.js",
     "module": "./dist/esm/index.js",
@@ -53,8 +53,7 @@
     "author": "Vigilio",
     "license": "ISC",
     "dependencies": {
-        "tslib": "^2.6.2",
-        "type-fest": "^4.34.1"
+        "tslib": "^2.6.2"
     },
     "devDependencies": {
         "rimraf": "^5.0.5",

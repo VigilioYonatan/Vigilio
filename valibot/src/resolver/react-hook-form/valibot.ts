@@ -76,21 +76,17 @@ export const valibotResolver: Resolver =
                 errors: {} as FieldErrors,
             };
         } catch (error) {
-            if (error instanceof ValiError) {
-                return {
-                    values: {},
-                    errors: toNestErrors(
-                        parseErrors(
-                            error,
-                            !options.shouldUseNativeValidation &&
-                                options.criteriaMode === "all"
-                        ),
-                        options
+            return {
+                values: {},
+                errors: toNestErrors(
+                    parseErrors(
+                        error as ValiError,
+                        !options.shouldUseNativeValidation &&
+                            options.criteriaMode === "all"
                     ),
-                };
-            }
-
-            throw error;
+                    options
+                ),
+            };
         }
     };
 
