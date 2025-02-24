@@ -1,0 +1,22 @@
+{
+    "compilerOptions": {
+        "module": "commonjs" /* Specify what module code is generated. */,
+        "resolveJsonModule": true /* Enable importing .json files. */,
+        "outDir": "./dist/esm",
+        "declaration": false,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "moduleResolution": "node",
+        "noEmitOnError": true,
+        "noImplicitAny": false,
+        "inlineSourceMap": true,
+        "target": "ES2016",
+        "inlineSources": true,
+        "pretty": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "esModuleInterop": true
+    },
+    "include": ["src", "src/**/*.ts"],
+    "exclude": ["node_module"]
+}

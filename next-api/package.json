@@ -1,0 +1,49 @@
+{
+    "name": "@vigilio/next-api",
+    "version": "0.0.1",
+    "main": "dist/cjs/index.js",
+    "module": "dist/esm/index.js",
+    "types": "dist/esm/index.d.ts",
+    "description": "next api viglio",
+    "exports": {
+        ".": {
+            "import": "./dist/esm/index.js",
+            "require": "./dist/cjs/index.js"
+        },
+        "./validator/valibot": {
+            "import": "./dist/esm/validator/valibot.js",
+            "require": "./dist/cjs/validator/valibot.js"
+        }
+    },
+    "scripts": {
+        "build:esm": "tsc",
+        "build:cjs": "tsc --module commonjs --outDir dist/cjs",
+        "build": "bun run build:esm && bun run build:cjs",
+        "public": "bun run build && npm publish"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/VigilioYonatan/Vigilio/tree/main/next-api#readme"
+    },
+    "files": [
+        "dist",
+        "LICENSE",
+        "logo.png",
+        "next-api.png"
+    ],
+    "keywords": [
+        "next js",
+        "api",
+        "sequelize",
+        "decorators",
+        "typescript"
+    ],
+    "license": "ISC",
+    "devDependencies": {
+        "@types/node": "^22.9.1",
+        "typescript": "^5.7.2"
+    },
+    "dependencies": {
+        "reflect-metadata": "^0.2.2"
+    }
+}
