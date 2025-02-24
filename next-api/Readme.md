@@ -2,12 +2,13 @@
 
 <div style="display:flex;align-items:center;"><img src="logo.png" style="object-fit:contain;" width="150" height="150" alt="logo"/>
 
-<img src="next-api.png" style="object-fit:contain;" width="100" height="100" alt="logo"/></div>
+<img src="next-api.png" style="object-fit:contain;" width="100" height="100" alt="logo"/>
+</div>
 
-A simple library for use next api (no app pages).
+A simple library for use next api (no app pages - next js).
 
 ```cmd
-npm add @vigilio/next-api
+npm install @vigilio/next-api
 ```
 
 ### Getting Started
@@ -77,7 +78,7 @@ class UsersController {
     }
 }
 
-export default createHandler([UsersController,...morecontrollers], true); //true you dont need create directories because will be a dynamic automatically params. false will need directories and files to read params @default false
+export default createHandler([UsersController, ...morecontrollers], true); //true you dont need create directories because will be a dynamic automatically params. false will need directories and files to read params @default false
 ```
 
 ### Validators and Pipes
@@ -85,7 +86,7 @@ export default createHandler([UsersController,...morecontrollers], true); //true
 Using @vigilio/valibot to validate
 
 ```cmd
-npm add @vigilio/valibot
+npm install @vigilio/valibot
 ```
 
 Docs @vigilio/valibot
@@ -299,4 +300,17 @@ export class UploadsController {
         return result;
     }
 }
+```
+
+```ts
+// src/pages/uploads/[[...params]].ts
+import { createHandler } from "@vigilio/next-api";
+// next js config to upload files
+export const config = {
+    api: {
+        bodyParser: false,
+    },
+};
+
+export default createHandler([UploadsController]);
 ```
