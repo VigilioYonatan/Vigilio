@@ -3,7 +3,7 @@
         "module": "commonjs" /* Specify what module code is generated. */,
         "resolveJsonModule": true /* Enable importing .json files. */,
         "outDir": "./dist/esm",
-        "declaration": false,
+        "declaration": true,
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
         "moduleResolution": "node",
@@ -12,10 +12,12 @@
         "inlineSourceMap": true,
         "target": "ES2016",
         "inlineSources": true,
+        "typeRoots": ["node_modules/@types"],
         "pretty": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
-        "esModuleInterop": true
+        "esModuleInterop": true,
+        "rootDir": "./src"
     },
     "include": ["src", "src/**/*.ts"],
     "exclude": ["node_module"]
