@@ -1,10 +1,14 @@
 import { useState } from "preact/hooks";
 import { lazy, Suspense } from "preact/compat";
+import "../assets/index.css";
+import { Props } from "../types";
+
+import CHATGPTLOGO from "../assets/chat-gpt-logo.webp";
 const AssistantVirtual = lazy(
     () => import(/* webpackChunkName: "Home" */ "./AssistantVirtual")
 );
 
-function ChatButton() {
+function ChatButton(props: Props) {
     const [isOpen, setIsOpen] = useState<boolean>(
         JSON.parse(localStorage.getItem("bot-open") || "false") || false
     );
@@ -18,19 +22,33 @@ function ChatButton() {
         localStorage.setItem("bot-open", "true");
     }
     return (
-        <div class="vigilio vigilio-chat-ai buttons-pages-custom fixed bottom-32 right-10 z-[99] ">
+        <div
+            class="vigilio vigilio-chat-ai buttons-pages-custom "
+            style={{
+                "--vigilio-primary": props.color,
+                "--vigilio-background": props.background,
+            }}
+        >
             {isOpen ? (
                 <Suspense fallback={null}>
                     <AssistantVirtual isOpen={isOpen} onClose={onClose} />
                 </Suspense>
             ) : null}
             <button
-                class="vigilio-button-ai bg-primary w-[55px] h-[45px] flex justify-center items-center rounded-md text-white"
+                class="vigilio-button-ai "
                 type="button"
                 aria-label="open chat ai"
                 onClick={onOpen}
             >
-                open2
+                {props.type_button ? (
+                    <img
+                        class="vigilio-rotating"
+                        width={200}
+                        height={200}
+                        src={CHATGPTLOGO}
+                        alt=""
+                    />
+                ) : null}
             </button>
         </div>
     );

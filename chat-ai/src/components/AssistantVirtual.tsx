@@ -4,8 +4,9 @@ import { Fragment } from "preact/jsx-runtime";
 import useSocketStore from "../hooks/useSocket";
 import useCopyToClipboard from "../hooks/useCopyToClipboard";
 import usePressTimeOut from "../hooks/usePressTimeOut";
-import { linkVigilio } from "../config";
 import { removeTextHTML } from "../helpers";
+import { enviroments } from "../config";
+import "../assets/assistant.css";
 
 interface AssistantVirtualProps {
     onClose: () => void;
@@ -127,7 +128,7 @@ function AssistantVirtual({ onClose, isOpen }: AssistantVirtualProps) {
                                             Asistente Virtual
                                         </h3>
                                         <a
-                                            href={linkVigilio()}
+                                            href={enviroments.VIGILIO_WEB}
                                             target="_blank"
                                             rel="noreferrer"
                                             class="vigilio-powered-by"
@@ -213,14 +214,14 @@ function AssistantVirtual({ onClose, isOpen }: AssistantVirtualProps) {
                                                 )}
                                                 {isLoading.value ? (
                                                     <div class="vigilio-loading-message">
-                                                        <div class="mensaje-tipeando">
-                                                            <span class="punto">
+                                                        <div class="vigilio-mensaje-tipeando">
+                                                            <span class="vigilio-punto">
                                                                 .
                                                             </span>
-                                                            <span class="punto">
+                                                            <span class="vigilio-punto">
                                                                 .
                                                             </span>
-                                                            <span class="punto">
+                                                            <span class="vigilio-punto">
                                                                 .
                                                             </span>
                                                         </div>

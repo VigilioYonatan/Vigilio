@@ -1,0 +1,227 @@
+.vigilio-button-container-ai {
+    transition-delay: 0.1s;
+}
+.vigilio-chat-header {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    padding: 0.25rem 0;
+}
+
+.vigilio-connection-indicator {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    position: absolute;
+}
+
+.vigilio-connection-indicator.connected {
+    background-color: var(--vigilio-primary);
+}
+
+.vigilio-connection-indicator.disconnected {
+    background-color: #dc2626; /* red-600 */
+}
+
+.vigilio-chat-title {
+    color: var(--vigilio-primary);
+    font-weight: bold;
+    text-align: center;
+    font-size: 1.25rem;
+    margin: 0;
+}
+
+.vigilio-icon {
+    margin-right: 0.5rem;
+}
+
+.vigilio-powered-by {
+    font-size: 0.6875rem;
+    opacity: 0.7;
+    text-align: center;
+}
+
+.vigilio-powered-by b {
+    color: var(--vigilio-primary);
+}
+
+.vigilio-close-button {
+    position: absolute;
+    right: 0;
+    margin: 0.5rem;
+    top: 0;
+    color: var(--vigilio-primary);
+    font-weight: bold;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.vigilio-divider {
+    background-color: var(--vigilio-primary);
+    width: 100%;
+    height: 1px;
+}
+
+.vigilio-chat-box {
+    display: flex;
+    flex-direction: column;
+    height: calc(100dvh - 330px);
+    gap: 0.5rem;
+    margin: 0.25rem;
+    overflow: auto;
+    padding: 0.75rem;
+    margin-bottom: 3rem;
+}
+
+@media (min-width: 768px) {
+    .vigilio-chat-box {
+        height: 420px;
+    }
+}
+
+.vigilio-message-container {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.vigilio-assistant-message {
+    font-weight: normal;
+    background-color: #f5f5f5;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.dark .vigilio-assistant-message {
+    background-color: #1e1e1e;
+    color: white;
+}
+
+.vigilio-message-content {
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.vigilio-message-link {
+    color: var(--vigilio-primary);
+}
+
+.vigilio-message-link:hover {
+    text-decoration: underline;
+}
+
+.vigilio-user-message {
+    font-size: 0.6rem;
+    font-weight: normal;
+    background-color: #e1fec4;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.375rem;
+    align-self: flex-end;
+    display: flex;
+    flex-direction: column;
+    color: black;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.vigilio-user-message p {
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.vigilio-loading-message {
+    font-weight: normal;
+    background-color: var(--vigilio-primary);
+    color: white;
+    padding: 0 1rem;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+    border-radius: 0.375rem;
+    align-self: flex-start;
+}
+
+.vigilio-message-form {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    display: flex;
+    height: 38px;
+    background-color: white;
+    border-top: 2px solid #e0e0e0;
+}
+
+.vigilio-message-input {
+    width: 100%;
+    outline: none;
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+    background-color: transparent;
+    font-size: 0.75rem;
+}
+
+.dark .vigilio-message-input {
+    color: white;
+}
+
+.vigilio-send-button {
+    padding: 0.5rem 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 300;
+    background-color: var(--vigilio-primary);
+    border: none;
+    cursor: pointer;
+}
+
+.vigilio-loading-screen {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Animaciones */
+.vigilio-mensaje-tipeando {
+    display: inline-block;
+}
+
+.vigilio-punto {
+    animation: moverPunto 1s infinite;
+    opacity: 0;
+    display: inline-block;
+}
+
+@keyframes moverPunto {
+    0% {
+        opacity: 0;
+    }
+    25% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0;
+    }
+    75% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+.vigilio-punto:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.vigilio-punto:nth-child(3) {
+    animation-delay: 0.4s;
+}
