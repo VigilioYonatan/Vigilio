@@ -1,8 +1,8 @@
 {
     "name": "@vigilio/chat-ai",
-    "version": "0.0.1",
+    "version": "0.0.3",
     "type": "module",
-    "description": "this library is to have a chat with ai free(may) and plus.",
+    "description": "this library is to have a chat with ai free and plus.",
     "main": "./dist/vigilio-chat-ai.umd.cjs",
     "module": "./dist/vigilio-chat-ai.es.js",
     "types": "./dist/index.d.ts",

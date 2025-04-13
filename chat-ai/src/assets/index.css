@@ -200,6 +200,12 @@
     right: 2.5rem;
     z-index: 99;
 }
+.vigilio-chat-ai-chat > .vigilio-button-ai {
+    position: fixed;
+    bottom: 8rem;
+    right: 2.5rem;
+    z-index: 99;
+}
 
 .vigilio-button-ai {
     background-color: var(--vigilio-primary);
@@ -212,6 +218,7 @@
     color: white;
     overflow: hidden;
     padding: 1rem;
+    cursor: pointer;
 }
 .vigilio-button-ai img {
     width: 100%;
@@ -240,8 +247,7 @@
     bottom: -0.25rem;
     right: -1rem;
     z-index: 99;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-        0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
     transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 .vigilio-rotating {
@@ -282,20 +288,67 @@
     visibility: hidden;
 }
 
-.dark .vigilio-button-container-ai {
-    background-color: var(--paper-dark);
-}
-
 @media (min-width: 480px) {
     .vigilio-button-container-ai {
-        width: 380px;
+        width: var(--vigilio-chat-width);
     }
 }
 
 @media (min-width: 768px) {
     .vigilio-button-container-ai {
-        width: 400px;
+        width: var(--vigilio-chat-width);
         height: 520px;
         bottom: 2rem;
+    }
+}
+/* chat */
+.vigilio-button-container-ai-chat {
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    overflow: hidden;
+    background-color: var(--vigilio-background);
+    width: 100%;
+    height: 100dvh;
+    position: fixed;
+    inset: 0;
+    z-index: 999999999999999;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+.vigilio-button-container-ai-chat.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.vigilio-button-container-ai-chat.invisible {
+    opacity: 0;
+    visibility: hidden;
+}
+
+@media (min-width: 580px) {
+    .vigilio-chat-ai-chat > .vigilio-button-ai {
+        position: fixed;
+        bottom: 8rem;
+    }
+    .vigilio-button-container-ai-chat {
+        width: var(--vigilio-chat-width);
+        height: calc(100dvh - 230px);
+        position: fixed;
+        bottom: 8rem;
+        inset: auto;
+        right: 2rem;
+        padding: 0.5rem;
+        border-radius: 0.375rem;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+}
+
+@media (min-width: 768px) {
+    .vigilio-button-container-ai-chat {
+        width: var(--vigilio-chat-width);
+        height: 520px;
+        bottom: 8rem;
+        right: 2rem;
     }
 }

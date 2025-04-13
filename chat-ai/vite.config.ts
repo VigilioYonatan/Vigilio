@@ -13,7 +13,7 @@ export default defineConfig({
             entry: resolve(__dirname, "src/index.tsx"),
             name: "vigilio-chat-ai",
             fileName: (format) => `vigilio-chat-ai.${format}.js`,
-            formats: ["es", "umd", "cjs"],
+            formats: ["es", "umd"],
         },
         minify: "esbuild",
         sourcemap: false,

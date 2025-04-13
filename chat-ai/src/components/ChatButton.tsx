@@ -9,6 +9,8 @@ const AssistantVirtual = lazy(
 );
 
 function ChatButton(props: Props) {
+    console.log({ props });
+
     const [isOpen, setIsOpen] = useState<boolean>(
         JSON.parse(localStorage.getItem("bot-open") || "false") || false
     );
@@ -18,20 +20,18 @@ function ChatButton(props: Props) {
         localStorage.removeItem("bot-open");
     }
     function onOpen() {
-        setIsOpen(true);
+        setIsOpen(!isOpen);
         localStorage.setItem("bot-open", "true");
     }
     return (
-        <div
-            class="vigilio vigilio-chat-ai buttons-pages-custom "
-            style={{
-                "--vigilio-primary": props.color,
-                "--vigilio-background": props.background,
-            }}
-        >
+        <>
             {isOpen ? (
                 <Suspense fallback={null}>
-                    <AssistantVirtual isOpen={isOpen} onClose={onClose} />
+                    <AssistantVirtual
+                        props={props}
+                        isOpen={isOpen}
+                        onClose={onClose}
+                    />
                 </Suspense>
             ) : null}
             <button
@@ -40,7 +40,7 @@ function ChatButton(props: Props) {
                 aria-label="open chat ai"
                 onClick={onOpen}
             >
-                {props.type_button ? (
+                {props.type_button  ==="chat-gpt"? (
                     <img
                         class="vigilio-rotating"
                         width={200}
@@ -50,7 +50,7 @@ function ChatButton(props: Props) {
                     />
                 ) : null}
             </button>
-        </div>
+        </>
     );
 }
 

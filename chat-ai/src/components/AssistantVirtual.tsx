@@ -5,21 +5,27 @@ import useSocketStore from "../hooks/useSocket";
 import useCopyToClipboard from "../hooks/useCopyToClipboard";
 import usePressTimeOut from "../hooks/usePressTimeOut";
 import { removeTextHTML } from "../helpers";
-import { enviroments } from "../config";
 import "../assets/assistant.css";
+import Watermark from "./WaterMark";
+import { Props } from "../types";
 
 interface AssistantVirtualProps {
     onClose: () => void;
     isOpen: boolean;
+    props: Props;
 }
 export type ChatIA = [string, "user" | "assistant", string];
 
-function AssistantVirtual({ onClose, isOpen }: AssistantVirtualProps) {
+function AssistantVirtual({ onClose, isOpen, props }: AssistantVirtualProps) {
+    console.log(props.mobile_mode);
+
     return (
         <div
-            class={`vigilio-button-container-ai ${
-                isOpen ? "visible" : "invisible"
-            }`}
+            class={`${
+                props.mobile_mode === "chat"
+                    ? "vigilio-button-container-ai-chat"
+                    : "vigilio-button-container-ai"
+            } ${isOpen ? "visible" : "invisible"}`}
         >
             {isOpen ? (
                 <>
@@ -127,14 +133,7 @@ function AssistantVirtual({ onClose, isOpen }: AssistantVirtualProps) {
                                             <i class="fas fa-user-robot vigilio-icon" />{" "}
                                             Asistente Virtual
                                         </h3>
-                                        <a
-                                            href={enviroments.VIGILIO_WEB}
-                                            target="_blank"
-                                            rel="noreferrer"
-                                            class="vigilio-powered-by"
-                                        >
-                                            Powered by <b>Vigilio Services</b>
-                                        </a>
+                                        <Watermark />
                                     </div>
                                     <button
                                         class="vigilio-close-button"
