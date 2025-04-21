@@ -5,12 +5,13 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite + TS</title>
-    <script type="module"  src="https://cdn.jsdelivr.net/npm/@vigilio/chat-ai@latest/dist/vigilio-chat-ai.es.js" ></script>
+    <!-- <script type="module"  src="https://cdn.jsdelivr.net/npm/@vigilio/chat-ai@latest/dist/vigilio-chat-ai.es.js" ></script> -->
+    <script type="module"  src="./src/index.tsx" ></script>
   </head>
   <body>
     <h1>hola</h1>
     <script type="module" >
-        ChatAI.init({color:"blue",background_color:"#000",mobile_mode:"normal",chat_width:"400px"})
+        ChatAI.init({mobile_mode:"normal",chat_width:"400px",base_url:"http://vigilioservices2.localhost:4003"})
     </script>
 
   </body>

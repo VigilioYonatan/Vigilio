@@ -5,6 +5,7 @@ import type { Props } from "./types";
 function init(props: Props | undefined = undefined) {
     if (typeof window !== "undefined") {
         const defaultProps: Partial<Props> = {
+            base_url: "http://vigilioservices2.localhost:4003",
             color: "#00809F",
             type_button: "chat-gpt",
             background_color: "white",

@@ -9,8 +9,6 @@ const AssistantVirtual = lazy(
 );
 
 function ChatButton(props: Props) {
-    console.log({ props });
-
     const [isOpen, setIsOpen] = useState<boolean>(
         JSON.parse(localStorage.getItem("bot-open") || "false") || false
     );
@@ -40,7 +38,7 @@ function ChatButton(props: Props) {
                 aria-label="open chat ai"
                 onClick={onOpen}
             >
-                {props.type_button  ==="chat-gpt"? (
+                {props.type_button === "chat-gpt" ? (
                     <img
                         class="vigilio-rotating"
                         width={200}
