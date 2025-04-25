@@ -33,7 +33,7 @@ function useChatStore({ base_url }: UseChatStoreProps) {
                     chats.value = data.chats;
                 },
                 onError(error) {
-                    isConnect.value = true;
+                    isConnect.value = false;
                     console.error(error.message);
                 },
             }

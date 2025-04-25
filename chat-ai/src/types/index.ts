@@ -1,14 +1,23 @@
 export interface Props {
     base_url: string;
+    api_key: string;
+    name_ai: string;
     color?: string; // color primary
-    height?: number; //  height del chat
+    height?: string; //  height del chat
     type_button?: "chat-gpt" | "bot" | "deepseek" | "logo"; // imagen del boton
     background_color?: string; // colorr fondo del chat
     mobile_mode: "normal" | "chat"; // mobile chat toda pantalla
     chat_width?: string;
-    logo_ai_chat?: string; //logo "logo"
-
-    //
-    position?: ""; // agregar position start, bottom-left, top-right
-    // agregar mas si tienes perzonalizacion si encuentras
+    logo_ai_chat?: "logo" | string; //logo "logo"
+    init_with_form?: boolean; // iniciar con el formulario
+    lang: "es" | "en"; // idioma del chat
+    position?:
+        | "top-left"
+        | "top-center"
+        | "top-right"
+        | "bottom-left"
+        | "bottom-center"
+        | "bottom-right"; // agregar position start, bottom-left, top-right
+    chat_assistant_color: string;
+    chat_user_color: string;
 }

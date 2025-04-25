@@ -196,13 +196,13 @@
 /* === Extensión para elementos personalizados === */
 .vigilio-chat-ai {
     position: fixed;
-    bottom: 8rem;
-    right: 2.5rem;
+    bottom: 2.8rem;
+    right: 2.8rem;
     z-index: 99;
 }
-.vigilio-chat-ai-chat > .vigilio-button-ai {
+.vigilio-chat-ai-chat > .vigilio-button-content-ai {
     position: fixed;
-    bottom: 8rem;
+    bottom: 2.5rem;
     right: 2.5rem;
     z-index: 99;
 }
@@ -220,6 +220,7 @@
     padding: 1rem;
     cursor: pointer;
 }
+
 .vigilio-button-ai img {
     width: 100%;
     height: 100%;
@@ -234,18 +235,30 @@
 
 /* CHAT */
 .vigilio-chat-container {
+    display: flex;
+    flex-direction: column;
     position: relative;
+    /* height: 100%;
+  max-height: calc(100dvh - 230px); */
+    height: var(--vigilio-height);
 }
+
+.vigilio-chat-box {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    min-height: 0;
+}
+
 .vigilio-button-container-ai {
-    padding: 0.5rem;
-    border-radius: 0.375rem;
+    border-radius: 0.75rem;
     overflow: hidden;
+    border: 1px solid rgb(224, 222, 222);
     background-color: var(--vigilio-background);
     width: 280px;
-    height: calc(100dvh - 230px);
+    /* height: calc(100dvh - 230px); */
     position: absolute;
-    bottom: -0.25rem;
-    right: -1rem;
+    bottom: 4.125rem;
+    right: 0rem;
     z-index: 99;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
     transition: opacity 0.3s ease, visibility 0.3s ease;
@@ -281,11 +294,23 @@
 .vigilio-button-container-ai.visible {
     opacity: 1;
     visibility: visible;
+    animation: slide-in 0.4s cubic-bezier(0.05, 0.7, 0.1, 1);
 }
 
 .vigilio-button-container-ai.invisible {
     opacity: 0;
     visibility: hidden;
+}
+
+@keyframes slide-in {
+    0% {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 @media (min-width: 480px) {
@@ -297,14 +322,13 @@
 @media (min-width: 768px) {
     .vigilio-button-container-ai {
         width: var(--vigilio-chat-width);
-        height: 520px;
-        bottom: 2rem;
+        /* height: 520px; */
+        bottom: 4.125rem;
     }
 }
 /* chat */
 .vigilio-button-container-ai-chat {
     padding: 0.5rem;
-    border-radius: 0.375rem;
     overflow: hidden;
     background-color: var(--vigilio-background);
     width: 100%;
@@ -317,6 +341,7 @@
 .vigilio-button-container-ai-chat.visible {
     opacity: 1;
     visibility: visible;
+    animation: slide-in 0.4s cubic-bezier(0.05, 0.7, 0.1, 1);
 }
 
 .vigilio-button-container-ai-chat.invisible {
@@ -326,8 +351,7 @@
 
 @media (min-width: 580px) {
     .vigilio-chat-ai-chat > .vigilio-button-ai {
-        position: fixed;
-        bottom: 8rem;
+        bottom: 2.8rem;
     }
     .vigilio-button-container-ai-chat {
         width: var(--vigilio-chat-width);
@@ -347,7 +371,7 @@
 @media (min-width: 768px) {
     .vigilio-button-container-ai-chat {
         width: var(--vigilio-chat-width);
-        height: 520px;
+        height: var(--vigilio-height);
         bottom: 8rem;
         right: 2rem;
     }
