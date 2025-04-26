@@ -1,7 +1,10 @@
 import { useSignal } from "@preact/signals";
 import { useEffect } from "preact/hooks";
 
-function Cloud({ text = "Tu texto aquí" }) {
+interface CloudProps {
+    text?: string;
+}
+function Cloud({ text = "Tu texto aquí" }: CloudProps) {
     const isVisible = useSignal(false);
     useEffect(() => {
         const appearTimeout = setTimeout(() => {
@@ -20,16 +23,20 @@ function Cloud({ text = "Tu texto aquí" }) {
 
     return (
         <>
-            <div class="vigilio-tooltip visible">
-                <p class="text-white text-xs">{text}</p>
+            <div
+                class={`vigilio-tooltip ${
+                    isVisible.value ? "visible" : "hidden"
+                } `}
+            >
+                <p style={{ color: "black", fontSize: "0.8rem" }}>{text}</p>
                 <span class="vigilio-tooltip-arrow"></span>
                 <span class="vigilio-tooltip-decoration"></span>
             </div>
             <style jsx>{`
                 .vigilio-tooltip {
                     position: relative;
-                    padding: 0.25rem 0.25rem 0.25rem -1.5rem;
-                    background-color: var(--primary-color);
+                    padding: 0.25rem;
+                    background-color: var(--vigilio-background);
                     font-weight: bold;
                     border-radius: 0.5rem;
                     display: flex;
@@ -49,8 +56,8 @@ function Cloud({ text = "Tu texto aquí" }) {
 
                 .vigilio-tooltip.hidden {
                     opacity: 0;
+                    width: 210px;
                     visibility: hidden;
-                    display: none;
                 }
 
                 .vigilio-tooltip p {

@@ -4,8 +4,6 @@ import { Fragment } from "preact/jsx-runtime";
 import useCopyToClipboard from "../hooks/useCopyToClipboard";
 import usePressTimeOut from "../hooks/usePressTimeOut";
 import { generateSignature, removeTextHTML } from "../helpers";
-import "../assets/assistant.css";
-import "../assets/form.css";
 import Watermark from "./WaterMark";
 import { Props } from "../types";
 import { FormEvent } from "preact/compat";
@@ -15,6 +13,8 @@ import { createT } from "../helpers/i18n";
 import { validateSchema } from "../helpers/validator";
 import useChatStore from "../hooks/useChat";
 import Loader from "../assets/Loader";
+import "../assets/assistant.css";
+import "../assets/form.css";
 import configVigilio from "../config";
 
 interface AssistantVirtualProps {
@@ -118,8 +118,20 @@ function AssistantVirtual2({
                             isFormVisible ? "" : "visible"
                         }`}
                     >
-                        <div className="vigilio-form-top">
-                            <p>{t("subtitle")}</p>
+                        <div
+                            className="vigilio-form-top animation-brightness"
+                            style={{ "--brightness-delay": "8s" }}
+                        >
+                            <div
+                                dangerouslySetInnerHTML={{
+                                    __html: `${
+                                        props.form_title?.replaceAll(
+                                            "{{name_ai}}",
+                                            `<b style="font-weight:bolder">${props.name_ai}</b>`
+                                        ) || t("subtitle")
+                                    }`,
+                                }}
+                            />
                         </div>
                         <form onSubmit={onSubmit} className="vigilio-form-init">
                             <input
@@ -204,73 +216,39 @@ function AssistantVirtual2({
                                 <span>{t("startChat")}</span>
                             </button>
                         </form>
-                        <Watermark>
-                            <img
-                                src={VigilioLogo}
-                                className="vigilio-logo-chatbot"
-                                alt=""
-                            />
-                            <span>{t("addBot")}</span>
+                        <Watermark props={props}>
+                            <div
+                                style={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    gap: "0.2rem",
+                                }}
+                            >
+                                <img
+                                    src={VigilioLogo}
+                                    className="vigilio-logo-chatbot"
+                                    alt="vigilio-chat"
+                                    title="vigilio-chat"
+                                    width={100}
+                                    height={100}
+                                    style={{ width: "35px" }}
+                                    loading="lazy"
+                                />
+                                <span>
+                                    Powered by{" "}
+                                    <b style={{ fontWeight: "bolder" }}>
+                                        Vigilio Services
+                                    </b>
+                                </span>
+                            </div>
                         </Watermark>
                     </div>
                 ) : null}
                 {isOpen ? (
                     <>
                         {(() => {
-                            // const chats = useSignal<ChatIA[]>([
-                            //     [
-                            //         "1",
-                            //         "assistant",
-                            //         "Hola, ¿en qué puedo ayudarte?",
-                            //     ],
-                            //     [
-                            //         "2",
-                            //         "user",
-                            //         "Hola, necesito ayuda con mi pedido.",
-                            //     ],
-                            //     [
-                            //         "3",
-                            //         "assistant",
-                            //         "Claro, ¿cuál es tu número de pedido?",
-                            //     ],
-                            //     ["4", "user", "Es el 123456789"],
-                            //     [
-                            //         "5",
-                            //         "assistant",
-                            //         "Gracias, estoy revisando tu pedido.",
-                            //     ],
-                            //     ["6", "user", "¿Cuándo llegará?"],
-                            //     [
-                            //         "7",
-                            //         "assistant",
-                            //         "Tu pedido llegará en 3 días.",
-                            //     ],
-                            //     ["8", "user", "Gracias por la información."],
-                            //     [
-                            //         "9",
-                            //         "assistant",
-                            //         "De nada, ¿hay algo más en lo que pueda ayudarte?",
-                            //     ],
-                            //     ["10", "user", "No, eso es todo por ahora."],
-                            //     [
-                            //         "11",
-                            //         "assistant",
-                            //         "Perfecto, que tengas un buen día.",
-                            //     ],
-                            //     ["12", "user", "Igualmente, gracias."],
-                            //     ["13", "assistant", "Hasta luego."],
-                            //     ["14", "user", "Adiós."],
-                            //     ["15", "assistant", "Cuídate."],
-                            //     ["16", "user", "Lo haré."],
-                            //     ["17", "assistant", "Me alegra escuchar eso."],
-                            //     ["18", "user", "Gracias por tu ayuda."],
-                            //     [
-                            //         "19",
-                            //         "assistant",
-                            //         "Siempre estoy aquí para ayudar.",
-                            //     ],
-                            //     ["20", "user", "Eso es genial."],
-                            // ]);
                             const chatBox = useRef<HTMLDivElement | null>(null);
                             const eventSourceRef = useRef<EventSource | null>(
                                 null
@@ -281,8 +259,9 @@ function AssistantVirtual2({
                                 token,
                                 insertAssistantChat,
                                 updateAssistantChat,
+                                errorMessageServer,
                             } = useChatStore({
-                                base_url: props.base_url,
+                                props,
                             });
 
                             const message = useSignal("");
@@ -307,7 +286,16 @@ function AssistantVirtual2({
                                 const params = new URLSearchParams();
                                 params.set("message", token);
                                 params.set("token", token);
-                                const url = `/api/ia/chat/message?${params}`;
+                                if (props.test_url) {
+                                    params.set("test_url", props.test_url);
+                                }
+                                const url =
+                                    props.test_url &&
+                                    window.location.origin.includes(
+                                        configVigilio.vigilio_services_url
+                                    )
+                                        ? `/api/chat-ai/message?${params}`
+                                        : `/api/ia/chat/message?${params}`;
                                 const { signature, timestamp } =
                                     await generateSignature(
                                         "GET",
@@ -576,7 +564,27 @@ function AssistantVirtual2({
                                                         >
                                                             {t("more")}
                                                         </a>
-                                                    ) : null}
+                                                    ) : (
+                                                        <>
+                                                            {errorMessageServer ? (
+                                                                <a
+                                                                    href=""
+                                                                    style={{
+                                                                        fontWeight:
+                                                                            "bold",
+                                                                        textDecoration:
+                                                                            "underline",
+                                                                        fontSize:
+                                                                            "0.9rem",
+                                                                    }}
+                                                                >
+                                                                    {
+                                                                        errorMessageServer
+                                                                    }
+                                                                </a>
+                                                            ) : null}
+                                                        </>
+                                                    )}
                                                 </div>
                                             </div>
                                         )}
@@ -621,11 +629,11 @@ function AssistantVirtual2({
                                                     </button>
                                                 </div>
                                             </form>
-                                            <Watermark>
+                                            <Watermark props={props}>
                                                 <div
                                                     style={{
                                                         display: "flex",
-                                                        gap: "0.2rem",
+                                                        gap: "0.5rem",
                                                         alignItems: "center",
                                                         justifyContent:
                                                             "center",

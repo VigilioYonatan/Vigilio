@@ -198,20 +198,20 @@
     position: fixed;
     bottom: 2.8rem;
     right: 2.8rem;
-    z-index: 99;
+    z-index: var(--vigilio-z-index);
 }
 .vigilio-chat-ai-chat > .vigilio-button-content-ai {
     position: fixed;
     bottom: 2.5rem;
     right: 2.5rem;
-    z-index: 99;
+    z-index: var(--vigilio-z-index);
 }
 
 .vigilio-button-ai {
     background-color: var(--vigilio-primary);
     width: 65px;
     height: 65px;
-    border-radius: 100%;
+    border-radius: calc(100% * var(--vigilio-button-radius));
     display: flex;
     justify-content: center;
     align-items: center;
@@ -259,7 +259,7 @@
     position: absolute;
     bottom: 4.125rem;
     right: 0rem;
-    z-index: 99;
+    z-index: var(--vigilio-z-index);
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
     transition: opacity 0.3s ease, visibility 0.3s ease;
 }
@@ -374,5 +374,42 @@
         height: var(--vigilio-height);
         bottom: 8rem;
         right: 2rem;
+    }
+}
+
+.animation-brightness {
+    position: relative;
+    overflow: hidden;
+}
+
+.animation-brightness::before {
+    content: "";
+    position: absolute;
+    color: white;
+    display: block;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+    width: 30%;
+    height: 100%;
+    background: linear-gradient(
+        to right,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.3) 100%
+    );
+    /* box-shadow: 0 0 10px 10px #ffffff46; */
+    animation: animationbrightness var(--brightness-delay) infinite;
+}
+
+@keyframes animationbrightness {
+    0% {
+        transform: skewX(-25deg) translateX(-1000%);
+    }
+    50% {
+        transform: skewX(-25deg) translateX(1000%);
+    }
+    100% {
+        transform: skewX(-25deg) translateX(1000%);
     }
 }

@@ -1,12 +1,14 @@
 import { useSignal } from "@preact/signals";
 import { JSX, useEffect, useRef } from "react";
 import configVigilio from "../config";
+import { Props } from "../types";
 
 interface WatermarkProps {
     children: JSX.Element | JSX.Element[];
+    props: Props;
 }
 
-const Watermark = ({ children }: WatermarkProps) => {
+const Watermark = ({ children, props }: WatermarkProps) => {
     const watermarkRef = useRef<HTMLAnchorElement>(null);
     const isBlocked = useSignal(false);
 
@@ -57,7 +59,7 @@ const Watermark = ({ children }: WatermarkProps) => {
         return (
             <a
                 ref={watermarkRef}
-                href={configVigilio.vigilio_services_url}
+                href={`${configVigilio.vigilio_services_url}?lang=${props.lang}`}
                 target="_blank"
                 rel="noreferrer"
                 style={{

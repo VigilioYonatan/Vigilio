@@ -2,7 +2,7 @@ import { type NextFunction, type Request, type Response } from "express";
 interface PropsSimpleCache {
     maxSize?: number | null;
     autoCleanTime?: number | null;
-    log: boolean;
+    log?: boolean;
 }
 /**
  * @prop {Object} config - Configuration options for the cache.
@@ -11,11 +11,10 @@ interface PropsSimpleCache {
  * @prop {boolean} config.log - Whether to log cache statistics (only in development mode, NODE_ENV === "development").
  */
 class SimpleCache {
-    private cache: Record<string, { value: unknown; expire: number | null }>;
+    private cache: Record<string, { value: string; expire: number | null }>;
     private maxSize: number;
-    private log: number;
     private cleanInterval: NodeJS.Timeout | null;
-    constructor(props: PropsSimpleCache | undefined = undefined) {
+    initial(props: PropsSimpleCache | undefined = undefined) {
         const defaultProps: PropsSimpleCache = {
             maxSize: null,
             autoCleanTime: null,
@@ -128,13 +127,15 @@ class SimpleCache {
             keys,
         };
     }
-
-    handle(_: Request, _2: Response, next: NextFunction) {
-        if (process.env.NODE_ENV === "development" && this.log) {
-            this.getState();
-        }
-        next();
-    }
 }
-
-export default SimpleCache;
+const cache = new SimpleCache();
+export function simpleCache(props: PropsSimpleCache) {
+    cache.initial(props);
+    return (_: Request, _2: Response, next: NextFunction) => {
+        if (process.env.NODE_ENV === "development" && props.log) {
+            cache.getState();
+        }
+        return next();
+    };
+}
+export default cache;
