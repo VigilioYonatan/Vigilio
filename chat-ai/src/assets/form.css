@@ -1,55 +1,54 @@
 .vigilio-form-init {
-   display: flex;
+    display: flex;
     flex-direction: column;
     gap: 1rem;
     padding: 1rem;
-    background-color: var(--vigilio-background);
+    background-color: white;
     border-radius: 0.375rem;
     flex: 1 1 auto;
     min-height: 0;
     overflow-y: scroll;
-    
+
     scrollbar-width: none; /* Firefox */
     -ms-overflow-style: none; /* Internet Explorer and Edge */
     &::-webkit-scrollbar {
         display: none; /* Safari and Chrome */
     }
-
 }
 
 .vigilio-form-input {
-  width: 100%;
-  outline: none;
-  padding: 0.75rem !important;
-  background-color: transparent;
-  font-size: 0.75rem;
-  color: white;
-  border: 1px solid #ccc;
-  border-radius: 0.5rem;
+    width: 100%;
+    outline: none;
+    padding: 0.75rem !important;
+    background-color: transparent;
+    font-size: 0.75rem;
+    color: white;
+    border: 1px solid #ccc;
+    border-radius: 0.5rem;
 }
 
 .vigilio-form-button {
-  padding: 0.4rem !important;
-  display: flex;
-  gap: 0.5rem;
-  width: 100%;
-  justify-content: center;
-  align-items: center;
-  font-weight: 300;
-  border-radius: 10px;
-  background-color: var(--vigilio-primary);
-  border: none;
-  cursor: pointer;
+    padding: 0.4rem !important;
+    display: flex;
+    gap: 0.5rem;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    font-weight: 300;
+    border-radius: 10px;
+    background-color: var(--vigilio-primary);
+    border: none;
+    cursor: pointer;
 }
 
 .vigilio-form-button svg {
-  height: 26px;
-  width: 26px;
-  color: white;
+    height: 26px;
+    width: 26px;
+    color: white;
 }
 
 .vigilio-form-button span {
-  color: #fff;
+    color: #fff;
 }
 
 .vigilio-form-top {
@@ -59,8 +58,8 @@
 }
 
 .vigilio-form-top p {
-  font-size: 18px;
-  line-height: 1.6;
+    font-size: 18px;
+    line-height: 1.6;
 }
 
 .vigilio-form-init-container {
@@ -93,26 +92,25 @@
     right: 0; */
     padding: 1rem;
     background-color: white;
-     /* top shadow */
+    /* top shadow */
     box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1), 0 -4px 6px rgba(0, 0, 0, 0.05);
 
-    
-    font-size: 15px;    
+    font-size: 15px;
     text-align: center;
 }
 
 .vigilio-add-chatbot a {
-  display: flex;
-  justify-content: center;
-  gap: 0.5rem;
-  color: var(--vigilio-primary);
-  font-weight: 600;
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    color: var(--vigilio-primary);
+    font-weight: 600;
 }
 
 .vigilio-logo-chatbot {
-  display: block;
-  width: 20px;
-  height: 20px;
-  object-fit: cover;
-  filter: invert(1);
+    display: block;
+    width: 25px;
+    height: 25px;
+    object-fit: cover;
+    filter: invert(1);
 }

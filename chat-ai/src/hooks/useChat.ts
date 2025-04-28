@@ -1,7 +1,7 @@
 import { signal, useSignal } from "@preact/signals";
 import { aiChatApi, aiChatTestApi } from "../apis";
 import { useEffect } from "preact/hooks";
-import { Props } from "../types";
+import { type Props } from "../types";
 import configVigilio from "../config";
 export type ChatIA = ["user" | "assistant", string];
 
@@ -19,6 +19,7 @@ export function getId() {
 }
 
 const isConnect = signal<boolean>(false);
+const isPlus = signal<boolean>(false);
 const chats = signal<ChatIA[]>([]);
 
 interface UseChatStoreProps {
@@ -29,31 +30,22 @@ function useChatStore({ props }: UseChatStoreProps) {
     const aiChatTestMutation = aiChatTestApi();
     const errorMessageServer = useSignal<string | null>(null);
     useEffect(() => {
-        // if (props.mode_dev) {
-        //     chats.value = [
-        //         [
-        //             "assistant",
-        //             props.custom_greet_chat ||
-        //                 `Hola, Soy ${props.name_ai} 😀. ¿En que le podriamos ayudar?`,
-        //         ],
-        //         ["user", "Hola, me gustaría tener mas información."],
-        //         [
-        //             "assistant",
-        //             props.custom_greet_chat ||
-        //                 `Excelente 😀. Tenemos los mejores Zapatos 👞 de diferentes modelos para tí. ¿Cual te gustaría tenerlo?`,
-        //         ],
-        //     ];
-        //     return;
-        // }
-        if (!props.api_key || !props.base_url) {
-            return;
-        }
+        const initial_message = props.custom_greet_chat!.replaceAll(
+            "{{name_ai}}",
+            props.name_ai!
+        );
         if (
             props.test_url &&
             window.location.origin.includes(configVigilio.vigilio_services_url)
         ) {
+            isPlus.value = true;
+
             aiChatTestMutation.mutate(
-                { test_url: props.test_url },
+                {
+                    test_url: props.test_url,
+                    token: getId() as string,
+                    initial_message,
+                },
                 {
                     onSuccess(data) {
                         isConnect.value = true;
@@ -69,18 +61,23 @@ function useChatStore({ props }: UseChatStoreProps) {
             );
             return;
         }
+        if (!props.api_key || !props.base_url) {
+            return;
+        }
         chatsMutation.mutate(
-            { token: getId() as string },
+            { token: getId() as string, initial_message },
             {
                 onSuccess(data) {
                     isConnect.value = true;
                     chats.value = data.chats;
                     errorMessageServer.value = null;
+                    isPlus.value = data.isPlus;
                 },
                 onError(error) {
                     console.error(error.message);
                     isConnect.value = false;
                     errorMessageServer.value = error.message;
+                    isPlus.value = false;
                 },
             }
         );
@@ -103,6 +100,7 @@ function useChatStore({ props }: UseChatStoreProps) {
         updateAssistantChat,
         insertAssistantChat,
         errorMessageServer,
+        isPlus: isPlus.value,
     };
 }
 export default useChatStore;

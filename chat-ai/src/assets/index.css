@@ -413,3 +413,12 @@
         transform: skewX(-25deg) translateX(1000%);
     }
 }
+
+.vigilio-chat-header-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 100%;
+    overflow: hidden;
+    background-color: #fff;
+}

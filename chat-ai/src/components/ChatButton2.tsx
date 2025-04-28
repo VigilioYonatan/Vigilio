@@ -2,7 +2,7 @@ import Cloud from "./Cloud";
 import { useEffect, useRef } from "preact/hooks";
 import { lazy, Suspense } from "preact/compat";
 import type { Props } from "../types";
-import { useSignal } from "@preact/signals";
+import { Signal, useSignal } from "@preact/signals";
 import "../assets/index.css";
 
 const AssistantVirtual = lazy(
@@ -19,12 +19,7 @@ const BotLogo = lazy(
     () => import(/* webpackChunkName: "BOTLogo" */ "../assets/BotLogo")
 );
 
-function ChatButton(
-    props: Props & {
-        element: HTMLDivElement;
-    }
-) {
-    const { element, ...rest } = props;
+function ChatButton2(props: Signal<Props>) {
     const defaultProps: Partial<Props> = {
         color: "#00809F",
         name_ai: "Vigilio AI",
@@ -38,13 +33,14 @@ function ChatButton(
         chat_user_color: "#e1fec4",
         init_with_form: false,
         custom_greet_cloud:
-            props?.lang === "es"
+            props.value.lang === "es"
                 ? "Hola, me llamo {{name_ai}}. ¿En qué puedo ayudarte hoy? 😊"
                 : "Hello, my name is {{name_ai}}. How can I help you today? 😊",
         custom_greet_chat:
-            props.lang === "es"
+            props.value.lang === "es"
                 ? "¡Hola! Soy {{name_ai}}, tu asistente virtual con inteligencia artificial. 😊 ¿En qué puedo ayudarte hoy?"
                 : "Hello! I'm {{name_ai}}, your AI-powered virtual assistant. 😊 How can I help you today?",
+
         isShowCloud: true,
         lang: "en",
         position: "bottom-right",
@@ -53,11 +49,7 @@ function ChatButton(
         form_title:
             "Rellene el formulario a continuación para una atención personalizada.",
     };
-    const propsButton = {
-        ...defaultProps,
-        ...(rest || {}),
-    } as Props;
-    const properties = useSignal<Partial<Props>>(propsButton);
+
     const isOpen = useSignal<boolean>(
         JSON.parse(localStorage.getItem("bot-open") || "false") || false
     );
@@ -91,37 +83,31 @@ function ChatButton(
     if (isOpen && !isVisible.value) {
         isVisible.value = true;
     }
-
     useEffect(() => {
-        props.element.className = `vigilio ${
-            props?.mobile_mode === "chat"
-                ? "vigilio-chat-ai-chat"
-                : "vigilio-chat-ai"
-        }  `;
-        props.element.style.cssText = `
-        --vigilio-primary: ${properties.value.color};
-        --vigilio-background: ${properties.value.background_color};
-        --vigilio-chat-width: ${properties.value.chat_width}px;
-        --vigilio-chat-assitant-color: ${properties.value.chat_assistant_color};
-        --vigilio-chat-user-color: ${properties.value.chat_user_color};
-        --vigilio-height: ${properties.value.height}px;
-        --vigilio-button-radius: ${properties.value.rounded_button};
-        --vigilio-chat-secondary: ${
-            properties.value.background_color_secondary ||
-            properties.value.color
-        };
+        props.value = { ...defaultProps, ...props.value };
+    }, []);
+    useEffect(() => {
+        document.body.style.cssText = `
+        --vigilio-primary: ${props.value.color};
+        --vigilio-background: ${props.value.background_color};
+        --vigilio-chat-width: ${props.value.chat_width}px;
+        --vigilio-chat-assitant-color: ${props.value.chat_assistant_color};
+        --vigilio-chat-user-color: ${props.value.chat_user_color};
+        --vigilio-height: ${props.value.height}px;
+        --vigilio-button-radius: ${props.value.rounded_button};
+        --vigilio-chat-secondary: ${props.value.background_color_secondary};
         `;
-    }, [properties.value]);
+    }, [props.value]);
 
     return (
         <>
             {isVisible.value ? (
                 <Suspense fallback={null}>
                     <AssistantVirtual
-                        props={properties.value as Props}
+                        props={props.value as Props}
                         isOpen={isOpen.value}
                         className={`vigilio-relative ${
-                            properties.value.mobile_mode === "chat"
+                            props.value.mobile_mode === "chat"
                                 ? "vigilio-button-container-ai-chat"
                                 : "vigilio-button-container-ai"
                         } ${isOpen.value ? "visible" : "invisible"}`}
@@ -130,7 +116,7 @@ function ChatButton(
                 </Suspense>
             ) : null}
             <div class="vigilio-button-content-ai">
-                {properties.value.isShowCloud && !isVisible.value ? (
+                {props.value.isShowCloud && !isVisible.value ? (
                     <div
                         style={{
                             position: "absolute",
@@ -139,9 +125,9 @@ function ChatButton(
                         }}
                     >
                         <Cloud
-                            text={properties.value.custom_greet_cloud?.replaceAll(
+                            text={props.value.custom_greet_cloud?.replaceAll(
                                 "{{name_ai}}",
-                                properties.value.name_ai || "Vigilio AI"
+                                props.value.name_ai || "Vigilio AI"
                             )}
                         />
                     </div>
@@ -153,27 +139,27 @@ function ChatButton(
                     aria-label="open chat ai"
                     onClick={isOpen.value ? onClose : onOpen}
                 >
-                    {properties.value.type_button === "chat-gpt" ? (
+                    {props.value.type_button === "chat-gpt" ? (
                         <Suspense fallback={null}>
                             <ChatGPTLogo />
                         </Suspense>
                     ) : null}
-                    {properties.value.type_button === "deepseek" ? (
+                    {props.value.type_button === "deepseek" ? (
                         <Suspense fallback={null}>
                             <DeepseekLogo />
                         </Suspense>
                     ) : null}
 
-                    {properties.value.type_button === "bot" ? (
+                    {props.value.type_button === "bot" ? (
                         <Suspense fallback={null}>
                             <BotLogo />
                         </Suspense>
                     ) : null}
 
-                    {properties.value.type_button === "logo" ? (
+                    {props.value.type_button === "logo" ? (
                         <Suspense fallback={null}>
                             <img
-                                src={props.logo_ai_chat}
+                                src={props.value.logo_ai_chat}
                                 width={200}
                                 height={200}
                                 alt="bot logo"
@@ -188,4 +174,4 @@ function ChatButton(
     );
 }
 
-export default ChatButton;
+export default ChatButton2;

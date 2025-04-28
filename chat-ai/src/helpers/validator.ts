@@ -1,45 +1,45 @@
 // filepath: form-validator/src/schema/validator.ts
 
-import { Schema, ValidationResult } from "../types/validator";
+import type { Schema, ValidationResult } from "../types/validator";
 
 export function validateSchema(
-  schema: Schema,
-  data: Record<string, any>
+    schema: Schema,
+    data: Record<string, any>
 ): ValidationResult {
-  const messages: Record<string, string> = {};
-  let isValid = true;
+    const messages: Record<string, string> = {};
+    let isValid = true;
 
-  for (const key in schema) {
-    const rules = schema[key];
-    const value = data[key];
+    for (const key in schema) {
+        const rules = schema[key];
+        const value = data[key];
 
-    if (rules.required && !value) {
-      isValid = false;
-      messages[key] = schema[key].message ?? `${key} es requerido.`;
-      continue;
+        if (rules.required && !value) {
+            isValid = false;
+            messages[key] = schema[key].message ?? `${key} es requerido.`;
+            continue;
+        }
+
+        if (rules.minLength && value.length < rules.minLength) {
+            isValid = false;
+            messages[key] =
+                schema[key].message ??
+                `${key} debe tener al menos ${rules.minLength} caracteres.`;
+        }
+
+        if (rules.maxLength && value.length > rules.maxLength) {
+            isValid = false;
+            messages[key] =
+                schema[key].message ??
+                `${key} no debe tener más de ${rules.maxLength} caracteres.`;
+        }
+
+        if (rules.regex && !rules.regex.test(value)) {
+            isValid = false;
+            messages[key] = schema[key].message ?? `Formato invalido ${key}.`;
+        }
     }
 
-    if (rules.minLength && value.length < rules.minLength) {
-      isValid = false;
-      messages[key] =
-        schema[key].message ??
-        `${key} debe tener al menos ${rules.minLength} caracteres.`;
-    }
-
-    if (rules.maxLength && value.length > rules.maxLength) {
-      isValid = false;
-      messages[key] =
-        schema[key].message ??
-        `${key} no debe tener más de ${rules.maxLength} caracteres.`;
-    }
-
-    if (rules.regex && !rules.regex.test(value)) {
-      isValid = false;
-      messages[key] = schema[key].message ?? `Formato invalido ${key}.`;
-    }
-  }
-
-  return { isValid, messages };
+    return { isValid, messages };
 }
 
 // Example usage

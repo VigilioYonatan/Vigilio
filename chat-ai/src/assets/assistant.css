@@ -52,7 +52,7 @@
 }
 
 .vigilio-chat-title {
-    color: var(--vigilio-primary);
+    color: #fff;
     font-weight: bold;
     text-align: center;
     margin: 0;
@@ -68,9 +68,9 @@
     text-align: center;
     display: block !important;
     opacity: 1 !important;
-    padding: 0.75rem 0 1.15rem 0;
+    padding: 0.75rem;
     visibility: visible !important;
-    color: #929292 !important;
+    color: #000 !important;
 }
 
 .vigilio-powered-by b {
@@ -86,7 +86,6 @@
     right: 0;
     margin: 0.5rem;
     top: 0;
-    color: var(--vigilio-primary);
     font-weight: bold;
     background: none;
     border: none;
@@ -98,6 +97,7 @@
     justify-content: space-between;
     /* align-items: center; */
     padding: 0.75rem 0.5rem;
+    background-color: var(--vigilio-chat-secondary);
 }
 
 .vigilio-close-button svg {
@@ -122,7 +122,7 @@
 }
 
 .vigilio-chat-bottom {
-    background-color: white;
+    background-color: var(--vigilio-chat-secondary);
 }
 
 @media (min-width: 768px) {

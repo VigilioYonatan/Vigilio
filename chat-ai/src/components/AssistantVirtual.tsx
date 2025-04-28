@@ -5,9 +5,8 @@ import useCopyToClipboard from "../hooks/useCopyToClipboard";
 import usePressTimeOut from "../hooks/usePressTimeOut";
 import { generateSignature, removeTextHTML } from "../helpers";
 import Watermark from "./WaterMark";
-import { Props } from "../types";
-import { FormEvent } from "preact/compat";
-import VigilioLogo from "../assets/logo-white.webp";
+import type { Props } from "../types";
+import { lazy, Suspense, type FormEvent } from "preact/compat";
 import { useIsMobile } from "../hooks/useMobile";
 import { createT } from "../helpers/i18n";
 import { validateSchema } from "../helpers/validator";
@@ -16,6 +15,14 @@ import Loader from "../assets/Loader";
 import "../assets/assistant.css";
 import "../assets/form.css";
 import configVigilio from "../config";
+import { SendIcon } from "../helpers/icon";
+
+const VigilioLogo = lazy(
+    () => import(/* webpackChunkName: "BOTLogo" */ "../assets/VigilioLogo")
+);
+const VigilioLogo2 = lazy(
+    () => import(/* webpackChunkName: "BOTLogo" */ "../assets/VigilioLogo2")
+);
 
 interface AssistantVirtualProps {
     onClose: () => void;
@@ -25,7 +32,7 @@ interface AssistantVirtualProps {
 }
 export type ChatIA = [string, "user" | "assistant", string];
 
-function AssistantVirtual2({
+function AssistantVirtual({
     onClose,
     isOpen,
     className,
@@ -57,8 +64,8 @@ function AssistantVirtual2({
         },
         telephone: {
             required: true,
-            minLength: 9,
-            maxLength: 9,
+            minLength: 6,
+            maxLength: 20,
             message: t("errorTelephone"),
         },
         email: {
@@ -108,7 +115,7 @@ function AssistantVirtual2({
                     "--vigilio-height":
                         isMobile && props.mobile_mode === "chat"
                             ? "100vh"
-                            : props.height,
+                            : `${props.height}px`,
                 }}
                 className={className}
             >
@@ -120,7 +127,9 @@ function AssistantVirtual2({
                     >
                         <div
                             className="vigilio-form-top animation-brightness"
-                            style={{ "--brightness-delay": "8s" }}
+                            style={{
+                                "--brightness-delay": "8s",
+                            }}
                         >
                             <div
                                 dangerouslySetInnerHTML={{
@@ -226,16 +235,9 @@ function AssistantVirtual2({
                                     gap: "0.2rem",
                                 }}
                             >
-                                <img
-                                    src={VigilioLogo}
-                                    className="vigilio-logo-chatbot"
-                                    alt="vigilio-chat"
-                                    title="vigilio-chat"
-                                    width={100}
-                                    height={100}
-                                    style={{ width: "35px" }}
-                                    loading="lazy"
-                                />
+                                <Suspense fallback={null}>
+                                    <VigilioLogo />
+                                </Suspense>
                                 <span>
                                     Powered by{" "}
                                     <b style={{ fontWeight: "bolder" }}>
@@ -260,6 +262,7 @@ function AssistantVirtual2({
                                 insertAssistantChat,
                                 updateAssistantChat,
                                 errorMessageServer,
+                                isPlus,
                             } = useChatStore({
                                 props,
                             });
@@ -286,6 +289,7 @@ function AssistantVirtual2({
                                 const params = new URLSearchParams();
                                 params.set("message", token);
                                 params.set("token", token);
+
                                 if (props.test_url) {
                                     params.set("test_url", props.test_url);
                                 }
@@ -294,8 +298,8 @@ function AssistantVirtual2({
                                     window.location.origin.includes(
                                         configVigilio.vigilio_services_url
                                     )
-                                        ? `/api/chat-ai/message?${params}`
-                                        : `/api/ia/chat/message?${params}`;
+                                        ? "/api/chat-ai/message"
+                                        : `${props.base_url}/api/ia/chat/message`;
                                 const { signature, timestamp } =
                                     await generateSignature(
                                         "GET",
@@ -304,9 +308,8 @@ function AssistantVirtual2({
                                 params.set("x-signature", signature);
                                 params.set("x-timestamp", timestamp.toString());
                                 const eventSource = new EventSource(
-                                    `${props.base_url}${url}?${params}`
+                                    `${url}?${params}`
                                 );
-
                                 eventSourceRef.current = eventSource;
                                 let assistantContent = "";
 
@@ -359,11 +362,25 @@ function AssistantVirtual2({
                                         <div className="vigilio-chat-top">
                                             <div class="vigilio-chat-header">
                                                 <div class="vigilio-chat-header-logo">
-                                                    <img
-                                                        src={props.logo_ai_chat}
-                                                        alt="logo"
-                                                        class="vigilio-chat-ai-logo"
-                                                    />
+                                                    {!props.logo_ai_chat ? (
+                                                        <Suspense
+                                                            fallback={null}
+                                                        >
+                                                            <VigilioLogo />
+                                                        </Suspense>
+                                                    ) : (
+                                                        <img
+                                                            src={
+                                                                props.logo_ai_chat
+                                                            }
+                                                            alt="logo"
+                                                            title="logo"
+                                                            width={60}
+                                                            height={60}
+                                                            class="vigilio-chat-ai-logo"
+                                                            loading="lazy"
+                                                        />
+                                                    )}
                                                 </div>
 
                                                 <div>
@@ -387,6 +404,7 @@ function AssistantVirtual2({
                                             <button
                                                 class="vigilio-close-button"
                                                 type="button"
+                                                style={{ color: "#fff" }}
                                                 onClick={onClose}
                                             >
                                                 <svg
@@ -611,50 +629,38 @@ function AssistantVirtual2({
                                                         aria-label="send message"
                                                         class="vigilio-send-button"
                                                     >
-                                                        <svg
-                                                            xmlns="http://www.w3.org/2000/svg"
-                                                            width="1em"
-                                                            height="1em"
-                                                            viewBox="0 0 24 24"
-                                                        >
-                                                            <path
-                                                                fill="none"
-                                                                stroke="currentColor"
-                                                                strokeLinecap="round"
-                                                                strokeLinejoin="round"
-                                                                strokeWidth="1.5"
-                                                                d="m14 10l-3 3m9.288-9.969a.535.535 0 0 1 .68.681l-5.924 16.93a.535.535 0 0 1-.994.04l-3.219-7.242a.54.54 0 0 0-.271-.271l-7.242-3.22a.535.535 0 0 1 .04-.993z"
-                                                            />
-                                                        </svg>
+                                                        <SendIcon />
                                                     </button>
                                                 </div>
                                             </form>
-                                            <Watermark props={props}>
-                                                <div
-                                                    style={{
-                                                        display: "flex",
-                                                        gap: "0.5rem",
-                                                        alignItems: "center",
-                                                        justifyContent:
-                                                            "center",
-                                                    }}
-                                                >
-                                                    <img
-                                                        src={VigilioLogo}
-                                                        className="vigilio-logo-chatbot"
-                                                        title="vigilio-services-chat"
-                                                        loading="lazy"
-                                                        alt="vigilio-services-chat"
-                                                    />
-                                                    <span
+                                            {!isPlus ? (
+                                                <Watermark props={props}>
+                                                    <div
                                                         style={{
-                                                            fontSize: "0.8rem",
+                                                            display: "flex",
+                                                            gap: "0.2rem",
+                                                            alignItems:
+                                                                "center",
+                                                            justifyContent:
+                                                                "center",
                                                         }}
                                                     >
-                                                        {t("addBot")}
-                                                    </span>
-                                                </div>
-                                            </Watermark>
+                                                        <Suspense
+                                                            fallback={null}
+                                                        >
+                                                            <VigilioLogo2 />
+                                                        </Suspense>
+                                                        <span
+                                                            style={{
+                                                                fontSize:
+                                                                    "0.8rem",
+                                                            }}
+                                                        >
+                                                            {t("addBot")}
+                                                        </span>
+                                                    </div>
+                                                </Watermark>
+                                            ) : null}
                                         </div>
                                     </div>
                                 </>
@@ -666,4 +672,4 @@ function AssistantVirtual2({
         </>
     );
 }
-export default AssistantVirtual2;
+export default AssistantVirtual;

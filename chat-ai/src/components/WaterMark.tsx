@@ -1,7 +1,7 @@
 import { useSignal } from "@preact/signals";
-import { JSX, useEffect, useRef } from "react";
+import { type JSX, useEffect, useRef } from "react";
 import configVigilio from "../config";
-import { Props } from "../types";
+import type { Props } from "../types";
 
 interface WatermarkProps {
     children: JSX.Element | JSX.Element[];
@@ -59,7 +59,7 @@ const Watermark = ({ children, props }: WatermarkProps) => {
         return (
             <a
                 ref={watermarkRef}
-                href={`${configVigilio.vigilio_services_url}?lang=${props.lang}`}
+                href={`${configVigilio.vigilio_services_chat}?lang=${props.lang}`}
                 target="_blank"
                 rel="noreferrer"
                 style={{
@@ -78,7 +78,7 @@ const Watermark = ({ children, props }: WatermarkProps) => {
     return (
         <a
             ref={watermarkRef}
-            href={configVigilio.vigilio_services_url}
+            href={`${configVigilio.vigilio_services_chat}?lang=${props.lang}`}
             target="_blank"
             rel="noreferrer"
             style={{

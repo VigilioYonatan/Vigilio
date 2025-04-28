@@ -1,25 +1,18 @@
 {
-    "name": "@vigilio/chat-ai",
+    "name": "@vigilio/chat-ai-component",
     "version": "0.0.8",
     "type": "module",
     "description": "this library is to have a chat with ai free and plus.",
-    "main": "./dist/vigilio-chat-ai.umd.cjs",
-    "module": "./dist/vigilio-chat-ai.es.js",
-    "types": "./dist/index.d.ts",
-    "exports": {
-        ".": {
-            "import": "./dist/vigilio-chat-ai.es.js",
-            "require": "./dist/vigilio-chat-ai.umd.js"
-        }
-    },
+    "main": "./src/components/ChatButton2.tsx",
+    "module": "./src/components/ChatButton2.tsx",
     "repository": {
         "type": "git",
         "url": "https://github.com/VigilioYonatan/Vigilio/blob/main/sweetREADME.md"
     },
     "files": [
-        "dist",
         "LICENSE",
-        "README.md"
+        "README.md",
+        "src"
     ],
     "keywords": [
         "chat ai web",
