@@ -1,5 +1,11 @@
 import { useSignal } from "@preact/signals";
-import { useCallback, useEffect, useRef, useState } from "preact/hooks";
+import {
+    useCallback,
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
+} from "preact/hooks";
 import { Fragment } from "preact/jsx-runtime";
 import useCopyToClipboard from "../hooks/useCopyToClipboard";
 import usePressTimeOut from "../hooks/usePressTimeOut";
@@ -16,6 +22,7 @@ import "../assets/assistant.css";
 import "../assets/form.css";
 import configVigilio from "../config";
 import { SendIcon } from "../helpers/icon";
+import { logoWhite } from "../assets/logo-white";
 
 const VigilioLogo = lazy(
     () => import(/* webpackChunkName: "BOTLogo" */ "../assets/VigilioLogo")
@@ -27,17 +34,11 @@ const VigilioLogo2 = lazy(
 interface AssistantVirtualProps {
     onClose: () => void;
     isOpen: boolean;
-    className?: string;
     props: Props;
 }
 export type ChatIA = [string, "user" | "assistant", string];
 
-function AssistantVirtual({
-    onClose,
-    isOpen,
-    className,
-    props,
-}: AssistantVirtualProps) {
+function AssistantVirtual({ onClose, isOpen, props }: AssistantVirtualProps) {
     const formState = useSignal({
         name: "",
         telephone: "",
@@ -108,16 +109,37 @@ function AssistantVirtual({
         });
     };
 
+    useEffect(() => {
+        document.body.classList.toggle(
+            "vigilio-overflow-hidden",
+            isMobile && isOpen
+        );
+    }, [isMobile, isOpen]);
+    console.log({
+        isMobile,
+        isChat: props.mobile_mode === "chat",
+        isFormVisible,
+    });
+    console.log({
+        a: isMobile && props.mobile_mode === "chat" && !isFormVisible,
+    });
+
     return (
         <>
             <div
                 style={{
                     "--vigilio-height":
-                        isMobile && props.mobile_mode === "chat"
-                            ? "100vh"
+                        isMobile &&
+                        props.mobile_mode === "chat" &&
+                        !isFormVisible
+                            ? "100dvh"
                             : `${props.height}px`,
                 }}
-                className={className}
+                className={`vigilio-relative ${
+                    isMobile && props.mobile_mode === "chat" && !isFormVisible
+                        ? "vigilio-button-container-ai-chat"
+                        : "vigilio-button-container-ai"
+                } ${isOpen ? "visible" : "invisible"} `}
             >
                 {props.init_with_form ? (
                     <div
@@ -236,7 +258,7 @@ function AssistantVirtual({
                                 }}
                             >
                                 <Suspense fallback={null}>
-                                    <VigilioLogo />
+                                    <VigilioLogo isFilter />
                                 </Suspense>
                                 <span>
                                     Powered by{" "}
@@ -287,11 +309,13 @@ function AssistantVirtual({
                                 e.preventDefault();
                                 errorMessage.value = null;
                                 const params = new URLSearchParams();
-                                params.set("message", token);
+                                params.set("message", message.value);
                                 params.set("token", token);
 
                                 if (props.test_url) {
                                     params.set("test_url", props.test_url);
+                                } else {
+                                    params.set("api_key", props.api_key);
                                 }
                                 const url =
                                     props.test_url &&
@@ -315,29 +339,51 @@ function AssistantVirtual({
 
                                 eventSource.onmessage = (e) => {
                                     if (e.data.trim() === ":keep-alive") return;
-                                    const data = JSON.parse(e.data);
-                                    assistantContent += data.content;
-                                    updateAssistantChat(assistantContent);
-                                    onScrolling();
+                                    try {
+                                        const data = JSON.parse(e.data);
+                                        assistantContent += data.content;
+                                        updateAssistantChat(assistantContent);
+                                        onScrolling();
+                                    } catch (error) {
+                                        console.error(
+                                            "Error parsing SSE data:",
+                                            error
+                                        );
+                                        insertAssistantChat([
+                                            "assistant",
+                                            "Error processing response",
+                                        ]);
+                                    }
                                 };
 
                                 eventSource.onerror = (e) => {
-                                    console.error("SSE Error:", e);
-                                    insertAssistantChat([
-                                        "assistant",
-                                        "Error de conexión",
-                                    ]);
-
-                                    eventSource.close();
-                                    isLoading.value = false;
+                                    if (
+                                        eventSource.readyState ===
+                                        EventSource.CLOSED
+                                    ) {
+                                        console.log("SSE connection closed");
+                                    } else {
+                                        console.error("SSE Error:", e);
+                                        insertAssistantChat([
+                                            "assistant",
+                                            "Connection error",
+                                        ]);
+                                    }
+                                    cleanupSSE();
                                 };
 
                                 eventSource.addEventListener("end", () => {
-                                    eventSource.close();
-                                    isLoading.value = false;
+                                    cleanupSSE();
                                 });
-                                isLoading.value = true;
-                                (e.target as HTMLFormElement).reset();
+                                message.value = "";
+                                isLoading.value = false;
+                                function cleanupSSE() {
+                                    if (eventSourceRef.current) {
+                                        eventSourceRef.current.close();
+                                        eventSourceRef.current = null;
+                                    }
+                                    isLoading.value = false;
+                                }
                             }
                             function onScrolling() {
                                 const chatContainer = chatBox.current;
@@ -355,34 +401,40 @@ function AssistantVirtual({
                             useEffect(() => {
                                 onScrolling();
                             }, [message]);
+                            const logoElement = useMemo(
+                                () => (
+                                    <div
+                                        style={{
+                                            "--brightness-delay": "4s",
+                                        }}
+                                        className="vigilio-chat-header-logo animation-brightness"
+                                    >
+                                        {!props.logo_ai_chat ? (
+                                            <Suspense fallback={null}>
+                                                <VigilioLogo />
+                                            </Suspense>
+                                        ) : (
+                                            <img
+                                                src={props.logo_ai_chat}
+                                                alt="logo"
+                                                title="logo"
+                                                width={60}
+                                                height={60}
+                                                className="vigilio-chat-ai-logo"
+                                                loading="lazy"
+                                            />
+                                        )}
+                                    </div>
+                                ),
+                                []
+                            );
 
                             return (
                                 <>
                                     <div class="vigilio-chat-container">
                                         <div className="vigilio-chat-top">
                                             <div class="vigilio-chat-header">
-                                                <div class="vigilio-chat-header-logo">
-                                                    {!props.logo_ai_chat ? (
-                                                        <Suspense
-                                                            fallback={null}
-                                                        >
-                                                            <VigilioLogo />
-                                                        </Suspense>
-                                                    ) : (
-                                                        <img
-                                                            src={
-                                                                props.logo_ai_chat
-                                                            }
-                                                            alt="logo"
-                                                            title="logo"
-                                                            width={60}
-                                                            height={60}
-                                                            class="vigilio-chat-ai-logo"
-                                                            loading="lazy"
-                                                        />
-                                                    )}
-                                                </div>
-
+                                                {logoElement}
                                                 <div>
                                                     <h3 class="vigilio-chat-title">
                                                         {t("title")}
@@ -442,7 +494,7 @@ function AssistantVirtual({
                                                             >
                                                                 {role ===
                                                                 "assistant" ? (
-                                                                    <div class="vigilio-message-container">
+                                                                    <div class="vigilio-message-container ">
                                                                         {props.logo_ai_chat ===
                                                                         "logo" ? (
                                                                             <img
@@ -453,13 +505,19 @@ function AssistantVirtual({
                                                                                 class="vigilio-chat-ai-logo-assistant"
                                                                             />
                                                                         ) : (
-                                                                            <img
-                                                                                src={
-                                                                                    props.logo_ai_chat
+                                                                            <Suspense
+                                                                                fallback={
+                                                                                    null
                                                                                 }
-                                                                                alt="logo"
-                                                                                class="vigilio-chat-ai-logo-assistant"
-                                                                            />
+                                                                            >
+                                                                                <img
+                                                                                    src={
+                                                                                        logoWhite
+                                                                                    }
+                                                                                    alt="logo"
+                                                                                    class="vigilio-chat-ai-logo-assistant"
+                                                                                />
+                                                                            </Suspense>
                                                                         )}
                                                                         <div
                                                                             class="vigilio-assistant-message"
@@ -570,7 +628,9 @@ function AssistantVirtual({
                                                     {!props.api_key ||
                                                     !props.base_url ? (
                                                         <a
-                                                            href=""
+                                                            href={
+                                                                configVigilio.vigilio_services_chat
+                                                            }
                                                             style={{
                                                                 fontWeight:
                                                                     "bold",
@@ -651,6 +711,7 @@ function AssistantVirtual({
                                                             <VigilioLogo2 />
                                                         </Suspense>
                                                         <span
+                                                            class="vigilio-ai-company-name"
                                                             style={{
                                                                 fontSize:
                                                                     "0.8rem",

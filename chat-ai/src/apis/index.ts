@@ -13,13 +13,13 @@ interface AiChatApiProps {
 export function aiChatApi({ base_url }: AiChatApiProps) {
     return useMutation<
         AIProductApi,
-        { token: string; initial_message: string },
+        { token: string; initial_message: string; api_key: string },
         AISendMessageApiError
     >("/api/ia/chat", async (url, body) => {
         const params = new URLSearchParams();
         params.set("token", body.token);
         params.set("initial_message", body.initial_message);
-
+        params.set("api_key", body.api_key);
         const { signature, timestamp } = await generateSignature(
             "GET",
             `${url}?${params}`
@@ -72,6 +72,51 @@ export function aiChatTestApi() {
 interface AIProductApi {
     success: true;
     chats: ChatIA[];
+}
+interface AISendMessageApiError {
+    success: true;
+    message: string;
+}
+
+// rastreo
+interface AiRastreoStoreApiProps {
+    base_url: string;
+}
+export function aiRastreoStoreApi({ base_url }: AiRastreoStoreApiProps) {
+    return useMutation<
+        AIProductApi,
+        {
+            token: string;
+            api_key: string;
+            event: {
+                path: string;
+                seconds: number;
+                clicks: number;
+                scrolls: number;
+                isVisit: boolean;
+            };
+        },
+        AISendMessageApiError
+    >("/api/rastreo", async (url, body) => {
+        const { signature, timestamp } = await generateSignature("POST", url);
+
+        const response = await fetch(`${base_url}${url}`, {
+            method: "POST",
+            body: JSON.stringify(body),
+            headers: {
+                "x-timestamp": timestamp.toString(),
+                "x-signature": signature,
+            },
+        });
+        const result: AIProductApi = await response.json();
+        if (!result.success) throw result;
+        return result;
+    });
+}
+interface AIProductApi {
+    success: true;
+    chats: ChatIA[];
+    isPlus: boolean;
 }
 interface AISendMessageApiError {
     success: true;

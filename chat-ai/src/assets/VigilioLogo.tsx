@@ -1,6 +1,10 @@
 import { logoWhite } from "./logo-white.ts";
 
-function VigilioLogo() {
+interface VigilioLogoProps {
+    isFilter?: boolean;
+}
+function VigilioLogo({ isFilter = false }: VigilioLogoProps) {
+    const isFilter2 = isFilter ? { filter: "invert(100%)" } : {};
     return (
         <img
             src={logoWhite}
@@ -9,7 +13,7 @@ function VigilioLogo() {
             title="vigilio-chat"
             width={100}
             height={100}
-            style={{ width: "35px" }}
+            style={{ width: "35px", ...isFilter2 }}
             loading="lazy"
         />
     );

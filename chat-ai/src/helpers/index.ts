@@ -43,3 +43,13 @@ async function generateHMAC(message: string, secretKey: string) {
 
     return hex;
 }
+
+
+export function getId() {
+    const key = "user_id";
+    if (!localStorage.getItem(key)) {
+        localStorage.setItem(key, generateId());
+    }
+
+    return localStorage.getItem(key);
+}

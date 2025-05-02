@@ -110,7 +110,10 @@
 .vigilio-logo-chatbot {
     display: block;
     width: 25px;
-    height: 25px;
-    object-fit: cover;
-    filter: invert(1);
+    height: 100%;
+    object-fit: contain;
+}
+
+.vigilio-powered-by {
+    color: #fff;
 }

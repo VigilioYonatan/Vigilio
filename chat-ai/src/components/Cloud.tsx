@@ -36,7 +36,7 @@ function Cloud({ text = "Tu texto aquí" }: CloudProps) {
                 .vigilio-tooltip {
                     position: relative;
                     padding: 0.25rem;
-                    background-color: var(--vigilio-background);
+                    background-color: #fff;
                     font-weight: bold;
                     border-radius: 0.5rem;
                     display: flex;

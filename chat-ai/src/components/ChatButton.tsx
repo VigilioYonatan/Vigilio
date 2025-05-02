@@ -4,6 +4,8 @@ import { lazy, Suspense } from "preact/compat";
 import type { Props } from "../types";
 import { useSignal } from "@preact/signals";
 import "../assets/index.css";
+import useRastreo from "../hooks/useRastreo";
+import { getId } from "../helpers";
 
 const AssistantVirtual = lazy(
     () => import(/* webpackChunkName: "AssistanVirtual" */ "./AssistantVirtual")
@@ -29,13 +31,10 @@ function ChatButton(
         color: "#00809F",
         name_ai: "Vigilio AI",
         type_button: "chat-gpt",
-        background_color: "#ff",
         mobile_mode: "normal",
         rounded_button: 1,
         chat_width: 380,
         height: 512,
-        chat_assistant_color: "#f5f5f5",
-        chat_user_color: "#e1fec4",
         init_with_form: false,
         custom_greet_cloud:
             props?.lang === "es"
@@ -61,6 +60,7 @@ function ChatButton(
     const isOpen = useSignal<boolean>(
         JSON.parse(localStorage.getItem("bot-open") || "false") || false
     );
+
     const timeoutId = useRef<number | null>(null);
     const isVisible = useSignal<boolean>(isOpen.value);
     function onClose() {
@@ -93,43 +93,47 @@ function ChatButton(
     }
 
     useEffect(() => {
-        props.element.className = `vigilio ${
-            props?.mobile_mode === "chat"
-                ? "vigilio-chat-ai-chat"
-                : "vigilio-chat-ai"
-        }  `;
+        props.element.className = `vigilio vigilio-chat-ai `;
         props.element.style.cssText = `
         --vigilio-primary: ${properties.value.color};
-        --vigilio-background: ${properties.value.background_color};
         --vigilio-chat-width: ${properties.value.chat_width}px;
-        --vigilio-chat-assitant-color: ${properties.value.chat_assistant_color};
-        --vigilio-chat-user-color: ${properties.value.chat_user_color};
-        --vigilio-height: ${properties.value.height}px;
         --vigilio-button-radius: ${properties.value.rounded_button};
-        --vigilio-chat-secondary: ${
-            properties.value.background_color_secondary ||
-            properties.value.color
-        };
         `;
     }, [properties.value]);
 
+    if (props.api_key && props.base_url) {
+        // initial chat
+        useRastreo({
+            api_key: props.api_key,
+            base_url: props.base_url,
+            token: getId() as string,
+        });
+    }
+
     return (
         <>
-            {isVisible.value ? (
+            {isOpen.value ? (
                 <Suspense fallback={null}>
                     <AssistantVirtual
                         props={properties.value as Props}
                         isOpen={isOpen.value}
-                        className={`vigilio-relative ${
-                            properties.value.mobile_mode === "chat"
-                                ? "vigilio-button-container-ai-chat"
-                                : "vigilio-button-container-ai"
-                        } ${isOpen.value ? "visible" : "invisible"}`}
                         onClose={onClose}
                     />
                 </Suspense>
             ) : null}
-            <div class="vigilio-button-content-ai">
+            <div
+                class={`vigilio-button-content-ai  ${
+                    properties.value.position === "bottom-right"
+                        ? "vigilio-button-content-ai-bottom-right"
+                        : properties.value.position === "bottom-left"
+                        ? "vigilio-button-content-ai-bottom-left"
+                        : properties.value.position === "top-left"
+                        ? "vigilio-button-content-ai-top-left"
+                        : properties.value.position === "top-right"
+                        ? "vigilio-button-content-ai-top-right"
+                        : "vigilio-button-content-ai-bottom-right"
+                }`}
+            >
                 {properties.value.isShowCloud && !isVisible.value ? (
                     <div
                         style={{

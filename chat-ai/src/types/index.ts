@@ -7,8 +7,6 @@ export interface Props {
     type_button?: "chat-gpt" | "bot" | "deepseek" | "logo"; // imagen del boton
     rounded_button?: number;
     lang?: "es" | "en"; // idioma del chat
-    background_color?: string; // colorr fondo del chat
-    background_color_secondary?: string;
     mobile_mode?: "normal" | "chat"; // mobile chat toda pantalla
     chat_width?: number;
     logo_ai_chat?: "logo" | string; //logo "logo"
@@ -17,15 +15,7 @@ export interface Props {
     custom_greet_cloud?: string;
     custom_greet_chat?: string;
     isShowCloud?: boolean;
-    position?:
-        | "top-left"
-        | "top-center"
-        | "top-right"
-        | "bottom-left"
-        | "bottom-center"
-        | "bottom-right"; // agregar position start, bottom-left, top-right
-    chat_assistant_color?: string;
-    chat_user_color?: string;
+    position?: "top-left" | "top-right" | "bottom-left" | "bottom-right"; // agregar position start, bottom-left, top-right
     zIndex?: number;
     test_url?: string | null;
 }

@@ -24,13 +24,10 @@ function ChatButton2(props: Signal<Props>) {
         color: "#00809F",
         name_ai: "Vigilio AI",
         type_button: "chat-gpt",
-        background_color: "#ff",
         mobile_mode: "normal",
         rounded_button: 1,
         chat_width: 380,
         height: 512,
-        chat_assistant_color: "#f5f5f5",
-        chat_user_color: "#e1fec4",
         init_with_form: false,
         custom_greet_cloud:
             props.value.lang === "es"
@@ -89,13 +86,8 @@ function ChatButton2(props: Signal<Props>) {
     useEffect(() => {
         document.body.style.cssText = `
         --vigilio-primary: ${props.value.color};
-        --vigilio-background: ${props.value.background_color};
         --vigilio-chat-width: ${props.value.chat_width}px;
-        --vigilio-chat-assitant-color: ${props.value.chat_assistant_color};
-        --vigilio-chat-user-color: ${props.value.chat_user_color};
-        --vigilio-height: ${props.value.height}px;
         --vigilio-button-radius: ${props.value.rounded_button};
-        --vigilio-chat-secondary: ${props.value.background_color_secondary};
         `;
     }, [props.value]);
 
@@ -106,16 +98,23 @@ function ChatButton2(props: Signal<Props>) {
                     <AssistantVirtual
                         props={props.value as Props}
                         isOpen={isOpen.value}
-                        className={`vigilio-relative ${
-                            props.value.mobile_mode === "chat"
-                                ? "vigilio-button-container-ai-chat"
-                                : "vigilio-button-container-ai"
-                        } ${isOpen.value ? "visible" : "invisible"}`}
                         onClose={onClose}
                     />
                 </Suspense>
             ) : null}
-            <div class="vigilio-button-content-ai">
+            <div
+                class={`vigilio-button-content-ai ${
+                    props.value.position === "bottom-right"
+                        ? "vigilio-button-content-ai-bottom-right"
+                        : props.value.position === "bottom-left"
+                        ? "vigilio-button-content-ai-bottom-left"
+                        : props.value.position === "top-left"
+                        ? "vigilio-button-content-ai-top-left"
+                        : props.value.position === "top-right"
+                        ? "vigilio-button-content-ai-top-right"
+                        : "vigilio-button-content-ai-bottom-right"
+                }`}
+            >
                 {props.value.isShowCloud && !isVisible.value ? (
                     <div
                         style={{

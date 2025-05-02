@@ -3,20 +3,8 @@ import { aiChatApi, aiChatTestApi } from "../apis";
 import { useEffect } from "preact/hooks";
 import { type Props } from "../types";
 import configVigilio from "../config";
+import { getId } from "../helpers";
 export type ChatIA = ["user" | "assistant", string];
-
-function generateId() {
-    return Date.now().toString(32).slice(2);
-}
-const storageEmpresa = { slug: "" };
-export function getId() {
-    const key = `${storageEmpresa?.slug}:chatUserId`;
-    if (!localStorage.getItem(key)) {
-        localStorage.setItem(key, generateId());
-    }
-
-    return localStorage.getItem(key);
-}
 
 const isConnect = signal<boolean>(false);
 const isPlus = signal<boolean>(false);
@@ -65,7 +53,11 @@ function useChatStore({ props }: UseChatStoreProps) {
             return;
         }
         chatsMutation.mutate(
-            { token: getId() as string, initial_message },
+            {
+                token: getId() as string,
+                initial_message,
+                api_key: props.api_key,
+            },
             {
                 onSuccess(data) {
                     isConnect.value = true;
