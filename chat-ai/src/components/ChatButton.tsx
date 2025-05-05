@@ -21,11 +21,12 @@ const BotLogo = lazy(
     () => import(/* webpackChunkName: "BOTLogo" */ "../assets/BotLogo")
 );
 
-function ChatButton(
+interface ChatButtonProps {
     props: Props & {
         element: HTMLDivElement;
-    }
-) {
+    };
+}
+function ChatButton({ props }: ChatButtonProps) {
     const { element, ...rest } = props;
     const defaultProps: Partial<Props> = {
         color: "#00809F",
@@ -101,11 +102,11 @@ function ChatButton(
         `;
     }, [properties.value]);
 
-    if (props.api_key && props.base_url) {
+    if (propsButton.api_key && propsButton.base_url) {
         // initial chat
         useRastreo({
-            api_key: props.api_key,
-            base_url: props.base_url,
+            api_key: propsButton.api_key,
+            base_url: propsButton.base_url,
             token: getId() as string,
         });
     }
@@ -177,7 +178,7 @@ function ChatButton(
                     {properties.value.type_button === "logo" ? (
                         <Suspense fallback={null}>
                             <img
-                                src={props.logo_ai_chat}
+                                src={propsButton.logo_ai_chat}
                                 width={200}
                                 height={200}
                                 alt="bot logo"

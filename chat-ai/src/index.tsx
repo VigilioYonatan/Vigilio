@@ -14,7 +14,9 @@ function init(props: Props | undefined = undefined) {
         const chatAiElement = document.createElement("div");
         document.body.appendChild(chatAiElement);
         render(
-            <ChatButton {...(props as Props)} element={chatAiElement} />,
+            <ChatButton
+                props={{ ...(props as Props), element: chatAiElement }}
+            />,
             chatAiElement
         );
     }

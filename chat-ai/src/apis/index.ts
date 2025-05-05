@@ -106,6 +106,7 @@ export function aiRastreoStoreApi({ base_url }: AiRastreoStoreApiProps) {
             headers: {
                 "x-timestamp": timestamp.toString(),
                 "x-signature": signature,
+                "Content-Type": "application/json",
             },
         });
         const result: AIProductApi = await response.json();
