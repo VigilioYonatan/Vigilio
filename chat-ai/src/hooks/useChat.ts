@@ -1,5 +1,5 @@
 import { signal, useSignal } from "@preact/signals";
-import { aiChatApi, aiChatTestApi } from "../apis";
+import { aiChatApi, aiChatTestApi } from "../apis/chat-ai";
 import { useEffect } from "preact/hooks";
 import { type Props } from "../types";
 import configVigilio from "../config";

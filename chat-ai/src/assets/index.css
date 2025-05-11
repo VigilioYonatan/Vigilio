@@ -196,8 +196,8 @@
 /* === Extensión para elementos personalizados === */
 .vigilio-chat-ai {
     position: fixed;
-    bottom: 6rem;
-    right: 2.8rem;
+    bottom: 8rem;
+    right: 2rem;
     z-index: var(--vigilio-z-index);
 }
 .vigilio-chat-ai-chat > .vigilio-button-content-ai {

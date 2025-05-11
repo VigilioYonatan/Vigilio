@@ -89,10 +89,10 @@ export function aiRastreoStoreApi({ base_url }: AiRastreoStoreApiProps) {
             token: string;
             api_key: string;
             event: {
-                path: string;
-                seconds: number;
-                clicks: number;
-                scrolls: number;
+                page: string;
+                time: number;
+                click: number;
+                scroll: number;
                 isVisit: boolean;
             };
         },

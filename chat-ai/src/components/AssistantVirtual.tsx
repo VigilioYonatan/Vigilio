@@ -23,6 +23,7 @@ import "../assets/form.css";
 import configVigilio from "../config";
 import { SendIcon } from "../helpers/icon";
 import { logoWhite } from "../assets/logo-white";
+import { usersFormStoreApi } from "../apis/form.ai";
 
 const VigilioLogo = lazy(
     () => import(/* webpackChunkName: "BOTLogo" */ "../assets/VigilioLogo")
@@ -53,7 +54,12 @@ function AssistantVirtual({ onClose, isOpen, props }: AssistantVirtualProps) {
 
     const isMobile = useIsMobile({ breakpoint: 580 });
 
-    const [isFormVisible, setIsFormVisible] = useState(true);
+    const [isFormVisible, setIsFormVisible] = useState(
+        localStorage.getItem("chat-form") ? false : true
+    );
+    const usersFormStoreMutation = usersFormStoreApi({
+        base_url: props.base_url,
+    });
 
     const t = createT(props.lang === "en" ? "en" : "es");
 
@@ -91,6 +97,17 @@ function AssistantVirtual({ onClose, isOpen, props }: AssistantVirtualProps) {
 
         if (isValid) {
             console.log("form", formState.value);
+            usersFormStoreMutation.mutate(
+                {
+                    api_key: props.api_key,
+                    ...formState.value,
+                },
+                {
+                    onSuccess() {
+                        localStorage.setItem("chat-form", "true");
+                    },
+                }
+            );
             setIsFormVisible(false);
         } else {
             setErrors(messages);

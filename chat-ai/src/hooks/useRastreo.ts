@@ -1,7 +1,7 @@
 import { useEffect } from "preact/hooks";
 import { useSignal } from "@preact/signals";
 import useInactivity from "./useInactiviy";
-import { aiRastreoStoreApi } from "../apis";
+import { aiRastreoStoreApi } from "../apis/chat-ai";
 
 interface useRastreoProps {
     base_url: string;
@@ -25,10 +25,10 @@ function useRastreo({ base_url, api_key, token }: useRastreoProps) {
                 api_key,
                 token,
                 event: {
-                    path: window.location.pathname,
-                    seconds: seconds.value,
-                    clicks: clicks.value,
-                    scrolls: scrollEndCount.value,
+                    page: window.location.pathname,
+                    time: seconds.value,
+                    click: clicks.value,
+                    scroll: scrollEndCount.value,
                     isVisit: path.value < 2,
                 },
             });
