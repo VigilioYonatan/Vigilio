@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { safeParseAsync, ObjectSchemaAsync } from "valibot";
+import { safeParseAsync, ObjectSchemaAsync } from "@vigilio/valibot";
 import { attachMiddleware } from '../../server/express/express';
 
 export function Validator(schema: ObjectSchemaAsync<any>) {

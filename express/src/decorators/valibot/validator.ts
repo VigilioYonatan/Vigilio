@@ -1,4 +1,4 @@
-import { safeParseAsync, ObjectSchemaAsync } from "valibot";
+import { safeParseAsync, ObjectSchemaAsync } from "@vigilio/valibot";
 export async function validator(schema: ObjectSchemaAsync<any>, body: any) {
     const data = await safeParseAsync(schema, body);
     if (!data.success) {
