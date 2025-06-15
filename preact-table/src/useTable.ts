@@ -7,7 +7,11 @@ import { useSignal } from "@preact/signals";
 type KeyColumn<T, K extends string> = keyof (T & {
     [A in K]: string;
 });
-export type Columns<T, K extends string = "", Y extends object = any> = {
+export type Columns<
+    T,
+    K extends string = "",
+    Y extends object = UseTableMethods<T, K>
+> = {
     key: KeyColumn<T, K>;
     header?:
         | string
@@ -18,7 +22,12 @@ export type Columns<T, K extends string = "", Y extends object = any> = {
           ) => any);
     cell?:
         | string
-        | ((props: T, index: number, methods: Y, checks: number[]) => any);
+        | ((
+              props: T,
+              index: number,
+              methods: Y & UseTableMethods<T, K>,
+              checks: number[]
+          ) => any);
     isSort?: boolean | keyof T;
 }[];
 export type UseTableMethods<T, K extends string = ""> = {
@@ -26,6 +35,22 @@ export type UseTableMethods<T, K extends string = ""> = {
     onCheck: (value: number) => void;
     existCheck: (value: number) => boolean;
     isEmptyCheck: () => boolean;
+    updateData(
+        props:
+            | {
+                  result: T[];
+                  count: number;
+                  methods?: UseTableMethods<T, K>;
+              }
+            | ((
+                  data: T[],
+                  total: number
+              ) => {
+                  result: T[];
+                  count: number;
+                  methods?: UseTableMethods<T, K>;
+              })
+    ): void;
 };
 export interface UseTableProps<
     T extends object,
@@ -46,7 +71,7 @@ export interface UseTable<
             key: K | keyof T;
             value: any;
             isSort?: boolean | keyof T;
-            methods?: UseTableMethods<T, K>;
+            methods?: Y & UseTableMethods<T, K>;
         }[];
         TBody: {
             Row: () => (T & {
@@ -58,15 +83,22 @@ export interface UseTable<
             }[];
         };
     };
-    updateData: ({
-        result,
-        count,
-        methods,
-    }: {
-        result: T[];
-        count: number;
-        methods?: Y | undefined;
-    }) => void;
+    updateData: (
+        props:
+            | {
+                  result: T[];
+                  count: number;
+                  methods?: Y;
+              }
+            | ((
+                  data: T[],
+                  total: number
+              ) => {
+                  result: T[];
+                  count: number;
+                  methods?: Y;
+              })
+    ) => void;
     pagination: UsePaginator["pagination"];
     sort: {
         value: {
@@ -108,19 +140,40 @@ function useTable<T extends object, K extends string, Y extends object>(
         [x: string]: string;
     }>({});
 
-    function updateData({
-        result,
-        count,
-        methods: m,
-    }: {
-        result: T[];
-        count: number;
-        methods?: Y;
-    }) {
-        data.value = result;
-        update({ total: count });
-        if (m) {
-            methods.value = { ...methods.value, ...m };
+    function updateData(
+        props:
+            | {
+                  result: T[];
+                  count: number;
+                  methods?: Y;
+              }
+            | ((
+                  data: T[],
+                  total: number
+              ) => {
+                  result: T[];
+                  count: number;
+                  methods?: Y;
+              })
+    ) {
+        if (typeof props === "function") {
+            const {
+                result,
+                count,
+                methods: m,
+            } = props(data.value, pagination.value.total || 0);
+            data.value = result;
+            update({ total: count });
+            if (m) {
+                methods.value = { ...methods.value, ...m };
+            }
+        } else {
+            const { result, count, methods: m } = props;
+            data.value = result;
+            update({ total: count });
+            if (m) {
+                methods.value = { ...methods.value, ...m };
+            }
         }
     }
 
@@ -145,7 +198,8 @@ function useTable<T extends object, K extends string, Y extends object>(
                 onCheck,
                 existCheck,
                 isEmptyCheck,
-            };
+                updateData,
+            } as Y & UseTableMethods<T, K>;
             if (header && header instanceof Function) {
                 value = header(
                     key,
@@ -179,6 +233,7 @@ function useTable<T extends object, K extends string, Y extends object>(
                     onCheck,
                     existCheck,
                     isEmptyCheck,
+                    updateData,
                 };
 
                 value = cell(

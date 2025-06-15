@@ -1,6 +1,6 @@
 {
     "name": "@vigilio/preact-table",
-    "version": "1.0.19",
+    "version": "1.2.5",
     "description": "this is a table library to preact",
     "main": "./dist/cjs/index.js",
     "module": "./dist/esm/index.js",
@@ -25,7 +25,7 @@
     "scripts": {
         "build:esm": "tsc",
         "build:cjs": "tsc --module commonjs --outDir dist/cjs",
-        "build": "pnpm build:esm && pnpm build:cjs"
+        "build": "bun run build:esm && bun run build:cjs"
     },
     "author": "Vigilio",
     "license": "ISC"
