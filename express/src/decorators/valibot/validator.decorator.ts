@@ -1,8 +1,12 @@
 import { Request, Response, NextFunction } from "express";
 import { safeParseAsync, ObjectSchemaAsync } from "@vigilio/valibot";
-import { attachMiddleware } from '../../server/express/express';
+import { attachMiddleware } from "../../server/express/express";
 
-export function Validator(schema: ObjectSchemaAsync<any>) {
+export function Validator(
+    schema:
+        | ObjectSchemaAsync<any>
+        | ((req: Request, res: Response) => ObjectSchemaAsync<any>)
+) {
     return function (
         target: any,
         propertyKey: string,
@@ -12,7 +16,9 @@ export function Validator(schema: ObjectSchemaAsync<any>) {
             target,
             propertyKey,
             async (req: Request, res: Response, next: NextFunction) => {
-                const data = await safeParseAsync(schema, req.body);
+                const schemaConverter =
+                    typeof schema === "function" ? schema(req, res) : schema;
+                const data = await safeParseAsync(schemaConverter, req.body);
                 if (!data.success) {
                     let message: string | null = null;
                     try {

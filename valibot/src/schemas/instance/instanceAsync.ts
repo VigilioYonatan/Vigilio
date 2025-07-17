@@ -1,6 +1,6 @@
 import type { BaseSchemaAsync, ErrorMessage, PipeAsync } from "../../types";
 import { executePipeAsync, getDefaultArgs, getSchemaIssues } from "../../utils";
-import { type Class } from "./instance.js";
+import { Class } from "./instance";
 
 /**
  * Instance schema type.

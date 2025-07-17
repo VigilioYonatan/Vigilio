@@ -1,6 +1,6 @@
 {
     "name": "@vigilio/express-core",
-    "version": "1.10.0",
+    "version": "1.10.1",
     "main": "dist/cjs/index.js",
     "module": "dist/esm/index.js",
     "types": "dist/esm/index.d.ts",
@@ -75,7 +75,7 @@
         "public": "bun run build && npm publish"
     },
     "peerDependencies": {
-        "express": "4"
+        "express": "3.5.1"
     },
     "repository": {
         "type": "git",
@@ -94,8 +94,10 @@
         "sequelize",
         "framework"
     ],
-    "license": "ISC",
+    "devDependencies": {
+        "typescript": "^5.8.3"
+    },
     "dependencies": {
-        "reflect-metadata": "^0.2.2"
+        "socket.io": "^4.8.1"
     }
 }

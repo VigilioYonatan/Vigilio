@@ -2,7 +2,11 @@ import { Request, Response, NextFunction } from "express";
 import { ObjectSchemaAsync, safeParseAsync } from "@vigilio/valibot";
 import { attachMiddleware } from "../../server/express";
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-export function Pipe(schema: ObjectSchemaAsync<any>) {
+export function Pipe(
+    schema:
+        | ObjectSchemaAsync<any>
+        | ((req: Request, res: Response) => ObjectSchemaAsync<any>)
+) {
     return function (
         target: unknown,
         propertyKey: string,
@@ -12,7 +16,9 @@ export function Pipe(schema: ObjectSchemaAsync<any>) {
             target,
             propertyKey,
             async (req: Request, res: Response, next: NextFunction) => {
-                const data = await safeParseAsync(schema, req.params);
+                const schemaConverter =
+                    typeof schema === "function" ? schema(req, res) : schema;
+                const data = await safeParseAsync(schemaConverter, req.params);
 
                 if (!data.success) {
                     let message: string | null = null;
