@@ -1,0 +1,11 @@
+import React from 'react';
+
+function LambdaIcon(props: React.SVGProps<SVGSVGElement> & { title?: string }) {
+    return (
+        <svg style={{ minWidth: props.width, ...props.style } as React.CSSProperties} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"
+                    {...props}>
+                    {props.title ? <title>{props.title}</title> : <title> </title>}<path d="M32 32C14.3 32 0 46.3 0 64S14.3 96 32 96H140.2l16.4 32.7L18.8 434.9c-7.3 16.1-.1 35.1 16 42.3s35.1 .1 42.3-16L193.5 202.6l121 242c10.8 21.7 33 35.4 57.2 35.4H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H371.8L197.5 67.4C186.6 45.7 164.5 32 140.2 32H32z"/></svg>
+    );
+}
+
+export default LambdaIcon;

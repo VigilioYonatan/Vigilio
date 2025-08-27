@@ -1,0 +1,11 @@
+import React from 'react';
+
+function RefrigeratorIcon(props: React.SVGProps<SVGSVGElement> & { title?: string }) {
+    return (
+        <svg style={{ minWidth: props.width, ...props.style } as React.CSSProperties} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"
+                    {...props}>
+                    {props.title ? <title>{props.title}</title> : <title> </title>}<path d="M96 0C43 0 0 43 0 96v64H288V112c0-8.8 7.2-16 16-16s16 7.2 16 16v48h64V96c0-53-43-96-96-96H96zM384 192H320V368c0 8.8-7.2 16-16 16s-16-7.2-16-16V192H0V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V192z"/></svg>
+    );
+}
+
+export default RefrigeratorIcon;

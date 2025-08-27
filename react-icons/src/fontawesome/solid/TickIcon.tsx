@@ -1,0 +1,11 @@
+import React from 'react';
+
+function TickIcon(props: React.SVGProps<SVGSVGElement> & { title?: string }) {
+    return (
+        <svg style={{ minWidth: props.width, ...props.style } as React.CSSProperties} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 512"
+                    {...props}>
+                    {props.title ? <title>{props.title}</title> : <title> </title>}<path d="M32 98.3V96c0-35.3 28.7-64 64-64s64 28.7 64 64v2.3c0 3.8-.3 7.6-1 11.4L133.5 256.5c-3.2 18.2-19 31.5-37.5 31.5s-34.3-13.3-37.5-31.5L33 109.6c-.7-3.8-1-7.5-1-11.4z"/></svg>
+    );
+}
+
+export default TickIcon;

@@ -1,0 +1,11 @@
+import React from 'react';
+
+function TurnLeftUpIcon(props: React.SVGProps<SVGSVGElement> & { title?: string }) {
+    return (
+        <svg style={{ minWidth: props.width, ...props.style } as React.CSSProperties} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"
+                    {...props}>
+                    {props.title ? <title>{props.title}</title> : <title> </title>}<path d="M34 177.5c-3.8-8.8-2-19 4.6-26l136-144C179.1 2.7 185.4 0 192 0s12.9 2.7 17.4 7.5l136 144c6.6 7 8.4 17.2 4.6 26s-12.5 14.5-22 14.5H240l0 192c0 17.7 14.3 32 32 32h80c17.7 0 32 14.3 32 32v32c0 17.7-14.3 32-32 32l-80 0c-70.7 0-128-57.3-128-128l0-192H56c-9.6 0-18.2-5.7-22-14.5z"/></svg>
+    );
+}
+
+export default TurnLeftUpIcon;

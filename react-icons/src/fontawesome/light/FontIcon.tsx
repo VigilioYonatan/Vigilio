@@ -1,0 +1,11 @@
+import React from 'react';
+
+function FontIcon(props: React.SVGProps<SVGSVGElement> & { title?: string }) {
+    return (
+        <svg style={{ minWidth: props.width, ...props.style } as React.CSSProperties} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"
+                    {...props}>
+                    {props.title ? <title>{props.title}</title> : <title> </title>}<path d="M238.7 41.8c-2.5-5.9-8.3-9.8-14.7-9.8s-12.2 3.8-14.7 9.8L37.4 448H16c-8.8 0-16 7.2-16 16s7.2 16 16 16H96c8.8 0 16-7.2 16-16s-7.2-16-16-16H72.1l40.6-96H335.2l40.6 96H352c-8.8 0-16 7.2-16 16s7.2 16 16 16h80c8.8 0 16-7.2 16-16s-7.2-16-16-16H410.6L238.7 41.8zm83 278.2H126.3L224 89.1 321.7 320z"/></svg>
+    );
+}
+
+export default FontIcon;

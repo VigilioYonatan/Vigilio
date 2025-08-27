@@ -1,0 +1,11 @@
+import React from 'react';
+
+function CaravanSimpleIcon(props: React.SVGProps<SVGSVGElement> & { title?: string }) {
+    return (
+        <svg style={{ minWidth: props.width, ...props.style } as React.CSSProperties} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"
+                    {...props}>
+                    {props.title ? <title>{props.title}</title> : <title> </title>}<path d="M80 32C35.8 32 0 67.8 0 112V336c0 44.2 35.8 80 80 80H96c0 53 43 96 96 96s96-43 96-96H576l32 0c17.7 0 32-14.3 32-32s-14.3-32-32-32H576V192c0-88.4-71.6-160-160-160H80zM64 160c0-17.7 14.3-32 32-32H224c17.7 0 32 14.3 32 32v64c0 17.7-14.3 32-32 32H96c-17.7 0-32-14.3-32-32V160zm288-32h64c17.7 0 32 14.3 32 32v64c0 17.7-14.3 32-32 32H352c-17.7 0-32-14.3-32-32V160c0-17.7 14.3-32 32-32zM144 416a48 48 0 1 1 96 0 48 48 0 1 1 -96 0z"/></svg>
+    );
+}
+
+export default CaravanSimpleIcon;

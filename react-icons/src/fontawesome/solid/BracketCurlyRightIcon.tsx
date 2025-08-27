@@ -1,0 +1,11 @@
+import React from 'react';
+
+function BracketCurlyRightIcon(props: React.SVGProps<SVGSVGElement> & { title?: string }) {
+    return (
+        <svg style={{ minWidth: props.width, ...props.style } as React.CSSProperties} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512"
+                    {...props}>
+                    {props.title ? <title>{props.title}</title> : <title> </title>}<path d="M192 128c0-53-43-96-96-96H64C46.3 32 32 46.3 32 64s14.3 32 32 32H96c17.7 0 32 14.3 32 32v37.5c0 25.5 10.1 49.9 28.1 67.9L178.7 256l-22.6 22.6c-18 18-28.1 42.4-28.1 67.9V384c0 17.7-14.3 32-32 32H64c-17.7 0-32 14.3-32 32s14.3 32 32 32H96c53 0 96-43 96-96V346.5c0-8.5 3.4-16.6 9.4-22.6l45.3-45.3c12.5-12.5 12.5-32.8 0-45.3l-45.3-45.3c-6-6-9.4-14.1-9.4-22.6V128z"/></svg>
+    );
+}
+
+export default BracketCurlyRightIcon;

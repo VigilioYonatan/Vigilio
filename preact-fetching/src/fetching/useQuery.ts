@@ -1,4 +1,4 @@
-import { useEffect } from "preact/hooks";
+import { useEffect, useRef } from "preact/hooks";
 import { delayFetch, timer } from "./helpers";
 import { useSignal } from "@preact/signals";
 export interface OptionsQuery<Data, Error> {
@@ -20,6 +20,7 @@ export type UseQuery<Data, Error> = {
 } & {
     refetch: (clean?: boolean) => Promise<void>;
     transformData: (cb: (data: Data) => Data) => void;
+    cancel: () => void;
 };
 
 type FetchPropsProps<Data, Error> = {
@@ -34,7 +35,7 @@ type FetchPropsProps<Data, Error> = {
 };
 function useQuery<Data, Error>(
     url: string,
-    fetching: (url: string) => Promise<Data>,
+    fetching: (url: string, signal: AbortSignal) => Promise<Data>,
     options: OptionsQuery<Data, Error> | null = null
 ): UseQuery<Data, Error> {
     let opciones: Required<OptionsQuery<Data, Error>> = {
@@ -79,8 +80,9 @@ function useQuery<Data, Error>(
         error: null,
         errorTimes: 0,
     });
+    const controllerRef = useRef<AbortController | null>(null);
 
-    async function fetchEndpoint() {
+    async function fetchEndpoint(signal: AbortSignal) {
         if (fetchProps.value.isFetching === false) {
             fetchProps.value = {
                 ...fetchProps.value,
@@ -102,7 +104,7 @@ function useQuery<Data, Error>(
         }
 
         try {
-            const data = await fetching(url);
+            const data = await fetching(url, signal);
             let transform: Data = data;
             if (transformData) {
                 transform = transformData(data);
@@ -119,35 +121,64 @@ function useQuery<Data, Error>(
                 data: transform,
             };
         } catch (error: unknown) {
-            fetchProps.value = {
-                ...fetchProps.value,
-                errorTimes: fetchProps.value.errorTimes + 1,
-            };
-            if (retry && fetchProps.value.errorTimes < retry) {
-                await fetchEndpoint();
-                return;
-            }
-            fetchProps.value = {
-                ...fetchProps.value,
-                isError: true,
-                isLoading: false,
-                isFetching: false,
-                isSuccess: false,
-                error: error as Error,
-            };
+            if (error instanceof Error && error.name !== "AbortError") {
+                fetchProps.value = {
+                    ...fetchProps.value,
+                    errorTimes: fetchProps.value.errorTimes + 1,
+                };
+                if (retry && fetchProps.value.errorTimes < retry) {
+                    await fetchEndpoint(signal);
+                    return;
+                }
+                fetchProps.value = {
+                    ...fetchProps.value,
+                    isError: true,
+                    isLoading: false,
+                    isFetching: false,
+                    isSuccess: false,
+                    error: error as Error,
+                };
 
-            if (onError) {
-                onError(error as Error);
+                if (onError) {
+                    onError(error as Error);
+                }
+                throw error;
             }
+            throw error;
         }
     }
+
+    function execute() {
+        // Cancelar request anterior si existe
+        if (controllerRef.current) {
+            controllerRef.current.abort();
+        }
+
+        // Crear nuevo controller
+        controllerRef.current = new AbortController();
+
+        return fetchEndpoint(controllerRef.current.signal);
+    }
+    function cancel() {
+        if (controllerRef.current) {
+            controllerRef.current.abort();
+            controllerRef.current = null;
+        }
+    }
+    useEffect(() => {
+        return () => {
+            if (controllerRef.current) {
+                controllerRef.current.abort();
+            }
+        };
+    }, []);
     async function initialFetching() {
         if (fetchProps.value.isSkip) return;
         if (!staleTime) {
-            await fetchEndpoint();
+            await execute();
             return;
         }
-        await fetchEndpoint();
+        await execute();
         const interval = setInterval(async () => {
             await refetch(clean);
         }, timer(staleTime));
@@ -219,7 +250,7 @@ function useQuery<Data, Error>(
         if (clean) {
             restart();
         }
-        return await fetchEndpoint();
+        return await execute();
     }
 
     function transform(cb: (data: Data) => Data) {
@@ -230,6 +261,6 @@ function useQuery<Data, Error>(
         };
     }
 
-    return { ...fetchProps.value, transformData: transform, refetch };
+    return { ...fetchProps.value, transformData: transform, refetch, cancel };
 }
 export default useQuery;

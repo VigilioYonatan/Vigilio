@@ -1,0 +1,11 @@
+import React from 'react';
+
+function ClockNineThirtyIcon(props: React.SVGProps<SVGSVGElement> & { title?: string }) {
+    return (
+        <svg style={{ minWidth: props.width, ...props.style } as React.CSSProperties} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"
+                    {...props}>
+                    {props.title ? <title>{props.title}</title> : <title> </title>}<path d="M32 256a224 224 0 1 1 448 0A224 224 0 1 1 32 256zm480 0A256 256 0 1 0 0 256a256 256 0 1 0 512 0zM272 400V256c0-8.8-7.2-16-16-16H144c-8.8 0-16 7.2-16 16s7.2 16 16 16h96V400c0 8.8 7.2 16 16 16s16-7.2 16-16z"/></svg>
+    );
+}
+
+export default ClockNineThirtyIcon;

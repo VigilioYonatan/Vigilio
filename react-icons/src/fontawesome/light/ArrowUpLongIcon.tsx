@@ -1,0 +1,11 @@
+import React from 'react';
+
+function ArrowUpLongIcon(props: React.SVGProps<SVGSVGElement> & { title?: string }) {
+    return (
+        <svg style={{ minWidth: props.width, ...props.style } as React.CSSProperties} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"
+                    {...props}>
+                    {props.title ? <title>{props.title}</title> : <title> </title>}<path d="M203.3 4.7c-6.2-6.2-16.4-6.2-22.6 0l-144 144c-6.2 6.2-6.2 16.4 0 22.6s16.4 6.2 22.6 0L176 54.6V496c0 8.8 7.2 16 16 16s16-7.2 16-16V54.6L324.7 171.3c6.2 6.2 16.4 6.2 22.6 0s6.2-16.4 0-22.6l-144-144z"/></svg>
+    );
+}
+
+export default ArrowUpLongIcon;

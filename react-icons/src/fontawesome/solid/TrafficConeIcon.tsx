@@ -1,0 +1,11 @@
+import React from 'react';
+
+function TrafficConeIcon(props: React.SVGProps<SVGSVGElement> & { title?: string }) {
+    return (
+        <svg style={{ minWidth: props.width, ...props.style } as React.CSSProperties} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"
+                    {...props}>
+                    {props.title ? <title>{props.title}</title> : <title> </title>}<path d="M173.7 128L216 20.3C220.8 8.1 232.7 0 245.8 0h20.4c13.2 0 25 8.1 29.8 20.3L338.3 128H173.7zm-25.1 64H363.4l37.7 96H110.9l37.7-96zM48 448l37.7-96H426.3L464 448h16c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H48z"/></svg>
+    );
+}
+
+export default TrafficConeIcon;

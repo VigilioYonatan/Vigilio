@@ -6,9 +6,9 @@
         "url": "https://github.com/tinymce/tinymce.git",
         "directory": "modules/tinymce"
     },
-    "description": "Web based JavaScript HTML WYSIWYG editor control.",
+    "description": "HTML WYSIWYG editor control.",
     "author": "Ephox Corporation DBA Tiny Technologies, Inc",
-    "main": "tinymce.js",
+    "main": "tinymce.min.js",
     "types": "tinymce.d.ts",
     "license": "GPL-2.0-or-later",
     "keywords": [

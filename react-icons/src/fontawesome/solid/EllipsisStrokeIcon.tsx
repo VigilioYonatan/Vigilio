@@ -1,0 +1,11 @@
+import React from 'react';
+
+function EllipsisStrokeIcon(props: React.SVGProps<SVGSVGElement> & { title?: string }) {
+    return (
+        <svg style={{ minWidth: props.width, ...props.style } as React.CSSProperties} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"
+                    {...props}>
+                    {props.title ? <title>{props.title}</title> : <title> </title>}<path d="M416 280a24 24 0 1 1 0-48 24 24 0 1 1 0 48zm0-96a72 72 0 1 0 0 144 72 72 0 1 0 0-144zM256 280a24 24 0 1 1 0-48 24 24 0 1 1 0 48zm0-96a72 72 0 1 0 0 144 72 72 0 1 0 0-144zM120 256a24 24 0 1 1 -48 0 24 24 0 1 1 48 0zm-96 0a72 72 0 1 0 144 0A72 72 0 1 0 24 256z"/></svg>
+    );
+}
+
+export default EllipsisStrokeIcon;

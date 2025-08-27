@@ -1,0 +1,11 @@
+import React from 'react';
+
+function CircleArrowUpLeftIcon(props: React.SVGProps<SVGSVGElement> & { title?: string }) {
+    return (
+        <svg style={{ minWidth: props.width, ...props.style } as React.CSSProperties} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"
+                    {...props}>
+                    {props.title ? <title>{props.title}</title> : <title> </title>}<path d="M256 32a224 224 0 1 1 0 448 224 224 0 1 1 0-448zm0 480A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm56-352H176c-8.8 0-16 7.2-16 16V320c0 8.8 7.2 16 16 16s16-7.2 16-16V214.6L324.7 347.3c6.2 6.2 16.4 6.2 22.6 0s6.2-16.4 0-22.6L214.6 192H312c8.8 0 16-7.2 16-16s-7.2-16-16-16z"/></svg>
+    );
+}
+
+export default CircleArrowUpLeftIcon;

@@ -1,0 +1,11 @@
+import React from 'react';
+
+function BoxBallotIcon(props: React.SVGProps<SVGSVGElement> & { title?: string }) {
+    return (
+        <svg style={{ minWidth: props.width, ...props.style } as React.CSSProperties} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"
+                    {...props}>
+                    {props.title ? <title>{props.title}</title> : <title> </title>}<path d="M128 32c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32V224H128V32zM0 352H576V464c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V352zM48 160H96v96H480V160h48c26.5 0 48 21.5 48 48V320H0V208c0-26.5 21.5-48 48-48z"/></svg>
+    );
+}
+
+export default BoxBallotIcon;

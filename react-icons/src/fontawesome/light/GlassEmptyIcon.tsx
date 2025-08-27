@@ -1,0 +1,11 @@
+import React from 'react';
+
+function GlassEmptyIcon(props: React.SVGProps<SVGSVGElement> & { title?: string }) {
+    return (
+        <svg style={{ minWidth: props.width, ...props.style } as React.CSSProperties} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"
+                    {...props}>
+                    {props.title ? <title>{props.title}</title> : <title> </title>}<path d="M40.1 32c-4.7 0-8.4 4-8 8.7l34.6 410C68.1 467.3 81.9 480 98.6 480H285.4c16.6 0 30.5-12.7 31.9-29.3l34.6-410c.4-4.7-3.3-8.7-8-8.7H40.1zM.2 43.4C-1.7 20 16.7 0 40.1 0H343.8c23.4 0 41.8 20 39.9 43.4l-34.6 410c-2.8 33.1-30.5 58.6-63.8 58.6H98.6c-33.3 0-61-25.5-63.8-58.6L.2 43.4z"/></svg>
+    );
+}
+
+export default GlassEmptyIcon;

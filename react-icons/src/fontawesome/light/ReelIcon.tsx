@@ -1,0 +1,11 @@
+import React from 'react';
+
+function ReelIcon(props: React.SVGProps<SVGSVGElement> & { title?: string }) {
+    return (
+        <svg style={{ minWidth: props.width, ...props.style } as React.CSSProperties} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"
+                    {...props}>
+                    {props.title ? <title>{props.title}</title> : <title> </title>}<path d="M0 16C0 7.2 7.2 0 16 0H80 368h64c8.8 0 16 7.2 16 16s-7.2 16-16 16H384V96c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V32H16C7.2 32 0 24.8 0 16zM96 32V80H352V32H96zM64 160c0-8.8 7.2-16 16-16H368c8.8 0 16 7.2 16 16s-7.2 16-16 16H80c-8.8 0-16-7.2-16-16zm0 64c0-8.8 7.2-16 16-16H432c8.8 0 16 7.2 16 16s-7.2 16-16 16H80c-8.8 0-16-7.2-16-16zm0 64c0-8.8 7.2-16 16-16H368c8.8 0 16 7.2 16 16s-7.2 16-16 16H80c-8.8 0-16-7.2-16-16zm0 64c0-8.8 7.2-16 16-16H368c8.8 0 16 7.2 16 16s-7.2 16-16 16H80c-8.8 0-16-7.2-16-16zM16 512c-8.8 0-16-7.2-16-16s7.2-16 16-16H64V416c0-8.8 7.2-16 16-16H368c8.8 0 16 7.2 16 16v64h48c8.8 0 16 7.2 16 16s-7.2 16-16 16H368 80 16zm80-80v48H352V432H96z"/></svg>
+    );
+}
+
+export default ReelIcon;

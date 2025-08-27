@@ -1,0 +1,11 @@
+import React from 'react';
+
+function BorderTopIcon(props: React.SVGProps<SVGSVGElement> & { title?: string }) {
+    return (
+        <svg style={{ minWidth: props.width, ...props.style } as React.CSSProperties} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"
+                    {...props}>
+                    {props.title ? <title>{props.title}</title> : <title> </title>}<path d="M0 48c0-8.8 7.2-16 16-16H432c8.8 0 16 7.2 16 16s-7.2 16-16 16H16C7.2 64 0 56.8 0 48zM56 160A24 24 0 1 1 8 160a24 24 0 1 1 48 0zm336 0a24 24 0 1 1 48 0 24 24 0 1 1 -48 0zm-144 0a24 24 0 1 1 -48 0 24 24 0 1 1 48 0zM8 352a24 24 0 1 1 48 0A24 24 0 1 1 8 352zm432 0a24 24 0 1 1 -48 0 24 24 0 1 1 48 0zm-240 0a24 24 0 1 1 48 0 24 24 0 1 1 -48 0zM56 256A24 24 0 1 1 8 256a24 24 0 1 1 48 0zm336 0a24 24 0 1 1 48 0 24 24 0 1 1 -48 0zm-144 0a24 24 0 1 1 -48 0 24 24 0 1 1 48 0zM8 448a24 24 0 1 1 48 0A24 24 0 1 1 8 448zm432 0a24 24 0 1 1 -48 0 24 24 0 1 1 48 0zm-240 0a24 24 0 1 1 48 0 24 24 0 1 1 -48 0zM152 256a24 24 0 1 1 -48 0 24 24 0 1 1 48 0zM104 448a24 24 0 1 1 48 0 24 24 0 1 1 -48 0zm240 0a24 24 0 1 1 -48 0 24 24 0 1 1 48 0zM296 256a24 24 0 1 1 48 0 24 24 0 1 1 -48 0z"/></svg>
+    );
+}
+
+export default BorderTopIcon;

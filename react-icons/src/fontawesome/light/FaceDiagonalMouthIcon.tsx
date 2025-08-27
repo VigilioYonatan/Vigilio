@@ -1,0 +1,11 @@
+import React from 'react';
+
+function FaceDiagonalMouthIcon(props: React.SVGProps<SVGSVGElement> & { title?: string }) {
+    return (
+        <svg style={{ minWidth: props.width, ...props.style } as React.CSSProperties} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"
+                    {...props}>
+                    {props.title ? <title>{props.title}</title> : <title> </title>}<path d="M480 256A224 224 0 1 0 32 256a224 224 0 1 0 448 0zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zm372.4 63.4l-224 64c-8.5 2.4-17.4-2.5-19.8-11s2.5-17.4 11-19.8l224-64c8.5-2.4 17.4 2.5 19.8 11s-2.5 17.4-11 19.8zM152.4 208a24 24 0 1 1 48 0 24 24 0 1 1 -48 0zm184-24a24 24 0 1 1 0 48 24 24 0 1 1 0-48z"/></svg>
+    );
+}
+
+export default FaceDiagonalMouthIcon;

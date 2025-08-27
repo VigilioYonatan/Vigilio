@@ -1,0 +1,11 @@
+import React from 'react';
+
+function ToggleLargeOnIcon(props: React.SVGProps<SVGSVGElement> & { title?: string }) {
+    return (
+        <svg style={{ minWidth: props.width, ...props.style } as React.CSSProperties} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"
+                    {...props}>
+                    {props.title ? <title>{props.title}</title> : <title> </title>}<path d="M192 64C86 64 0 150 0 256S86 448 192 448H384c106 0 192-86 192-192s-86-192-192-192H192zm192 64a128 128 0 1 1 0 256 128 128 0 1 1 0-256z"/></svg>
+    );
+}
+
+export default ToggleLargeOnIcon;

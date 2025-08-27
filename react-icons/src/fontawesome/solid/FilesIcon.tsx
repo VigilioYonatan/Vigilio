@@ -1,0 +1,11 @@
+import React from 'react';
+
+function FilesIcon(props: React.SVGProps<SVGSVGElement> & { title?: string }) {
+    return (
+        <svg style={{ minWidth: props.width, ...props.style } as React.CSSProperties} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"
+                    {...props}>
+                    {props.title ? <title>{props.title}</title> : <title> </title>}<path d="M320 0H160C124.7 0 96 28.7 96 64V352c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V128H352c-17.7 0-32-14.3-32-32V0zM448 96L416 64 384 32 352 0V45.3 64 96h32 18.7H448zM48 120c0-13.3-10.7-24-24-24S0 106.7 0 120V376c0 75.1 60.9 136 136 136H328c13.3 0 24-10.7 24-24s-10.7-24-24-24H136c-48.6 0-88-39.4-88-88V120z"/></svg>
+    );
+}
+
+export default FilesIcon;

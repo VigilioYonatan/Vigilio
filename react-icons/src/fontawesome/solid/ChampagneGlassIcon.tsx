@@ -1,0 +1,11 @@
+import React from 'react';
+
+function ChampagneGlassIcon(props: React.SVGProps<SVGSVGElement> & { title?: string }) {
+    return (
+        <svg style={{ minWidth: props.width, ...props.style } as React.CSSProperties} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"
+                    {...props}>
+                    {props.title ? <title>{props.title}</title> : <title> </title>}<path d="M88 0C71.9 0 58.3 12 56.3 27.9L33.2 208C24.9 273.4 67.3 332.4 128 348V448H80c-17.7 0-32 14.3-32 32s14.3 32 32 32h80 80c17.7 0 32-14.3 32-32s-14.3-32-32-32H192V348c60.7-15.6 103.1-74.6 94.8-140l-23-180.1C261.7 12 248.1 0 232 0H88zm20 128l8.2-64h87.7l8.2 64H108z"/></svg>
+    );
+}
+
+export default ChampagneGlassIcon;

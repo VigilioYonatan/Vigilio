@@ -1,0 +1,11 @@
+import React from 'react';
+
+function MugTeaIcon(props: React.SVGProps<SVGSVGElement> & { title?: string }) {
+    return (
+        <svg style={{ minWidth: props.width, ...props.style } as React.CSSProperties} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"
+                    {...props}>
+                    {props.title ? <title>{props.title}</title> : <title> </title>}<path d="M144 64v50.7c0 8.5-3.4 16.6-9.4 22.6l-29.3 29.3c-6 6-9.4 14.1-9.4 22.6V256c0 17.7 14.3 32 32 32h64c17.7 0 32-14.3 32-32V189.3c0-8.5-3.4-16.6-9.4-22.6l-29.3-29.3c-6-6-9.4-14.1-9.4-22.6V64H384h64c70.7 0 128 57.3 128 128s-57.3 128-128 128H416v32c0 53-43 96-96 96H128c-53 0-96-43-96-96V96c0-17.7 14.3-32 32-32h80zM416 256h32c35.3 0 64-28.7 64-64s-28.7-64-64-64H416V256z"/></svg>
+    );
+}
+
+export default MugTeaIcon;

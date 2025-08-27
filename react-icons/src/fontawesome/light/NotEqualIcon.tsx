@@ -1,0 +1,11 @@
+import React from 'react';
+
+function NotEqualIcon(props: React.SVGProps<SVGSVGElement> & { title?: string }) {
+    return (
+        <svg style={{ minWidth: props.width, ...props.style } as React.CSSProperties} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"
+                    {...props}>
+                    {props.title ? <title>{props.title}</title> : <title> </title>}<path d="M377.1 34.8c7.3 5 9.1 15 4 22.3L321 144h95c8.8 0 16 7.2 16 16s-7.2 16-16 16H298.8L188.1 336H416c8.8 0 16 7.2 16 16s-7.2 16-16 16H165.9L93.2 473.1c-5 7.3-15 9.1-22.3 4s-9.1-15-4-22.3L127 368H32c-8.8 0-16-7.2-16-16s7.2-16 16-16H149.2L259.9 176H32c-8.8 0-16-7.2-16-16s7.2-16 16-16H282.1L354.8 38.9c5-7.3 15-9.1 22.3-4z"/></svg>
+    );
+}
+
+export default NotEqualIcon;

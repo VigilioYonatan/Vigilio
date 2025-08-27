@@ -1,0 +1,11 @@
+import React from 'react';
+
+function SirenIcon(props: React.SVGProps<SVGSVGElement> & { title?: string }) {
+    return (
+        <svg style={{ minWidth: props.width, ...props.style } as React.CSSProperties} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"
+                    {...props}>
+                    {props.title ? <title>{props.title}</title> : <title> </title>}<path d="M73 152.1L48 352h57.9l22.2-178c1.1-8.8 9.1-15 17.9-13.9s15 9.1 13.9 17.9L138.1 352H400L375 152.1C371 120 343.8 96 311.5 96h-175C104.2 96 77 120 73 152.1zM32 384c-17.7 0-32 14.3-32 32v32c0 17.7 14.3 32 32 32H416c17.7 0 32-14.3 32-32V416c0-17.7-14.3-32-32-32H32z"/></svg>
+    );
+}
+
+export default SirenIcon;

@@ -1,0 +1,11 @@
+import React from 'react';
+
+function LocationCheckIcon(props: React.SVGProps<SVGSVGElement> & { title?: string }) {
+    return (
+        <svg style={{ minWidth: props.width, ...props.style } as React.CSSProperties} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"
+                    {...props}>
+                    {props.title ? <title>{props.title}</title> : <title> </title>}<path d="M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM305 145L177 273c-9.4 9.4-24.6 9.4-33.9 0L79 209c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L271 111c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"/></svg>
+    );
+}
+
+export default LocationCheckIcon;

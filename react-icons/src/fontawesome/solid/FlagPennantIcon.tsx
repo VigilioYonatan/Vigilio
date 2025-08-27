@@ -1,0 +1,11 @@
+import React from 'react';
+
+function FlagPennantIcon(props: React.SVGProps<SVGSVGElement> & { title?: string }) {
+    return (
+        <svg style={{ minWidth: props.width, ...props.style } as React.CSSProperties} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"
+                    {...props}>
+                    {props.title ? <title>{props.title}</title> : <title> </title>}<path d="M64 32C64 14.3 49.7 0 32 0S0 14.3 0 32V480c0 17.7 14.3 32 32 32s32-14.3 32-32V352L433 213.6c9-3.4 15-12 15-21.6s-6-18.2-15-21.6L64 32z"/></svg>
+    );
+}
+
+export default FlagPennantIcon;

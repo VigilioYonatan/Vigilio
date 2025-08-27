@@ -1,0 +1,11 @@
+import React from 'react';
+
+function DistributeSpacingHorizontalIcon(props: React.SVGProps<SVGSVGElement> & { title?: string }) {
+    return (
+        <svg style={{ minWidth: props.width, ...props.style } as React.CSSProperties} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"
+                    {...props}>
+                    {props.title ? <title>{props.title}</title> : <title> </title>}<path d="M32 24C32 10.7 42.7 0 56 0S80 10.7 80 24V488c0 13.3-10.7 24-24 24s-24-10.7-24-24V24zM160 144c0-26.5 21.5-48 48-48h96c26.5 0 48 21.5 48 48V368c0 26.5-21.5 48-48 48H208c-26.5 0-48-21.5-48-48V144zM456 0c13.3 0 24 10.7 24 24V488c0 13.3-10.7 24-24 24s-24-10.7-24-24V24c0-13.3 10.7-24 24-24z"/></svg>
+    );
+}
+
+export default DistributeSpacingHorizontalIcon;

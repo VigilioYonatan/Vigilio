@@ -1,3 +1,4 @@
+import { useRef } from "preact/hooks";
 import { delayFetch, timer } from "./helpers";
 import { useSignal } from "@preact/signals";
 
@@ -13,7 +14,7 @@ export interface MoreOptions<Data, Error> {
     onError?: (data: Error) => void;
     transformData?: (data: Data) => Data;
 }
-export type FetchPropsProps<Data, Error> = {
+export type FetchPropsProps<Data, Body, Error> = {
     data: Data | null;
     isLoading: boolean | null;
     isSuccess: boolean | null;
@@ -21,9 +22,14 @@ export type FetchPropsProps<Data, Error> = {
     isError: boolean | null;
     error: Error | null;
     errorTimes: number;
+    body: Body | null;
 };
 export type UseMutation<Data, Body, Error> = {
-    [K in keyof FetchPropsProps<Data, Error>]: FetchPropsProps<Data, Error>[K];
+    [K in keyof FetchPropsProps<Data, Body, Error>]: FetchPropsProps<
+        Data,
+        Body,
+        Error
+    >[K];
 } & {
     mutate: (
         body: Body,
@@ -32,11 +38,12 @@ export type UseMutation<Data, Body, Error> = {
     mutateAsync: (body: Body) => Promise<Data | undefined>;
     disabledSkip: () => void;
     transformData: (cb: (data: Data) => Data) => void;
+    cancel: () => void;
 };
 
 function useMutation<Data, Body, Error>(
     url: string,
-    fetching: (url: string, body: Body) => Promise<Data>,
+    fetching: (url: string, body: Body, signal: AbortSignal) => Promise<Data>,
     options: OptionsQuery | null = null
 ): UseMutation<Data, Body, Error> {
     let opciones: Required<OptionsQuery> = {
@@ -49,8 +56,9 @@ function useMutation<Data, Body, Error>(
         opciones = { ...opciones, ...options };
     }
     const { skipFetching, delay, retry, retryDelay } = opciones;
+    const controllerRef = useRef<AbortController | null>(null);
 
-    const fetchprops = useSignal<FetchPropsProps<Data, Error>>({
+    const fetchprops = useSignal<FetchPropsProps<Data, Body, Error>>({
         data: null,
         isLoading: null,
         isSuccess: null,
@@ -58,6 +66,7 @@ function useMutation<Data, Body, Error>(
         error: null,
         isSkip: skipFetching,
         errorTimes: 0,
+        body: null,
     });
 
     async function fetch(
@@ -65,6 +74,10 @@ function useMutation<Data, Body, Error>(
         moreOption: MoreOptions<Data, Error> | null
     ) {
         if (fetchprops.value.isSkip) return;
+        if (controllerRef.current) {
+            controllerRef.current.abort();
+        }
+        controllerRef.current = new AbortController();
         fetchprops.value = { ...fetchprops.value, isLoading: true };
         if (delay) {
             await delayFetch(timer(delay));
@@ -73,7 +86,11 @@ function useMutation<Data, Body, Error>(
             await delayFetch(timer(retryDelay ?? 3));
         }
         try {
-            const data = await fetching(url, body);
+            const data = await fetching(
+                url,
+                body,
+                controllerRef.current.signal
+            );
 
             let transform: Data = data;
             if (moreOption?.transformData) {
@@ -88,27 +105,32 @@ function useMutation<Data, Body, Error>(
                 isSuccess: true,
                 isError: false,
                 data: transform,
+                body: null,
             };
 
             return transform;
         } catch (error) {
-            fetchprops.value = {
-                ...fetchprops.value,
-                errorTimes: fetchprops.value.errorTimes + 1,
-            };
-            if (retry && fetchprops.value.errorTimes < retry) {
-                await fetch(body, moreOption);
-                return;
-            }
-            fetchprops.value = {
-                ...fetchprops.value,
-                isLoading: false,
-                isSuccess: false,
-                isError: true,
-                error: error as Error,
-            };
-            if (moreOption?.onError) {
-                moreOption.onError(error as Error);
+            if (error instanceof Error && error.name !== "AbortError") {
+                fetchprops.value = {
+                    ...fetchprops.value,
+                    errorTimes: fetchprops.value.errorTimes + 1,
+                };
+                if (retry && fetchprops.value.errorTimes < retry) {
+                    await fetch(body, moreOption);
+                    return;
+                }
+                fetchprops.value = {
+                    ...fetchprops.value,
+                    isLoading: false,
+                    isSuccess: false,
+                    isError: true,
+                    error: error as Error,
+                    body: null,
+                };
+                if (moreOption?.onError) {
+                    moreOption.onError(error as Error);
+                }
+                throw error;
             }
             throw error;
         }
@@ -126,9 +148,17 @@ function useMutation<Data, Body, Error>(
         body: Body,
         moreOption: MoreOptions<Data, Error> | null = null
     ) {
+        fetchprops.value = {
+            ...fetchprops.value,
+            body,
+        };
         await fetch(body, moreOption);
     }
     async function mutateAsync(body: Body) {
+        fetchprops.value = {
+            ...fetchprops.value,
+            body,
+        };
         const result = await fetch(body, null);
         return result;
     }
@@ -139,12 +169,19 @@ function useMutation<Data, Body, Error>(
             data,
         };
     }
+    function cancel() {
+        if (controllerRef.current) {
+            controllerRef.current.abort();
+            controllerRef.current = null;
+        }
+    }
     return {
         ...fetchprops.value,
         mutate,
         mutateAsync,
         disabledSkip,
         transformData: transform,
+        cancel,
     };
 }
 export default useMutation;

@@ -1,0 +1,11 @@
+import React from 'react';
+
+function TrafficLightGoIcon(props: React.SVGProps<SVGSVGElement> & { title?: string }) {
+    return (
+        <svg style={{ minWidth: props.width, ...props.style } as React.CSSProperties} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"
+                    {...props}>
+                    {props.title ? <title>{props.title}</title> : <title> </title>}<path d="M64 0C28.7 0 0 28.7 0 64V352c0 88.4 71.6 160 160 160s160-71.6 160-160V64c0-35.3-28.7-64-64-64H64zm96 416a48 48 0 1 1 0-96 48 48 0 1 1 0 96zm0-200a24 24 0 1 0 0 48 24 24 0 1 0 0-48zm0 72a48 48 0 1 1 0-96 48 48 0 1 1 0 96zM136 112a24 24 0 1 0 48 0 24 24 0 1 0 -48 0zm72 0a48 48 0 1 1 -96 0 48 48 0 1 1 96 0z"/></svg>
+    );
+}
+
+export default TrafficLightGoIcon;

@@ -1,0 +1,11 @@
+import React from 'react';
+
+function BoxTapedIcon(props: React.SVGProps<SVGSVGElement> & { title?: string }) {
+    return (
+        <svg style={{ minWidth: props.width, ...props.style } as React.CSSProperties} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"
+                    {...props}>
+                    {props.title ? <title>{props.title}</title> : <title> </title>}<path d="M50.7 58.5L0 160H160L192 32H93.7C75.5 32 58.9 42.3 50.7 58.5zM288 160H448L397.3 58.5C389.1 42.3 372.5 32 354.3 32H256l32 128zM160 192H0V416c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V192H288v64c0 17.7-14.3 32-32 32H192c-17.7 0-32-14.3-32-32V192z"/></svg>
+    );
+}
+
+export default BoxTapedIcon;

@@ -1,0 +1,11 @@
+import React from 'react';
+
+function CastleIcon(props: React.SVGProps<SVGSVGElement> & { title?: string }) {
+    return (
+        <svg style={{ minWidth: props.width, ...props.style } as React.CSSProperties} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"
+                    {...props}>
+                    {props.title ? <title>{props.title}</title> : <title> </title>}<path d="M128 16c0-8.8 7.2-16 16-16h32c8.8 0 16 7.2 16 16V64h48V16c0-8.8 7.2-16 16-16h32c8.8 0 16 7.2 16 16V64h32V16c0-8.8 7.2-16 16-16h32c8.8 0 16 7.2 16 16V64h48V16c0-8.8 7.2-16 16-16h32c8.8 0 16 7.2 16 16v96V224h64V176c0-8.8 7.2-16 16-16h32c8.8 0 16 7.2 16 16v96V464c0 26.5-21.5 48-48 48H384V384c0-35.3-28.7-64-64-64s-64 28.7-64 64V512H48c-26.5 0-48-21.5-48-48V272 176c0-8.8 7.2-16 16-16H48c8.8 0 16 7.2 16 16v48h64V112 16z"/></svg>
+    );
+}
+
+export default CastleIcon;

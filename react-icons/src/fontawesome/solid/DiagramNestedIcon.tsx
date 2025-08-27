@@ -1,0 +1,11 @@
+import React from 'react';
+
+function DiagramNestedIcon(props: React.SVGProps<SVGSVGElement> & { title?: string }) {
+    return (
+        <svg style={{ minWidth: props.width, ...props.style } as React.CSSProperties} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"
+                    {...props}>
+                    {props.title ? <title>{props.title}</title> : <title> </title>}<path d="M0 80C0 53.5 21.5 32 48 32h96c26.5 0 48 21.5 48 48v96c0 26.5-21.5 48-48 48H128v96c0 17.7 14.3 32 32 32h96V336c0-26.5 21.5-48 48-48h96c26.5 0 48 21.5 48 48v96c0 26.5-21.5 48-48 48H304c-26.5 0-48-21.5-48-48V416H160c-53 0-96-43-96-96V224H48c-26.5 0-48-21.5-48-48V80z"/></svg>
+    );
+}
+
+export default DiagramNestedIcon;

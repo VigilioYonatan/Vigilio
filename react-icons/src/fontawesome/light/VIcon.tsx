@@ -1,0 +1,11 @@
+import React from 'react';
+
+function VIcon(props: React.SVGProps<SVGSVGElement> & { title?: string }) {
+    return (
+        <svg style={{ minWidth: props.width, ...props.style } as React.CSSProperties} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"
+                    {...props}>
+                    {props.title ? <title>{props.title}</title> : <title> </title>}<path d="M9.8 33.3c8.1-3.4 17.5 .4 21 8.5L192 422.9 353.3 41.8c3.4-8.1 12.8-11.9 21-8.5s11.9 12.8 8.5 21l-176 416c-2.5 5.9-8.3 9.8-14.7 9.8s-12.2-3.8-14.7-9.8L1.3 54.2c-3.4-8.1 .4-17.5 8.5-21z"/></svg>
+    );
+}
+
+export default VIcon;

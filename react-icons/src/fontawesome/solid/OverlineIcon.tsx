@@ -1,0 +1,11 @@
+import React from 'react';
+
+function OverlineIcon(props: React.SVGProps<SVGSVGElement> & { title?: string }) {
+    return (
+        <svg style={{ minWidth: props.width, ...props.style } as React.CSSProperties} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"
+                    {...props}>
+                    {props.title ? <title>{props.title}</title> : <title> </title>}<path d="M32 32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H32zm192 96a176 176 0 1 0 0 352 176 176 0 1 0 0-352zM336 304a112 112 0 1 1 -224 0 112 112 0 1 1 224 0z"/></svg>
+    );
+}
+
+export default OverlineIcon;

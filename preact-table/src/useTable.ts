@@ -163,7 +163,7 @@ function useTable<T extends object, K extends string, Y extends object>(
                 methods: m,
             } = props(data.value, pagination.value.total || 0);
             data.value = result;
-            update({ total: count });
+            update({ total: count, });
             if (m) {
                 methods.value = { ...methods.value, ...m };
             }

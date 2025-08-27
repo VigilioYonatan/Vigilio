@@ -1,0 +1,11 @@
+import React from 'react';
+
+function CupStrawIcon(props: React.SVGProps<SVGSVGElement> & { title?: string }) {
+    return (
+        <svg style={{ minWidth: props.width, ...props.style } as React.CSSProperties} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"
+                    {...props}>
+                    {props.title ? <title>{props.title}</title> : <title> </title>}<path d="M249.3 0H280c13.3 0 24 10.7 24 24s-10.7 24-24 24H249.3c-3.7 0-6.9 2.6-7.8 6.2L224.2 128H352c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H174.9l20-84.8C200.8 17.9 223.4 0 249.3 0zM60.3 468L40 224H344L323.7 468c-2.1 24.9-22.9 44-47.8 44H108.2c-25 0-45.8-19.1-47.8-44z"/></svg>
+    );
+}
+
+export default CupStrawIcon;

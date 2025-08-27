@@ -55,17 +55,7 @@
                 "./dist/esm/cache/index.d.ts"
             ],
             "client": [
-                "./dist/esm/client/index.d.ts"
-            ],
-            "valibot": [
-                "./dist/esm/decorators/valibot/index.d.ts"
-            ],
-            "zod": [
-                "./dist/esm/decorators/zod/index.d.ts"
-            ],
-            "i18next": [
-                "./dist/esm/i18next/index.d.ts"
-            ]
+         
         }
     },
     "scripts": {

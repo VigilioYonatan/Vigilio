@@ -1,0 +1,11 @@
+import React from 'react';
+
+function BeerMugEmptyIcon(props: React.SVGProps<SVGSVGElement> & { title?: string }) {
+    return (
+        <svg style={{ minWidth: props.width, ...props.style } as React.CSSProperties} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"
+                    {...props}>
+                    {props.title ? <title>{props.title}</title> : <title> </title>}<path d="M352 64H64V416c0 17.7 14.3 32 32 32H320c17.7 0 32-14.3 32-32V360.4c0-.2 0-.5 0-.7V64zm32 306.5V416c0 35.3-28.7 64-64 64H96c-35.3 0-64-28.7-64-64V64c0-17.7 14.3-32 32-32H352c17.7 0 32 14.3 32 32V96h64c35.3 0 64 28.7 64 64V262.1c0 31.8-18.8 60.6-47.9 73.3l-80.1 35zM384 128V335.5l67.2-29.4c17.5-7.6 28.8-24.9 28.8-44V160c0-17.7-14.3-32-32-32H384zm-240 0c8.8 0 16 7.2 16 16V368c0 8.8-7.2 16-16 16s-16-7.2-16-16V144c0-8.8 7.2-16 16-16zm64 0c8.8 0 16 7.2 16 16V368c0 8.8-7.2 16-16 16s-16-7.2-16-16V144c0-8.8 7.2-16 16-16zm64 0c8.8 0 16 7.2 16 16V368c0 8.8-7.2 16-16 16s-16-7.2-16-16V144c0-8.8 7.2-16 16-16z"/></svg>
+    );
+}
+
+export default BeerMugEmptyIcon;

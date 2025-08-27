@@ -1,0 +1,11 @@
+import React from 'react';
+
+function MugIcon(props: React.SVGProps<SVGSVGElement> & { title?: string }) {
+    return (
+        <svg style={{ minWidth: props.width, ...props.style } as React.CSSProperties} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"
+                    {...props}>
+                    {props.title ? <title>{props.title}</title> : <title> </title>}<path d="M64 64C46.3 64 32 78.3 32 96V352c0 53 43 96 96 96H320c53 0 96-43 96-96V320h32c70.7 0 128-57.3 128-128s-57.3-128-128-128H384 64zm352 64h32c35.3 0 64 28.7 64 64s-28.7 64-64 64H416V128z"/></svg>
+    );
+}
+
+export default MugIcon;

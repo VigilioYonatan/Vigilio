@@ -1,0 +1,11 @@
+import React from 'react';
+
+function UserHelmetSafetyIcon(props: React.SVGProps<SVGSVGElement> & { title?: string }) {
+    return (
+        <svg style={{ minWidth: props.width, ...props.style } as React.CSSProperties} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"
+                    {...props}>
+                    {props.title ? <title>{props.title}</title> : <title> </title>}<path d="M216 0c-13.3 0-24 10.7-24 24V80L163.6 23.1C125.6 43.5 99 82.6 96.2 128H96c-13.3 0-24 10.7-24 24s10.7 24 24 24H352c13.3 0 24-10.7 24-24s-10.7-24-24-24h-.2C349 82.6 322.4 43.5 284.4 23.1L256 80V24c0-13.3-10.7-24-24-24H216zm8 320c65.3 0 119.1-48.9 127-112H97c7.9 63.1 61.7 112 127 112zm-89.6 32C60.2 352 0 412.2 0 486.4C0 500.5 11.5 512 25.6 512H422.4c14.1 0 25.6-11.5 25.6-25.6C448 412.2 387.8 352 313.6 352H134.4z"/></svg>
+    );
+}
+
+export default UserHelmetSafetyIcon;

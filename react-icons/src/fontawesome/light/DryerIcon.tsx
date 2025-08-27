@@ -1,0 +1,11 @@
+import React from 'react';
+
+function DryerIcon(props: React.SVGProps<SVGSVGElement> & { title?: string }) {
+    return (
+        <svg style={{ minWidth: props.width, ...props.style } as React.CSSProperties} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"
+                    {...props}>
+                    {props.title ? <title>{props.title}</title> : <title> </title>}<path d="M384 32c17.7 0 32 14.3 32 32V448c0 17.7-14.3 32-32 32H64c-17.7 0-32-14.3-32-32V64c0-17.7 14.3-32 32-32H384zM64 0C28.7 0 0 28.7 0 64V448c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V64c0-35.3-28.7-64-64-64H64zm64 96A24 24 0 1 0 80 96a24 24 0 1 0 48 0zm56 24a24 24 0 1 0 0-48 24 24 0 1 0 0 48zm40 296c-56.4 0-103.1-41.7-110.9-96H176c8.8 0 16-7.2 16-16s-7.2-16-16-16H113.1c7.8-54.3 54.4-96 110.9-96c61.9 0 112 50.1 112 112s-50.1 112-112 112zM80 304a144 144 0 1 0 288 0A144 144 0 1 0 80 304z"/></svg>
+    );
+}
+
+export default DryerIcon;

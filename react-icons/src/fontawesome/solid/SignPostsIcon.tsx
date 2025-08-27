@@ -1,0 +1,11 @@
+import React from 'react';
+
+function SignPostsIcon(props: React.SVGProps<SVGSVGElement> & { title?: string }) {
+    return (
+        <svg style={{ minWidth: props.width, ...props.style } as React.CSSProperties} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"
+                    {...props}>
+                    {props.title ? <title>{props.title}</title> : <title> </title>}<path d="M96 0C78.3 0 64 14.3 64 32H48C21.5 32 0 53.5 0 80V368c0 26.5 21.5 48 48 48H528c26.5 0 48-21.5 48-48V80c0-26.5-21.5-48-48-48H512c0-17.7-14.3-32-32-32s-32 14.3-32 32H128c0-17.7-14.3-32-32-32zm32 448H64l0 32c0 17.7 14.3 32 32 32s32-14.3 32-32l0-32zm320 0l0 32c0 17.7 14.3 32 32 32s32-14.3 32-32l0-32H448z"/></svg>
+    );
+}
+
+export default SignPostsIcon;

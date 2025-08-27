@@ -1,0 +1,11 @@
+import React from 'react';
+
+function SigmaIcon(props: React.SVGProps<SVGSVGElement> & { title?: string }) {
+    return (
+        <svg style={{ minWidth: props.width, ...props.style } as React.CSSProperties} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"
+                    {...props}>
+                    {props.title ? <title>{props.title}</title> : <title> </title>}<path d="M1.3 41.6C3.9 35.8 9.6 32 16 32H344c22.1 0 40 17.9 40 40v72c0 8.8-7.2 16-16 16s-16-7.2-16-16V72c0-4.4-3.6-8-8-8H52.5L219.8 245.1c5.7 6.1 5.7 15.6 0 21.7L52.5 448H344c4.4 0 8-3.6 8-8V368c0-8.8 7.2-16 16-16s16 7.2 16 16v72c0 22.1-17.9 40-40 40H16c-6.4 0-12.1-3.8-14.7-9.6s-1.4-12.6 2.9-17.3L186.2 256 4.2 58.9C-.1 54.2-1.2 47.4 1.3 41.6z"/></svg>
+    );
+}
+
+export default SigmaIcon;

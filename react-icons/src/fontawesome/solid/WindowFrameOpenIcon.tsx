@@ -1,0 +1,11 @@
+import React from 'react';
+
+function WindowFrameOpenIcon(props: React.SVGProps<SVGSVGElement> & { title?: string }) {
+    return (
+        <svg style={{ minWidth: props.width, ...props.style } as React.CSSProperties} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"
+                    {...props}>
+                    {props.title ? <title>{props.title}</title> : <title> </title>}<path d="M480 224V64c0-35.3-28.7-64-64-64H96C60.7 0 32 28.7 32 64V224v64H96 416h64V224zm-64 0H280V64H416V224zm-184 0H96V64H232V224zM96 448V320H32V448c-17.7 0-32 14.3-32 32s14.3 32 32 32H64 448h32c17.7 0 32-14.3 32-32s-14.3-32-32-32V320H416V448H96z"/></svg>
+    );
+}
+
+export default WindowFrameOpenIcon;

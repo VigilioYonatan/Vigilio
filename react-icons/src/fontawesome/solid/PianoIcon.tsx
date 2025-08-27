@@ -1,0 +1,11 @@
+import React from 'react';
+
+function PianoIcon(props: React.SVGProps<SVGSVGElement> & { title?: string }) {
+    return (
+        <svg style={{ minWidth: props.width, ...props.style } as React.CSSProperties} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"
+                    {...props}>
+                    {props.title ? <title>{props.title}</title> : <title> </title>}<path d="M0 192V448c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V327.6c0-24.2-13.7-46.4-35.4-57.2l-58.4-29.2c-21-10.5-34.2-31.9-34.2-55.4C384 83.2 300.8 0 198.3 0H192C86 0 0 86 0 192zM416 352h32v96H64V352H96v48c0 8.8 7.2 16 16 16s16-7.2 16-16V352h32v48c0 8.8 7.2 16 16 16s16-7.2 16-16V352h32v48c0 8.8 7.2 16 16 16s16-7.2 16-16V352h64v48c0 8.8 7.2 16 16 16s16-7.2 16-16V352h32v48c0 8.8 7.2 16 16 16s16-7.2 16-16V352z"/></svg>
+    );
+}
+
+export default PianoIcon;

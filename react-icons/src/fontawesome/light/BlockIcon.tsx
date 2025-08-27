@@ -1,0 +1,11 @@
+import React from 'react';
+
+function BlockIcon(props: React.SVGProps<SVGSVGElement> & { title?: string }) {
+    return (
+        <svg style={{ minWidth: props.width, ...props.style } as React.CSSProperties} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"
+                    {...props}>
+                    {props.title ? <title>{props.title}</title> : <title> </title>}<path d="M384 64c17.7 0 32 14.3 32 32V416c0 17.7-14.3 32-32 32H64c-17.7 0-32-14.3-32-32V96c0-17.7 14.3-32 32-32H384zM64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64zm48 88a24 24 0 1 0 -48 0 24 24 0 1 0 48 0zm248 24a24 24 0 1 0 0-48 24 24 0 1 0 0 48zM112 392a24 24 0 1 0 -48 0 24 24 0 1 0 48 0zm248 24a24 24 0 1 0 0-48 24 24 0 1 0 0 48z"/></svg>
+    );
+}
+
+export default BlockIcon;

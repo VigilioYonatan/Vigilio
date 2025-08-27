@@ -1,0 +1,11 @@
+import React from 'react';
+
+function BringForwardIcon(props: React.SVGProps<SVGSVGElement> & { title?: string }) {
+    return (
+        <svg style={{ minWidth: props.width, ...props.style } as React.CSSProperties} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"
+                    {...props}>
+                    {props.title ? <title>{props.title}</title> : <title> </title>}<path d="M224 480H448c17.7 0 32-14.3 32-32V224c0-17.7-14.3-32-32-32H384V160h64c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H224c-35.3 0-64-28.7-64-64V384h32v64c0 17.7 14.3 32 32 32zM64 320H288c17.7 0 32-14.3 32-32V64c0-17.7-14.3-32-32-32H64C46.3 32 32 46.3 32 64V288c0 17.7 14.3 32 32 32zm224 32H64c-35.3 0-64-28.7-64-64V64C0 28.7 28.7 0 64 0H288c35.3 0 64 28.7 64 64V288c0 35.3-28.7 64-64 64zm-32-96V96H96V256H256zm32 0c0 17.7-14.3 32-32 32H96c-17.7 0-32-14.3-32-32V96c0-17.7 14.3-32 32-32H256c17.7 0 32 14.3 32 32V256z"/></svg>
+    );
+}
+
+export default BringForwardIcon;

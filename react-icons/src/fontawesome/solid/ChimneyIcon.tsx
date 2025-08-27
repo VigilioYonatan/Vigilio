@@ -1,0 +1,11 @@
+import React from 'react';
+
+function ChimneyIcon(props: React.SVGProps<SVGSVGElement> & { title?: string }) {
+    return (
+        <svg style={{ minWidth: props.width, ...props.style } as React.CSSProperties} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"
+                    {...props}>
+                    {props.title ? <title>{props.title}</title> : <title> </title>}<path d="M0 64C0 46.3 14.3 32 32 32H416c17.7 0 32 14.3 32 32v64c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32V64zM32 192h96V320H32V192zm384 0V320H160V192H416zM288 352V480H32V352H288zm128 0V480H320V352h96z"/></svg>
+    );
+}
+
+export default ChimneyIcon;
