@@ -1,5 +1,5 @@
 import { useRef } from "preact/hooks";
-import { delayFetch, timer } from "./helpers";
+import { cache, delayFetch, timer } from "./helpers";
 import { useSignal } from "@preact/signals";
 
 export interface OptionsQuery {
@@ -7,6 +7,7 @@ export interface OptionsQuery {
     delay?: number | null;
     retry?: number | null;
     retryDelay?: number | null;
+    isCaching?: boolean | number | null;
 }
 
 export interface MoreOptions<Data, Error> {
@@ -50,12 +51,13 @@ function useMutation<Data, Body, Error>(
         skipFetching: false,
         delay: null,
         retry: 1,
+        isCaching: null,
         retryDelay: null,
     };
     if (options) {
         opciones = { ...opciones, ...options };
     }
-    const { skipFetching, delay, retry, retryDelay } = opciones;
+    const { skipFetching, delay, retry, retryDelay, isCaching } = opciones;
     const controllerRef = useRef<AbortController | null>(null);
 
     const fetchprops = useSignal<FetchPropsProps<Data, Body, Error>>({
@@ -86,6 +88,24 @@ function useMutation<Data, Body, Error>(
             await delayFetch(timer(retryDelay ?? 3));
         }
         try {
+            const cche = cache.get(url);
+            if (cche) {
+                let transform: Data = cche;
+                if (moreOption?.transformData) {
+                    transform = moreOption?.transformData(transform);
+                }
+                if (moreOption?.onSuccess) {
+                    moreOption?.onSuccess(transform);
+                }
+                fetchprops.value = {
+                    ...fetchprops.value,
+                    isLoading: false,
+                    isSuccess: true,
+                    isError: false,
+                    data: transform,
+                };
+                return;
+            }
             const data = await fetching(
                 url,
                 body,
@@ -99,13 +119,19 @@ function useMutation<Data, Body, Error>(
             if (moreOption?.onSuccess) {
                 moreOption.onSuccess(transform);
             }
+            if (isCaching) {
+                cache.set(
+                    url,
+                    transform,
+                    typeof isCaching === "number" ? isCaching : null
+                );
+            }
             fetchprops.value = {
                 ...fetchprops.value,
                 isLoading: false,
                 isSuccess: true,
                 isError: false,
                 data: transform,
-                body: null,
             };
 
             return transform;

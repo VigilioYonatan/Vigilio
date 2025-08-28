@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "preact/hooks";
-import { delayFetch, timer } from "./helpers";
+import { cache, delayFetch, timer } from "./helpers";
 import { useSignal } from "@preact/signals";
 export interface OptionsQuery<Data, Error> {
     skipFetching?: boolean;
@@ -14,6 +14,7 @@ export interface OptionsQuery<Data, Error> {
     onError?: ((error: Error) => void) | null;
     onSuccess?: ((data: Data) => void) | null;
     clean?: boolean;
+    isCaching?: boolean | number | null;
 }
 export type UseQuery<Data, Error> = {
     [K in keyof FetchPropsProps<Data, Error>]: FetchPropsProps<Data, Error>[K];
@@ -51,6 +52,7 @@ function useQuery<Data, Error>(
         retry: 3,
         retryDelay: null,
         clean: true,
+        isCaching: null,
     };
 
     if (options) {
@@ -69,6 +71,7 @@ function useQuery<Data, Error>(
         transformData,
         onError,
         onSuccess,
+        isCaching,
     } = opciones;
     const fetchProps = useSignal<FetchPropsProps<Data, Error>>({
         data: placeholderData,
@@ -104,6 +107,25 @@ function useQuery<Data, Error>(
         }
 
         try {
+            const cche = cache.get(url);
+            if (cche) {
+                let transform: Data = cche;
+                if (transformData) {
+                    transform = transformData(transform);
+                }
+                if (onSuccess) {
+                    onSuccess(transform);
+                }
+                fetchProps.value = {
+                    ...fetchProps.value,
+                    isLoading: false,
+                    isFetching: false,
+                    isSuccess: true,
+                    isError: false,
+                    data: transform,
+                };
+                return;
+            }
             const data = await fetching(url, signal);
             let transform: Data = data;
             if (transformData) {
@@ -111,6 +133,13 @@ function useQuery<Data, Error>(
             }
             if (onSuccess) {
                 onSuccess(transform);
+            }
+            if (isCaching) {
+                cache.set(
+                    url,
+                    transform,
+                    typeof isCaching === "number" ? isCaching : null
+                );
             }
             fetchProps.value = {
                 ...fetchProps.value,
