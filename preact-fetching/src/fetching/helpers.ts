@@ -11,27 +11,34 @@ export function timer(seg: number) {
     return seg * 1000;
 }
 class SimpleCache {
-    private cache: Record<string, { value: string; expire: number | null }>;
+    private cache: Record<string, { value: unknown; expire: number | null }>;
 
-    constructor() {
+    private isCache: boolean;
+    constructor(isCache: boolean) {
         this.cache = {};
+        this.isCache = isCache;
     }
     all() {
-        return JSON.parse(localStorage.getItem("cache_api") || "{}");
+        return this.isCache
+            ? JSON.parse(localStorage.getItem("cache_api") || "{}")
+            : this.cache;
     }
     set(key: string, value: unknown, seconds: number | null = null) {
         const expire = seconds ? Date.now() + seconds : null;
         const all = this.all();
-        localStorage.setItem(
-            "cache_api",
-            JSON.stringify({
-                ...all,
-                [key]: {
-                    value,
-                    expire,
-                },
-            })
-        );
+        this.cache = { ...this.cache, [key]: { value, expire } };
+        if (this.isCache) {
+            localStorage.setItem(
+                "cache_api",
+                JSON.stringify({
+                    ...all,
+                    [key]: {
+                        value,
+                        expire,
+                    },
+                })
+            );
+        }
     }
 
     get(key: string) {
@@ -49,22 +56,30 @@ class SimpleCache {
             for (const cache of Object.keys(items)) {
                 if (cache.startsWith(key)) {
                     delete items[key];
-                    localStorage.setItem(
-                        "cache_api",
-                        JSON.stringify(items || {})
-                    );
+                    if (this.isCache) {
+                        localStorage.setItem(
+                            "cache_api",
+                            JSON.stringify(items || {})
+                        );
+                    }
                 }
             }
             return;
         }
         if (key in this.cache) {
             delete items[key];
-            localStorage.setItem("cache_api", JSON.stringify(items || {}));
+            if (this.isCache) {
+                localStorage.setItem("cache_api", JSON.stringify(items || {}));
+            }
         }
     }
 
     clear() {
-        localStorage.setItem("cache_api", JSON.stringify({}));
+        this.cache = {};
+        if (this.isCache) {
+            localStorage.setItem("cache_api", JSON.stringify({}));
+        }
     }
 }
-export const cache = new SimpleCache();
+export const cache = new SimpleCache(true);
+export const memory = new SimpleCache(false);

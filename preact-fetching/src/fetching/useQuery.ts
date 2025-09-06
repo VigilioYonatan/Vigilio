@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "preact/hooks";
-import { cache, delayFetch, timer } from "./helpers";
+import { cache, delayFetch, memory, timer } from "./helpers";
 import { useSignal } from "@preact/signals";
 export interface OptionsQuery<Data, Error> {
     skipFetching?: boolean;
@@ -15,6 +15,7 @@ export interface OptionsQuery<Data, Error> {
     onSuccess?: ((data: Data) => void) | null;
     clean?: boolean;
     isCaching?: boolean | number | null;
+    isMemory?: boolean | number | null;
 }
 export type UseQuery<Data, Error> = {
     [K in keyof FetchPropsProps<Data, Error>]: FetchPropsProps<Data, Error>[K];
@@ -53,6 +54,7 @@ function useQuery<Data, Error>(
         retryDelay: null,
         clean: true,
         isCaching: null,
+        isMemory: null,
     };
 
     if (options) {
@@ -72,6 +74,7 @@ function useQuery<Data, Error>(
         onError,
         onSuccess,
         isCaching,
+        isMemory,
     } = opciones;
     const fetchProps = useSignal<FetchPropsProps<Data, Error>>({
         data: placeholderData,
@@ -107,7 +110,7 @@ function useQuery<Data, Error>(
         }
 
         try {
-            const cche = cache.get(url);
+            const cche = isMemory ? memory.get(url) : cache.get(url);
             if (cche) {
                 let transform: Data = cche;
                 if (transformData) {
@@ -141,6 +144,13 @@ function useQuery<Data, Error>(
                     typeof isCaching === "number" ? isCaching : null
                 );
             }
+            if (isMemory) {
+                memory.set(
+                    url,
+                    transform,
+                    typeof isMemory === "number" ? isMemory : null
+                );
+            }
             fetchProps.value = {
                 ...fetchProps.value,
                 isLoading: false,
@@ -150,30 +160,26 @@ function useQuery<Data, Error>(
                 data: transform,
             };
         } catch (error: unknown) {
-            if (error instanceof Error && error.name !== "AbortError") {
-                fetchProps.value = {
-                    ...fetchProps.value,
-                    errorTimes: fetchProps.value.errorTimes + 1,
-                };
-                if (retry && fetchProps.value.errorTimes < retry) {
-                    await fetchEndpoint(signal);
-                    return;
-                }
-                fetchProps.value = {
-                    ...fetchProps.value,
-                    isError: true,
-                    isLoading: false,
-                    isFetching: false,
-                    isSuccess: false,
-                    error: error as Error,
-                };
-
-                if (onError) {
-                    onError(error as Error);
-                }
-                throw error;
+            fetchProps.value = {
+                ...fetchProps.value,
+                errorTimes: fetchProps.value.errorTimes + 1,
+            };
+            if (retry && fetchProps.value.errorTimes < retry) {
+                await fetchEndpoint(signal);
+                return;
             }
-            throw error;
+            fetchProps.value = {
+                ...fetchProps.value,
+                isError: true,
+                isLoading: false,
+                isFetching: false,
+                isSuccess: false,
+                error: error as Error,
+            };
+
+            if (onError) {
+                onError(error as Error);
+            }
         }
     }
 
@@ -277,6 +283,12 @@ function useQuery<Data, Error>(
     async function refetch(clean = true) {
         if (fetchProps.value.isLoading || fetchProps.value.isFetching) return;
         if (clean) {
+            if (isMemory) {
+                memory.delete(url);
+            }
+            if (isCaching) {
+                cache.delete(url);
+            }
             restart();
         }
         return await execute();

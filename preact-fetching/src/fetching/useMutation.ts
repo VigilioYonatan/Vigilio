@@ -104,7 +104,7 @@ function useMutation<Data, Body, Error>(
                     isError: false,
                     data: transform,
                 };
-                return;
+                return undefined;
             }
             const data = await fetching(
                 url,
@@ -136,29 +136,26 @@ function useMutation<Data, Body, Error>(
 
             return transform;
         } catch (error) {
-            if (error instanceof Error && error.name !== "AbortError") {
-                fetchprops.value = {
-                    ...fetchprops.value,
-                    errorTimes: fetchprops.value.errorTimes + 1,
-                };
-                if (retry && fetchprops.value.errorTimes < retry) {
-                    await fetch(body, moreOption);
-                    return;
-                }
-                fetchprops.value = {
-                    ...fetchprops.value,
-                    isLoading: false,
-                    isSuccess: false,
-                    isError: true,
-                    error: error as Error,
-                    body: null,
-                };
-                if (moreOption?.onError) {
-                    moreOption.onError(error as Error);
-                }
-                throw error;
+            fetchprops.value = {
+                ...fetchprops.value,
+                errorTimes: fetchprops.value.errorTimes + 1,
+            };
+            if (retry && fetchprops.value.errorTimes < retry) {
+                await fetch(body, moreOption);
+                return;
             }
-            throw error;
+            fetchprops.value = {
+                ...fetchprops.value,
+                isLoading: false,
+                isSuccess: false,
+                isError: true,
+                error: error as Error,
+                body: null,
+            };
+            if (moreOption?.onError) {
+                moreOption.onError(error as Error);
+            }
+            return undefined;
         }
     }
 
