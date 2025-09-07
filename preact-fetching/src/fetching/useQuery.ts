@@ -23,6 +23,30 @@ export type UseQuery<Data, Error> = {
     refetch: (clean?: boolean) => Promise<void>;
     transformData: (cb: (data: Data) => Data) => void;
     cancel: () => void;
+    cache: {
+        remove: (isStart?: boolean) => void;
+        get: () => any;
+        set: (
+            cb: (props: {
+                value: Data | null;
+                expire: number | null;
+                max_count: number | null;
+                count: number;
+            }) => Data
+        ) => void;
+    };
+    memory: {
+        remove: (isStart?: boolean) => void;
+        get: () => any;
+        set: (
+            cb: (props: {
+                value: Data | null;
+                expire: number | null;
+                max_count: number | null;
+                count: number;
+            }) => Data
+        ) => void;
+    };
 };
 
 type FetchPropsProps<Data, Error> = {
@@ -282,6 +306,7 @@ function useQuery<Data, Error>(
 
     async function refetch(clean = true) {
         if (fetchProps.value.isLoading || fetchProps.value.isFetching) return;
+
         if (clean) {
             if (isMemory) {
                 memory.delete(url);
@@ -301,7 +326,55 @@ function useQuery<Data, Error>(
             data,
         };
     }
-
-    return { ...fetchProps.value, transformData: transform, refetch, cancel };
+    function removeCache(isStart: boolean = false) {
+        cache.delete(url, isStart);
+    }
+    function getCache() {
+        return cache.get(url);
+    }
+    function setCache(
+        cb: (props: {
+            value: Data | null;
+            expire: number | null;
+            max_count: number | null;
+            count: number;
+        }) => Data
+    ) {
+        const data = cb(cache.get(url));
+        cache.set(url, data);
+    }
+    function setMemory(
+        cb: (props: {
+            value: Data | null;
+            expire: number | null;
+            max_count: number | null;
+            count: number;
+        }) => Data
+    ) {
+        const data = cb(memory.get(url));
+        memory.set(url, data);
+    }
+    function getMemory() {
+        return memory.get(url);
+    }
+    function removeMemory(isStart: boolean = false) {
+        memory.delete(url, isStart);
+    }
+    return {
+        ...fetchProps.value,
+        transformData: transform,
+        refetch,
+        cancel,
+        cache: {
+            remove: removeCache,
+            get: getCache,
+            set: setCache,
+        },
+        memory: {
+            remove: removeMemory,
+            get: getMemory,
+            set: setMemory,
+        },
+    };
 }
 export default useQuery;

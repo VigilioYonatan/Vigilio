@@ -11,7 +11,15 @@ export function timer(seg: number) {
     return seg * 1000;
 }
 class SimpleCache {
-    private cache: Record<string, { value: unknown; expire: number | null }>;
+    private cache: Record<
+        string,
+        {
+            value: unknown;
+            expire: number | null;
+            max_count: number | null;
+            count: number;
+        }
+    >;
 
     private isCache: boolean;
     constructor(isCache: boolean) {
@@ -23,10 +31,18 @@ class SimpleCache {
             ? JSON.parse(localStorage.getItem("cache_api") || "{}")
             : this.cache;
     }
-    set(key: string, value: unknown, seconds: number | null = null) {
+    set(
+        key: string,
+        value: unknown,
+        seconds: number | null = null,
+        max_count: number | null = null
+    ) {
         const expire = seconds ? Date.now() + seconds : null;
         const all = this.all();
-        this.cache = { ...this.cache, [key]: { value, expire } };
+        this.cache = {
+            ...this.cache,
+            [key]: { value, expire, count: 0, max_count },
+        };
         if (this.isCache) {
             localStorage.setItem(
                 "cache_api",
@@ -35,6 +51,8 @@ class SimpleCache {
                     [key]: {
                         value,
                         expire,
+                        count: 0,
+                        max_count,
                     },
                 })
             );
@@ -44,6 +62,35 @@ class SimpleCache {
     get(key: string) {
         const item = this.all()?.[key];
         if (item && (!item.expire || Date.now() < item.expire)) {
+            return item.value;
+        }
+        if (item?.max_count) {
+            const newAccessCount = (item.count || 0) + 1;
+            // Actualizar el contador en el cache
+            const all = this.all();
+            if (this.isCache) {
+                localStorage.setItem(
+                    "cache_api",
+                    JSON.stringify({
+                        ...all,
+                        [key]: {
+                            ...item,
+                            count: newAccessCount,
+                        },
+                    })
+                );
+            } else {
+                this.cache = {
+                    ...this.cache,
+                    [key]: { ...item, count: newAccessCount },
+                };
+            }
+
+            // Verificar si se alcanzó el límite de accesos
+            if (newAccessCount >= item.max_count) {
+                this.delete(key);
+                return item.value; // Devolver el valor antes de eliminarlo
+            }
             return item.value;
         }
         this.delete(key);
