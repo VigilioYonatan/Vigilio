@@ -40,7 +40,7 @@ export type InstanceSchemaAsync<
  *
  * @returns An async instance schema.
  */
-export function instanceAsync<TClass extends Class>(
+export function instance<TClass extends Class>(
     of: TClass,
     pipe?: PipeAsync<InstanceType<TClass>>
 ): InstanceSchemaAsync<TClass>;
@@ -54,13 +54,13 @@ export function instanceAsync<TClass extends Class>(
  *
  * @returns An async instance schema.
  */
-export function instanceAsync<TClass extends Class>(
+export function instance<TClass extends Class>(
     of: TClass,
     error?: ErrorMessage,
     pipe?: PipeAsync<InstanceType<TClass>>
 ): InstanceSchemaAsync<TClass>;
 
-export function instanceAsync<TClass extends Class>(
+export function instance<TClass extends Class>(
     of: TClass,
     arg2?: PipeAsync<InstanceType<TClass>> | ErrorMessage,
     arg3?: PipeAsync<InstanceType<TClass>>
