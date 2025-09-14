@@ -1,13 +1,23 @@
-import type { BaseSchema, Input, Output, Pipe } from "../../types";
-import { executePipe } from "../../utils";
+import type {
+    BaseSchema,
+    BaseSchemaAsync,
+    Input,
+    Output,
+    ParseInfo,
+    PipeAsync,
+    _ParseResult,
+} from "../../types";
+import { executePipe } from "../../utils/executePipe/executePipe";
 
 /**
- * Schema with transform type.
+ * Schema with transform async type.
  */
-export type SchemaWithTransform<TSchema extends BaseSchema, TOutput> = Omit<
-    TSchema,
-    "_types"
-> & {
+export type SchemaWithTransformAsync<
+    TSchema extends BaseSchema | BaseSchemaAsync,
+    TOutput
+> = Omit<TSchema, "async" | "_parse" | "_types"> & {
+    async: true;
+    _parse(input: unknown, info?: ParseInfo): Promise<_ParseResult<TOutput>>;
     _types?: {
         input: Input<TSchema>;
         output: TOutput;
@@ -15,8 +25,8 @@ export type SchemaWithTransform<TSchema extends BaseSchema, TOutput> = Omit<
 };
 
 /**
- * Adds a transformation step to a schema, which is executed at the end of
- * parsing and can change the output type.
+ * Adds an async transformation step to a schema, which is executed at the end
+ * of parsing and can change the output type.
  *
  * @param schema The schema to be used.
  * @param action The transformation action.
@@ -24,15 +34,18 @@ export type SchemaWithTransform<TSchema extends BaseSchema, TOutput> = Omit<
  *
  * @returns A transformed schema.
  */
-export function transform<TSchema extends BaseSchema, TOutput>(
+export function transform<
+    TSchema extends BaseSchema | BaseSchemaAsync,
+    TOutput
+>(
     schema: TSchema,
-    action: (value: Output<TSchema>) => TOutput,
-    pipe?: Pipe<TOutput>
-): SchemaWithTransform<TSchema, TOutput>;
+    action: (value: Output<TSchema>) => TOutput | Promise<TOutput>,
+    pipe?: PipeAsync<TOutput>
+): SchemaWithTransformAsync<TSchema, TOutput>;
 
 /**
- * Adds a transformation step to a schema, which is executed at the end of
- * parsing and can change the output type.
+ * Adds an async transformation step to a schema, which is executed at the end
+ * of parsing and can change the output type.
  *
  * @param schema The schema to be used.
  * @param action The transformation action.
@@ -40,19 +53,30 @@ export function transform<TSchema extends BaseSchema, TOutput>(
  *
  * @returns A transformed schema.
  */
-export function transform<TSchema extends BaseSchema, TOutput>(
+export function transform<
+    TSchema extends BaseSchema | BaseSchemaAsync,
+    TOutput
+>(
     schema: TSchema,
-    action: (value: Output<TSchema>) => TOutput,
-    validate?: BaseSchema<TOutput>
-): SchemaWithTransform<TSchema, TOutput>;
+    action: (value: Output<TSchema>) => TOutput | Promise<TOutput>,
+    validate?: BaseSchema<TOutput> | BaseSchemaAsync<TOutput>
+): SchemaWithTransformAsync<TSchema, TOutput>;
 
-export function transform<TSchema extends BaseSchema, TOutput>(
+export function transform<
+    TSchema extends BaseSchema | BaseSchemaAsync,
+    TOutput
+>(
     schema: TSchema,
-    action: (value: Output<TSchema>) => TOutput,
-    arg1?: Pipe<TOutput> | BaseSchema<TOutput>
-): SchemaWithTransform<TSchema, TOutput> {
+    action: (value: Output<TSchema>) => TOutput | Promise<TOutput>,
+    arg1?: PipeAsync<TOutput> | BaseSchema<TOutput> | BaseSchemaAsync<TOutput>
+): SchemaWithTransformAsync<TSchema, TOutput> {
     return {
         ...schema,
+
+        /**
+         * Whether it's async.
+         */
+        async: true,
 
         /**
          * Parses unknown input based on its schema.
@@ -62,9 +86,9 @@ export function transform<TSchema extends BaseSchema, TOutput>(
          *
          * @returns The parsed output.
          */
-        _parse(input, info) {
+        async _parse(input, info) {
             // Parse input with schema
-            const result = schema._parse(input, info);
+            const result = await schema._parse(input, info);
 
             // If there are issues, return them
             if (result.issues) {
@@ -72,7 +96,7 @@ export function transform<TSchema extends BaseSchema, TOutput>(
             }
 
             // Otherwise, transform output
-            const output = action(result.output);
+            const output = await action(result.output);
 
             // Validate output with schema if available
             if (arg1 && !Array.isArray(arg1)) {
@@ -80,7 +104,12 @@ export function transform<TSchema extends BaseSchema, TOutput>(
             }
 
             // Otherwise, return pipe result
-            return executePipe(output, arg1, info, typeof output);
+            return executePipe(
+                output,
+                arg1 as PipeAsync<TOutput>,
+                info,
+                typeof output
+            );
         },
     };
 }

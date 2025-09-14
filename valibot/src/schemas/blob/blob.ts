@@ -1,40 +1,48 @@
-import type { BaseSchema, ErrorMessage, Pipe } from "../../types";
+import type { BaseSchema, BaseSchemaAsync, ErrorMessage, PipeAsync } from "../../types";
 import { executePipe, getDefaultArgs, getSchemaIssues } from "../../utils";
-
 /**
  * Blob schema type.
  */
 export type BlobSchema<TOutput = Blob> = BaseSchema<Blob, TOutput> & {
     type: "blob";
 };
+/**
+ * Blob schema async type.
+ */
+export type BlobSchemaAsync<TOutput = Blob> = BaseSchemaAsync<Blob, TOutput> & {
+    type: "blob";
+};
 
 /**
- * Creates a blob schema.
+ * Creates an async blob schema.
  *
  * @param pipe A validation and transformation pipe.
  *
- * @returns A blob schema.
+ * @returns An async blob schema.
  */
-export function blob(pipe?: Pipe<Blob>): BlobSchema;
+export function blob(pipe?: PipeAsync<Blob>): BlobSchemaAsync;
 
 /**
- * Creates a blob schema.
+ * Creates an async blob schema.
  *
  * @param error The error message.
  * @param pipe A validation and transformation pipe.
  *
- * @returns A blob schema.
+ * @returns An async blob schema.
  */
-export function blob(error?: ErrorMessage, pipe?: Pipe<Blob>): BlobSchema;
+export function blob(
+    error?: ErrorMessage,
+    pipe?: PipeAsync<Blob>
+): BlobSchemaAsync;
 
 export function blob(
-    arg1?: ErrorMessage | Pipe<Blob>,
-    arg2?: Pipe<Blob>
-): BlobSchema {
+    arg1?: ErrorMessage | PipeAsync<Blob>,
+    arg2?: PipeAsync<Blob>
+): BlobSchemaAsync {
     // Get error and pipe argument
     const [error, pipe] = getDefaultArgs(arg1, arg2);
 
-    // Create and return blob schema
+    // Create and return async blob schema
     return {
         /**
          * The schema type.
@@ -44,7 +52,7 @@ export function blob(
         /**
          * Whether it's async.
          */
-        async: false,
+        async: true,
 
         /**
          * Parses unknown input based on its schema.
@@ -54,7 +62,7 @@ export function blob(
          *
          * @returns The parsed output.
          */
-        _parse(input, info) {
+        async _parse(input, info) {
             // Check type of input
             if (!(input instanceof Blob)) {
                 return getSchemaIssues(

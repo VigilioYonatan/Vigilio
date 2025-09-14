@@ -1,5 +1,5 @@
 import { ValiError } from "../../error";
-import type { BaseSchema, ParseInfo } from "../../types";
+import type { BaseSchema, BaseSchemaAsync, ParseInfo } from "../../types";
 import type { SafeParseResult } from "./types.js";
 
 /**
@@ -11,12 +11,12 @@ import type { SafeParseResult } from "./types.js";
  *
  * @returns The parsed output.
  */
-export function safeParse<TSchema extends BaseSchema>(
+export async function safeParse<TSchema extends BaseSchema | BaseSchemaAsync>(
     schema: TSchema,
     input: unknown,
     info?: Pick<ParseInfo, "abortEarly" | "abortPipeEarly" | "skipPipe">
-): SafeParseResult<TSchema> {
-    const result = schema._parse(input, info);
+): Promise<SafeParseResult<TSchema>> {
+    const result = await schema._parse(input, info);
     return result.issues
         ? {
               success: false,

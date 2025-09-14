@@ -1,7 +1,7 @@
 import type { BaseSchema, BaseSchemaAsync, Input, Output } from "../../types";
 import type { NeverSchema, NeverSchemaAsync } from "../never/index.js";
 import type { TupleItems } from "./tuple.js";
-import type { TupleItemsAsync } from "./tupleAsync.js";
+import type { TupleItemsAsync } from "./tuple.js";
 
 /**
  * Tuple path item type.

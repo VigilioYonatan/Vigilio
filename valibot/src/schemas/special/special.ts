@@ -1,4 +1,9 @@
-import type { BaseSchema, ErrorMessage, Pipe } from "../../types";
+import type {
+    BaseSchema,
+    BaseSchemaAsync,
+    ErrorMessage,
+    PipeAsync,
+} from "../../types";
 import { executePipe, getDefaultArgs, getSchemaIssues } from "../../utils";
 
 /**
@@ -10,19 +15,28 @@ export type SpecialSchema<TInput, TOutput = TInput> = BaseSchema<
 > & {
     type: "special";
 };
+/**
+ * Special schema async type.
+ */
+export type SpecialSchemaAsync<TInput, TOutput = TInput> = BaseSchemaAsync<
+    TInput,
+    TOutput
+> & {
+    type: "special";
+};
 
 /**
- * Creates a special schema.
+ * Creates an async special schema.
  *
  * @param check The type check function.
  * @param pipe A validation and transformation pipe.
  *
- * @returns A special schema.
+ * @returns An async special schema.
  */
 export function special<TInput>(
-    check: (input: unknown) => boolean,
-    pipe?: Pipe<TInput>
-): SpecialSchema<TInput>;
+    check: (input: unknown) => boolean | Promise<boolean>,
+    pipe?: PipeAsync<TInput>
+): SpecialSchemaAsync<TInput>;
 
 /**
  * Creates a special schema.
@@ -34,16 +48,16 @@ export function special<TInput>(
  * @returns A special schema.
  */
 export function special<TInput>(
-    check: (input: unknown) => boolean,
+    check: (input: unknown) => boolean | Promise<boolean>,
     error?: ErrorMessage,
-    pipe?: Pipe<TInput>
-): SpecialSchema<TInput>;
+    pipe?: PipeAsync<TInput>
+): SpecialSchemaAsync<TInput>;
 
 export function special<TInput>(
-    check: (input: unknown) => boolean,
-    arg2?: Pipe<TInput> | ErrorMessage,
-    arg3?: Pipe<TInput>
-): SpecialSchema<TInput> {
+    check: (input: unknown) => boolean | Promise<boolean>,
+    arg2?: PipeAsync<TInput> | ErrorMessage,
+    arg3?: PipeAsync<TInput>
+): SpecialSchemaAsync<TInput> {
     // Get error and pipe argument
     const [error, pipe] = getDefaultArgs(arg2, arg3);
 
@@ -57,7 +71,7 @@ export function special<TInput>(
         /**
          * Whether it's async.
          */
-        async: false,
+        async: true,
 
         /**
          * Parses unknown input based on its schema.
@@ -67,9 +81,9 @@ export function special<TInput>(
          *
          * @returns The parsed output.
          */
-        _parse(input, info) {
+        async _parse(input, info) {
             // Check type of input
-            if (!check(input)) {
+            if (!(await check(input))) {
                 return getSchemaIssues(
                     info,
                     "type",

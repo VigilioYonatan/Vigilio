@@ -1,6 +1,10 @@
-import type { BaseSchema, ErrorMessage, Pipe } from "../../types";
+import type {
+    BaseSchema,
+    BaseSchemaAsync,
+    ErrorMessage,
+    PipeAsync,
+} from "../../types";
 import { executePipe, getDefaultArgs, getSchemaIssues } from "../../utils";
-
 /**
  * Date schema type.
  */
@@ -9,32 +13,42 @@ export type DateSchema<TOutput = Date> = BaseSchema<Date, TOutput> & {
 };
 
 /**
- * Creates a date schema.
+ * Date schema async type.
+ */
+export type DateSchemaAsync<TOutput = Date> = BaseSchemaAsync<Date, TOutput> & {
+    type: "date";
+};
+
+/**
+ * Creates an async date schema.
  *
  * @param pipe A validation and transformation pipe.
  *
- * @returns A date schema.
+ * @returns An async date schema.
  */
-export function date(pipe?: Pipe<Date>): DateSchema;
+export function date(pipe?: PipeAsync<Date>): DateSchemaAsync;
 
 /**
- * Creates a date schema.
+ * Creates an async date schema.
  *
  * @param error The error message.
  * @param pipe A validation and transformation pipe.
  *
- * @returns A date schema.
+ * @returns An async date schema.
  */
-export function date(error?: ErrorMessage, pipe?: Pipe<Date>): DateSchema;
+export function date(
+    error?: ErrorMessage,
+    pipe?: PipeAsync<Date>
+): DateSchemaAsync;
 
 export function date(
-    arg1?: ErrorMessage | Pipe<Date>,
-    arg2?: Pipe<Date>
-): DateSchema {
+    arg1?: ErrorMessage | PipeAsync<Date>,
+    arg2?: PipeAsync<Date>
+): DateSchemaAsync {
     // Get error and pipe argument
     const [error, pipe] = getDefaultArgs(arg1, arg2);
 
-    // Create and return date schema
+    // Create and return async date schema
     return {
         /**
          * The schema type.
@@ -44,7 +58,7 @@ export function date(
         /**
          * Whether it's async.
          */
-        async: false,
+        async: true,
 
         /**
          * Parses unknown input based on its schema.
@@ -54,7 +68,7 @@ export function date(
          *
          * @returns The parsed output.
          */
-        _parse(input, info) {
+        async _parse(input, info) {
             // Check type of input
             if (!(input instanceof Date) || isNaN(input.getTime())) {
                 return getSchemaIssues(

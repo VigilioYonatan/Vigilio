@@ -1,76 +1,88 @@
-import { object, type ObjectOutput, type ObjectSchema } from "../../schemas";
-import type { BaseSchema, ErrorMessage, Pipe } from "../../types";
+import {
+    object,
+    type ObjectOutput,
+    type ObjectSchema,
+    type ObjectSchemaAsync,
+} from "../../schemas";
+import type {
+    BaseSchema,
+    BaseSchemaAsync,
+    ErrorMessage,
+    PipeAsync,
+} from "../../types";
 import { getRestAndDefaultArgs } from "../../utils";
 
 /**
- * Creates an object schema that contains only the selected keys of an existing
- * schema.
+ * Creates an async object schema that contains only the selected keys of an
+ * existing schema.
  *
  * @param schema The schema to pick from.
  * @param keys The selected keys
  * @param pipe A validation and transformation pipe.
  *
- * @returns An object schema.
+ * @returns An async object schema.
  */
 export function pick<
-    TSchema extends ObjectSchema<any, any>,
+    TSchema extends ObjectSchema<any, any> | ObjectSchemaAsync<any, any>,
     TKeys extends (keyof TSchema["entries"])[]
 >(
     schema: TSchema,
     keys: TKeys,
-    pipe?: Pipe<
+    pipe?: PipeAsync<
         ObjectOutput<Pick<TSchema["entries"], TKeys[number]>, undefined>
     >
-): ObjectSchema<Pick<TSchema["entries"], TKeys[number]>>;
+): ObjectSchemaAsync<Pick<TSchema["entries"], TKeys[number]>>;
 
 /**
- * Creates an object schema that contains only the selected keys of an existing
- * schema.
+ * Creates an async object schema that contains only the selected keys of an
+ * existing schema.
  *
  * @param schema The schema to pick from.
  * @param keys The selected keys
  * @param error The error message.
  * @param pipe A validation and transformation pipe.
  *
- * @returns An object schema.
+ * @returns An async object schema.
  */
 export function pick<
-    TSchema extends ObjectSchema<any, any>,
+    TSchema extends ObjectSchema<any, any> | ObjectSchemaAsync<any, any>,
     TKeys extends (keyof TSchema["entries"])[]
 >(
     schema: TSchema,
     keys: TKeys,
     error?: ErrorMessage,
-    pipe?: Pipe<
+    pipe?: PipeAsync<
         ObjectOutput<Pick<TSchema["entries"], TKeys[number]>, undefined>
     >
-): ObjectSchema<Pick<TSchema["entries"], TKeys[number]>>;
+): ObjectSchemaAsync<Pick<TSchema["entries"], TKeys[number]>>;
 
 /**
- * Creates an object schema that contains only the selected keys of an existing
- * schema.
+ * Creates an async object schema that contains only the selected keys of an
+ * existing schema.
  *
  * @param schema The schema to pick from.
  * @param keys The selected keys
  * @param rest The object rest.
  * @param pipe A validation and transformation pipe.
  *
- * @returns An object schema.
+ * @returns An async object schema.
  */
 export function pick<
-    TSchema extends ObjectSchema<any, any>,
+    TSchema extends ObjectSchema<any, any> | ObjectSchemaAsync<any, any>,
     TKeys extends (keyof TSchema["entries"])[],
-    TRest extends BaseSchema | undefined
+    TRest extends BaseSchema | BaseSchemaAsync | undefined
 >(
     schema: TSchema,
     keys: TKeys,
     rest: TRest,
-    pipe?: Pipe<ObjectOutput<Pick<TSchema["entries"], TKeys[number]>, TRest>>
-): ObjectSchema<Pick<TSchema["entries"], TKeys[number]>, TRest>;
+    pipe?: PipeAsync<
+        ObjectOutput<Pick<TSchema["entries"], TKeys[number]>, TRest>
+    >
+): ObjectSchemaAsync<Pick<TSchema["entries"], TKeys[number]>, TRest>;
 
 /**
- * Creates an object schema that contains only the selected keys of an existing
- * schema.
+ * Creates an async object schema that contains only the selected keys of an
+ * existing schema.
  *
  * @param schema The schema to pick from.
  * @param keys The selected keys
@@ -78,40 +90,48 @@ export function pick<
  * @param error The error message.
  * @param pipe A validation and transformation pipe.
  *
- * @returns An object schema.
+ * @returns An async object schema.
  */
 export function pick<
-    TSchema extends ObjectSchema<any, any>,
+    TSchema extends ObjectSchema<any, any> | ObjectSchemaAsync<any, any>,
     TKeys extends (keyof TSchema["entries"])[],
-    TRest extends BaseSchema | undefined
+    TRest extends BaseSchema | BaseSchemaAsync | undefined
 >(
     schema: TSchema,
     keys: TKeys,
     rest: TRest,
     error?: ErrorMessage,
-    pipe?: Pipe<ObjectOutput<Pick<TSchema["entries"], TKeys[number]>, TRest>>
-): ObjectSchema<Pick<TSchema["entries"], TKeys[number]>, TRest>;
+    pipe?: PipeAsync<
+        ObjectOutput<Pick<TSchema["entries"], TKeys[number]>, TRest>
+    >
+): ObjectSchemaAsync<Pick<TSchema["entries"], TKeys[number]>, TRest>;
 
 export function pick<
-    TSchema extends ObjectSchema<any, any>,
+    TSchema extends ObjectSchema<any, any> | ObjectSchemaAsync<any, any>,
     TKeys extends (keyof TSchema["entries"])[],
-    TRest extends BaseSchema | undefined = undefined
+    TRest extends BaseSchema | BaseSchemaAsync | undefined = undefined
 >(
     schema: TSchema,
     keys: TKeys,
     arg3?:
-        | Pipe<ObjectOutput<Pick<TSchema["entries"], TKeys[number]>, TRest>>
+        | PipeAsync<
+              ObjectOutput<Pick<TSchema["entries"], TKeys[number]>, TRest>
+          >
         | ErrorMessage
         | TRest,
     arg4?:
-        | Pipe<ObjectOutput<Pick<TSchema["entries"], TKeys[number]>, TRest>>
+        | PipeAsync<
+              ObjectOutput<Pick<TSchema["entries"], TKeys[number]>, TRest>
+          >
         | ErrorMessage,
-    arg5?: Pipe<ObjectOutput<Pick<TSchema["entries"], TKeys[number]>, TRest>>
-): ObjectSchema<Pick<TSchema["entries"], TKeys[number]>, TRest> {
+    arg5?: PipeAsync<
+        ObjectOutput<Pick<TSchema["entries"], TKeys[number]>, TRest>
+    >
+): ObjectSchemaAsync<Pick<TSchema["entries"], TKeys[number]>, TRest> {
     // Get rest, error and pipe argument
     const [rest, error, pipe] = getRestAndDefaultArgs<
         TRest,
-        Pipe<ObjectOutput<Pick<TSchema["entries"], TKeys[number]>, TRest>>
+        PipeAsync<ObjectOutput<Pick<TSchema["entries"], TKeys[number]>, TRest>>
     >(arg3, arg4, arg5);
 
     // Create and return object schema

@@ -1,2 +1,2 @@
 export * from "./nullish.js";
-export * from "./nullishAsync.js";
+export * from "./nullish.js";

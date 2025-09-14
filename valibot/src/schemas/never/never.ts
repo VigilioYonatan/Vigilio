@@ -1,21 +1,26 @@
-import type { BaseSchema, ErrorMessage } from "../../types";
+import type { BaseSchema, BaseSchemaAsync, ErrorMessage } from "../../types";
 import { getSchemaIssues } from "../../utils";
-
 /**
  * Never schema type.
  */
 export type NeverSchema = BaseSchema<never> & {
     type: "never";
 };
+/**
+ * Never schema async type.
+ */
+export type NeverSchemaAsync = BaseSchemaAsync<never> & {
+    type: "never";
+};
 
 /**
- * Creates a never schema.
+ * Creates an async never schema.
  *
  * @param error The error message.
  *
- * @returns A never schema.
+ * @returns An async never schema.
  */
-export function never(error?: ErrorMessage): NeverSchema {
+export function never(error?: ErrorMessage): NeverSchemaAsync {
     return {
         /**
          * The schema type.
@@ -25,7 +30,7 @@ export function never(error?: ErrorMessage): NeverSchema {
         /**
          * Whether it's async.
          */
-        async: false,
+        async: true,
 
         /**
          * Parses unknown input based on its schema.
@@ -35,7 +40,7 @@ export function never(error?: ErrorMessage): NeverSchema {
          *
          * @returns The parsed output.
          */
-        _parse(input, info) {
+        async _parse(input, info) {
             return getSchemaIssues(
                 info,
                 "type",

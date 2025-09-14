@@ -1,4 +1,9 @@
-import type { BaseSchema, ErrorMessage, Pipe } from "../../types";
+import type {
+    BaseSchema,
+    BaseSchemaAsync,
+    ErrorMessage,
+    PipeAsync,
+} from "../../types";
 import { executePipe, getDefaultArgs, getSchemaIssues } from "../../utils";
 
 /**
@@ -9,32 +14,45 @@ export type StringSchema<TOutput = string> = BaseSchema<string, TOutput> & {
 };
 
 /**
- * Creates a string schema.
+ * String schema async type.
+ */
+export type StringSchemaAsync<TOutput = string> = BaseSchemaAsync<
+    string,
+    TOutput
+> & {
+    type: "string";
+};
+
+/**
+ * Creates an async string schema.
  *
  * @param pipe A validation and transformation pipe.
  *
- * @returns A string schema.
+ * @returns An async string schema.
  */
-export function string(pipe?: Pipe<string>): StringSchema;
+export function string(pipe?: PipeAsync<string>): StringSchemaAsync;
 
 /**
- * Creates a string schema.
+ * Creates an async string schema.
  *
  * @param error The error message.
  * @param pipe A validation and transformation pipe.
  *
- * @returns A string schema.
+ * @returns An async string schema.
  */
-export function string(error?: ErrorMessage, pipe?: Pipe<string>): StringSchema;
+export function string(
+    error?: ErrorMessage,
+    pipe?: PipeAsync<string>
+): StringSchemaAsync;
 
 export function string(
-    arg1?: ErrorMessage | Pipe<string>,
-    arg2?: Pipe<string>
-): StringSchema {
+    arg1?: ErrorMessage | PipeAsync<string>,
+    arg2?: PipeAsync<string>
+): StringSchemaAsync {
     // Get error and pipe argument
     const [error, pipe] = getDefaultArgs(arg1, arg2);
 
-    // Create and return string schema
+    // Create and return async string schema
     return {
         /**
          * The schema type.
@@ -44,7 +62,7 @@ export function string(
         /**
          * Whether it's async.
          */
-        async: false,
+        async: true,
 
         /**
          * Parses unknown input based on its schema.
@@ -54,14 +72,14 @@ export function string(
          *
          * @returns The parsed output.
          */
-        _parse(input, info) {
+        async _parse(input, info) {
             // Check type of input
             if (typeof input !== "string") {
                 return getSchemaIssues(
                     info,
                     "type",
                     "string",
-                    error || "Este campo solo permite texto.",
+                    error || "Invalid type",
                     input
                 );
             }

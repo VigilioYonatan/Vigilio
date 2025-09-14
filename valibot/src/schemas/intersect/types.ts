@@ -1,6 +1,10 @@
 import type { BaseSchema, BaseSchemaAsync } from "../../types";
-import type { IntersectOptions } from "./intersect.js";
-import type { IntersectOptionsAsync } from "./intersectAsync.js";
+import type { IntersectOptionsAsync } from "./intersect.js";
+
+/**
+ * Intersect options type.
+ */
+export type IntersectOptions = [BaseSchema, BaseSchema, ...BaseSchema[]];
 
 /**
  * Intersect input type.

@@ -1,14 +1,19 @@
 {
     "name": "@vigilio/valibot",
-    "version": "0.0.3",
+    "version": "0.2.3",
     "description": "form validation valibot - spanish.",
-    "main": "./dist/cjs/index.js",
-    "module": "./dist/esm/index.js",
-    "types": "./dist/esm/index.d.ts",
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
     "exports": {
         ".": {
-            "import": "./dist/esm/index.js",
-            "require": "./dist/cjs/index.js"
+            "import": {
+                "types": "./dist/esm/index.d.ts",
+                "default": "./dist/esm/index.js"
+            },
+            "require": {
+                "types": "./dist/cjs/index.d.cts",
+                "default": "./dist/cjs/index.cjs"
+            }
         },
         "./resolver": {
             "import": "./dist/esm/resolver/index.js",
@@ -43,17 +48,17 @@
     "scripts": {
         "build:esm": "tsc",
         "build:cjs": "tsc --module commonjs --outDir dist/cjs",
-        "build": "rimraf dist && bun build:esm && bun build:cjs",
-        "public": "bun build && npm publish"
+        "build": "rm -rf dist && bun run build:esm && bun run build:cjs",
+        "public": "bun run build && npm publish"
     },
     "author": "Vigilio",
     "license": "ISC",
     "dependencies": {
-        "@hookform/resolvers": "3.4.2",
         "tslib": "^2.6.2"
     },
     "devDependencies": {
         "rimraf": "^5.0.5",
+        "tsup": "^8.5.0",
         "typescript": "^5.3.3"
     }
 }

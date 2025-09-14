@@ -1,19 +1,15 @@
 import type {
     BaseSchema,
+    BaseSchemaAsync,
     ErrorMessage,
     Input,
     Issues,
     Output,
-    Pipe,
+    PipeAsync,
 } from "../../types";
-import {
-    executePipe,
-    getDefaultArgs,
-    getIssues,
-    getSchemaIssues,
-} from "../../utils";
+import { getDefaultArgs, getIssues, getSchemaIssues } from "../../utils";
+import { executePipe } from "../../utils";
 import type { ArrayPathItem } from "./types.js";
-
 /**
  * Array schema type.
  */
@@ -24,44 +20,54 @@ export type ArraySchema<
     type: "array";
     item: TItem;
 };
+/**
+ * Array schema async type.
+ */
+export type ArraySchemaAsync<
+    TItem extends BaseSchema | BaseSchemaAsync,
+    TOutput = Output<TItem>[]
+> = BaseSchemaAsync<Input<TItem>[], TOutput> & {
+    type: "array";
+    item: TItem;
+};
 
 /**
- * Creates a array schema.
+ * Creates an async array schema.
  *
  * @param item The item schema.
  * @param pipe A validation and transformation pipe.
  *
- * @returns A array schema.
+ * @returns An async array schema.
  */
-export function array<TItem extends BaseSchema>(
+export function array<TItem extends BaseSchema | BaseSchemaAsync>(
     item: TItem,
-    pipe?: Pipe<Output<TItem>[]>
-): ArraySchema<TItem>;
+    pipe?: PipeAsync<Output<TItem>[]>
+): ArraySchemaAsync<TItem>;
 
 /**
- * Creates a array schema.
+ * Creates an async array schema.
  *
  * @param item The item schema.
  * @param error The error message.
  * @param pipe A validation and transformation pipe.
  *
- * @returns A array schema.
+ * @returns An async array schema.
  */
-export function array<TItem extends BaseSchema>(
+export function array<TItem extends BaseSchema | BaseSchemaAsync>(
     item: TItem,
     error?: ErrorMessage,
-    pipe?: Pipe<Output<TItem>[]>
-): ArraySchema<TItem>;
+    pipe?: PipeAsync<Output<TItem>[]>
+): ArraySchemaAsync<TItem>;
 
-export function array<TItem extends BaseSchema>(
+export function array<TItem extends BaseSchema | BaseSchemaAsync>(
     item: TItem,
-    arg2?: ErrorMessage | Pipe<Output<TItem>[]>,
-    arg3?: Pipe<Output<TItem>[]>
-): ArraySchema<TItem> {
+    arg2?: ErrorMessage | PipeAsync<Output<TItem>[]>,
+    arg3?: PipeAsync<Output<TItem>[]>
+): ArraySchemaAsync<TItem> {
     // Get error and pipe argument
     const [error, pipe] = getDefaultArgs(arg2, arg3);
 
-    // Create and return array schema
+    // Create and return async array schema
     return {
         /**
          * The schema type.
@@ -76,7 +82,7 @@ export function array<TItem extends BaseSchema>(
         /**
          * Whether it's async.
          */
-        async: false,
+        async: true,
 
         /**
          * Parses unknown input based on its schema.
@@ -86,14 +92,14 @@ export function array<TItem extends BaseSchema>(
          *
          * @returns The parsed output.
          */
-        _parse(input, info) {
+        async _parse(input, info) {
             // Check type of input
             if (!Array.isArray(input)) {
                 return getSchemaIssues(
                     info,
                     "type",
                     "array",
-                    error ||   "Este campo solo permite números.",
+                    error || "Este campo solo permite array.",
                     input
                 );
             }
@@ -103,43 +109,51 @@ export function array<TItem extends BaseSchema>(
             const output: any[] = [];
 
             // Parse schema of each array item
-            for (let key = 0; key < input.length; key++) {
-                const value = input[key];
-                const result = item._parse(value, info);
+            await Promise.all(
+                input.map(async (value, key) => {
+                    // If not aborted early, continue execution
+                    if (!(info?.abortEarly && issues)) {
+                        // Parse schema of array item
+                        const result = await item._parse(value, info);
 
-                // If there are issues, capture them
-                if (result.issues) {
-                    // Create array path item
-                    const pathItem: ArrayPathItem = {
-                        type: "array",
-                        input,
-                        key,
-                        value,
-                    };
+                        // If not aborted early, continue execution
+                        if (!(info?.abortEarly && issues)) {
+                            // If there are issues, capture them
+                            if (result.issues) {
+                                // Create array path item
+                                const pathItem: ArrayPathItem = {
+                                    type: "array",
+                                    input,
+                                    key,
+                                    value,
+                                };
 
-                    // Add modified result issues to issues
-                    for (const issue of result.issues) {
-                        if (issue.path) {
-                            issue.path.unshift(pathItem);
-                        } else {
-                            issue.path = [pathItem];
+                                // Add modified result issues to issues
+                                for (const issue of result.issues) {
+                                    if (issue.path) {
+                                        issue.path.unshift(pathItem);
+                                    } else {
+                                        issue.path = [pathItem];
+                                    }
+                                    issues?.push(issue);
+                                }
+                                if (!issues) {
+                                    issues = result.issues;
+                                }
+
+                                // If necessary, abort early
+                                if (info?.abortEarly) {
+                                    throw null;
+                                }
+
+                                // Otherwise, add item to array
+                            } else {
+                                output[key] = result.output;
+                            }
                         }
-                        issues?.push(issue);
                     }
-                    if (!issues) {
-                        issues = result.issues;
-                    }
-
-                    // If necessary, abort early
-                    if (info?.abortEarly) {
-                        break;
-                    }
-
-                    // Otherwise, add item to array
-                } else {
-                    output.push(result.output);
-                }
-            }
+                })
+            ).catch(() => null);
 
             // Return issues or pipe result
             return issues

@@ -9,7 +9,7 @@ import type { EnumSchema, EnumSchemaAsync } from "../enum/index.js";
 import type { PicklistSchema, PicklistSchemaAsync } from "../picklist/index.js";
 import type { UnionSchema } from "../union/index.js";
 import type { RecordKey } from "./record.js";
-import type { RecordKeyAsync } from "./recordAsync.js";
+import type { RecordKeyAsync } from "./record.js";
 
 /**
  * Record path item type.

@@ -1,21 +1,21 @@
 import type {
-    ObjectEntries,
-    ObjectSchema,
+    ObjectEntriesAsync,
+    ObjectSchemaAsync,
 } from "../../schemas/object/index.ts";
 import { getOutput } from "../../utils";
 
 /**
  * Creates an object schema that strips unknown keys.
  *
- * @deprecated Use `object` without `rest` argument instead.
+ * @deprecated Use `objectAsync` without `rest` argument instead.
  *
  * @param schema A object schema.
  *
  * @returns A object schema.
  */
-export function strip<TSchema extends ObjectSchema<ObjectEntries, undefined>>(
-    schema: TSchema
-): TSchema {
+export function strip<
+    TSchema extends ObjectSchemaAsync<ObjectEntriesAsync, undefined>
+>(schema: TSchema): TSchema {
     // Create cached keys
     let cachedKeys: string[];
 
@@ -31,9 +31,9 @@ export function strip<TSchema extends ObjectSchema<ObjectEntries, undefined>>(
          *
          * @returns The parsed output.
          */
-        _parse(input, info) {
+        async _parse(input, info) {
             // Get parse result of schema
-            const result = schema._parse(input, info);
+            const result = await schema._parse(input, info);
 
             // Return result if there are issues
             if (result.issues) {
@@ -46,7 +46,7 @@ export function strip<TSchema extends ObjectSchema<ObjectEntries, undefined>>(
             // Strip unknown keys
             const output: Record<string, any> = {};
             for (const key of cachedKeys) {
-                output[key] = result.output[key as keyof typeof result.output];
+                output[key] = result.output[key];
             }
 
             // Return stripped output

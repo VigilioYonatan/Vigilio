@@ -1,11 +1,15 @@
-import type { BaseSchema, ErrorMessage, Input, Output } from "../../types";
+import type {
+    BaseSchema,
+    BaseSchemaAsync,
+    ErrorMessage,
+    Input,
+    Output,
+} from "../../types";
 import { getSchemaIssues } from "../../utils";
-
 /**
  * Non optional type.
  */
 export type NonOptional<T> = T extends undefined ? never : T;
-
 /**
  * Non optional schema type.
  */
@@ -16,19 +20,29 @@ export type NonOptionalSchema<
     type: "non_optional";
     wrapped: TWrapped;
 };
+/**
+ * Non optional schema async type.
+ */
+export type NonOptionalSchemaAsync<
+    TWrapped extends BaseSchema | BaseSchemaAsync,
+    TOutput = NonOptional<Output<TWrapped>>
+> = BaseSchemaAsync<NonOptional<Input<TWrapped>>, TOutput> & {
+    type: "non_optional";
+    wrapped: TWrapped;
+};
 
 /**
- * Creates a non optional schema.
+ * Creates an async non optional schema.
  *
  * @param wrapped The wrapped schema.
  * @param error The error message.
  *
- * @returns A non optional schema.
+ * @returns An async non optional schema.
  */
-export function nonOptional<TWrapped extends BaseSchema>(
+export function nonOptional<TWrapped extends BaseSchema | BaseSchemaAsync>(
     wrapped: TWrapped,
     error?: ErrorMessage
-): NonOptionalSchema<TWrapped> {
+): NonOptionalSchemaAsync<TWrapped> {
     return {
         /**
          * The schema type.
@@ -43,7 +57,7 @@ export function nonOptional<TWrapped extends BaseSchema>(
         /**
          * Whether it's async.
          */
-        async: false,
+        async: true,
 
         /**
          * Parses unknown input based on its schema.
@@ -53,7 +67,7 @@ export function nonOptional<TWrapped extends BaseSchema>(
          *
          * @returns The parsed output.
          */
-        _parse(input, info) {
+        async _parse(input, info) {
             // Allow `undefined` values not to pass
             if (input === undefined) {
                 return getSchemaIssues(

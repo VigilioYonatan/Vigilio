@@ -1,13 +1,16 @@
 import type { PipeResult } from "../../types.js";
-import { getOutput } from "../../utils";
+import { getOutput } from "../../utils/index.js";
 
 /**
- * Creates a custom transformation function.
+ * Creates a async custom transformation function.
  *
  * @param action The transform action.
  *
- * @returns A transformation function.
+ * @returns A async transformation function.
  */
-export function toCustom<TInput>(action: (input: TInput) => TInput) {
-    return (input: TInput): PipeResult<TInput> => getOutput(action(input));
+export function toCustomAsync<TInput>(
+    action: (input: TInput) => TInput | Promise<TInput>
+) {
+    return async (input: TInput): Promise<PipeResult<TInput>> =>
+        getOutput(await action(input));
 }

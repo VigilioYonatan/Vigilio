@@ -1,12 +1,17 @@
-import type { BaseSchema, ErrorMessage, Issues, Pipe } from "../../types";
+import type {
+    BaseSchema,
+    BaseSchemaAsync,
+    ErrorMessage,
+    Issues,
+    PipeAsync,
+} from "../../types";
 import {
     executePipe,
     getIssues,
     getRestAndDefaultArgs,
     getSchemaIssues,
 } from "../../utils";
-import type { TupleOutput, TupleInput, TuplePathItem } from "./types.js";
-
+import type { TupleInput, TupleOutput, TuplePathItem } from "./types.js";
 /**
  * Tuple shape type.
  */
@@ -26,87 +31,108 @@ export type TupleSchema<
 };
 
 /**
- * Creates a tuple schema.
+ * Tuple shape async type.
+ */
+export type TupleItemsAsync = [
+    BaseSchema | BaseSchemaAsync,
+    ...(BaseSchema | BaseSchemaAsync)[]
+];
+
+/**
+ * Tuple schema async type.
+ */
+export type TupleSchemaAsync<
+    TItems extends TupleItemsAsync,
+    TRest extends BaseSchema | BaseSchemaAsync | undefined = undefined,
+    TOutput = TupleOutput<TItems, TRest>
+> = BaseSchemaAsync<TupleInput<TItems, TRest>, TOutput> & {
+    type: "tuple";
+    items: TItems;
+    rest: TRest;
+};
+
+/**
+ * Creates an async tuple schema.
  *
  * @param items The items schema.
  * @param pipe A validation and transformation pipe.
  *
- * @returns A tuple schema.
+ * @returns An async tuple schema.
  */
-export function tuple<TItems extends TupleItems>(
+export function tuple<TItems extends TupleItemsAsync>(
     items: TItems,
-    pipe?: Pipe<TupleOutput<TItems, undefined>>
-): TupleSchema<TItems>;
+    pipe?: PipeAsync<TupleOutput<TItems, undefined>>
+): TupleSchemaAsync<TItems>;
 
 /**
- * Creates a tuple schema.
+ * Creates an async tuple schema.
  *
  * @param items The items schema.
  * @param error The error message.
  * @param pipe A validation and transformation pipe.
  *
- * @returns A tuple schema.
+ * @returns An async tuple schema.
  */
-export function tuple<TItems extends TupleItems>(
+export function tuple<TItems extends TupleItemsAsync>(
     items: TItems,
     error?: ErrorMessage,
-    pipe?: Pipe<TupleOutput<TItems, undefined>>
-): TupleSchema<TItems>;
+    pipe?: PipeAsync<TupleOutput<TItems, undefined>>
+): TupleSchemaAsync<TItems>;
 
 /**
- * Creates a tuple schema.
+ * Creates an async tuple schema.
  *
  * @param items The items schema.
  * @param rest The rest schema.
  * @param pipe A validation and transformation pipe.
  *
- * @returns A tuple schema.
+ * @returns An async tuple schema.
  */
 export function tuple<
-    TItems extends TupleItems,
-    TRest extends BaseSchema | undefined
+    TItems extends TupleItemsAsync,
+    TRest extends BaseSchema | BaseSchemaAsync | undefined
 >(
     items: TItems,
     rest: TRest,
-    pipe?: Pipe<TupleOutput<TItems, TRest>>
-): TupleSchema<TItems, TRest>;
+    pipe?: PipeAsync<TupleOutput<TItems, TRest>>
+): TupleSchemaAsync<TItems, TRest>;
 
 /**
- * Creates a tuple schema.
+ * Creates an async tuple schema.
  *
  * @param items The items schema.
  * @param rest The rest schema.
  * @param error The error message.
  * @param pipe A validation and transformation pipe.
  *
- * @returns A tuple schema.
+ * @returns An async tuple schema.
  */
 export function tuple<
-    TItems extends TupleItems,
-    TRest extends BaseSchema | undefined
+    TItems extends TupleItemsAsync,
+    TRest extends BaseSchema | BaseSchemaAsync | undefined
 >(
     items: TItems,
     rest: TRest,
     error?: ErrorMessage,
-    pipe?: Pipe<TupleOutput<TItems, TRest>>
-): TupleSchema<TItems, TRest>;
+    pipe?: PipeAsync<TupleOutput<TItems, TRest>>
+): TupleSchemaAsync<TItems, TRest>;
 
 export function tuple<
-    TItems extends TupleItems,
-    TRest extends BaseSchema | undefined = undefined
+    TItems extends TupleItemsAsync,
+    TRest extends BaseSchema | BaseSchemaAsync | undefined = undefined
 >(
     items: TItems,
-    arg2?: Pipe<TupleOutput<TItems, TRest>> | ErrorMessage | TRest,
-    arg3?: Pipe<TupleOutput<TItems, TRest>> | ErrorMessage,
-    arg4?: Pipe<TupleOutput<TItems, TRest>>
-): TupleSchema<TItems, TRest> {
+    arg2?: PipeAsync<TupleOutput<TItems, TRest>> | ErrorMessage | TRest,
+    arg3?: PipeAsync<TupleOutput<TItems, TRest>> | ErrorMessage,
+    arg4?: PipeAsync<TupleOutput<TItems, TRest>>
+): TupleSchemaAsync<TItems, TRest> {
     // Get rest, error and pipe argument
     const [rest, error, pipe] = getRestAndDefaultArgs<
         TRest,
-        Pipe<TupleOutput<TItems, TRest>>
+        PipeAsync<TupleOutput<TItems, TRest>>
     >(arg2, arg3, arg4);
 
-    // Create and return tuple schema
+    // Create and return async tuple schema
     return {
         /**
          * The schema type.
@@ -126,7 +152,7 @@ export function tuple<
         /**
          * Whether it's async.
          */
-        async: false,
+        async: true,
 
         /**
          * Parses unknown input based on its schema.
@@ -136,7 +162,7 @@ export function tuple<
          *
          * @returns The parsed output.
          */
-        _parse(input, info) {
+        async _parse(input, info) {
             // Check type of input
             if (!Array.isArray(input) || items.length > input.length) {
                 return getSchemaIssues(
@@ -152,85 +178,102 @@ export function tuple<
             let issues: Issues | undefined;
             const output: any[] = [];
 
-            // Parse schema of each tuple item
-            for (let key = 0; key < items.length; key++) {
-                const value = input[key];
-                const result = items[key]._parse(value, info);
+            await Promise.all([
+                // Parse schema of each tuple item
+                Promise.all(
+                    items.map(async (schema, key) => {
+                        // If not aborted early, continue execution
+                        if (!(info?.abortEarly && issues)) {
+                            const value = input[key];
+                            const result = await schema._parse(value, info);
 
-                // If there are issues, capture them
-                if (result.issues) {
-                    // Create tuple path item
-                    const pathItem: TuplePathItem = {
-                        type: "tuple",
-                        input: input as [any, ...any[]],
-                        key,
-                        value,
-                    };
+                            // If not aborted early, continue execution
+                            if (!(info?.abortEarly && issues)) {
+                                // If there are issues, capture them
+                                if (result.issues) {
+                                    // Create tuple path item
+                                    const pathItem: TuplePathItem = {
+                                        type: "tuple",
+                                        input: input as [any, ...any[]],
+                                        key,
+                                        value,
+                                    };
 
-                    // Add modified result issues to issues
-                    for (const issue of result.issues) {
-                        if (issue.path) {
-                            issue.path.unshift(pathItem);
-                        } else {
-                            issue.path = [pathItem];
-                        }
-                        issues?.push(issue);
-                    }
-                    if (!issues) {
-                        issues = result.issues;
-                    }
+                                    // Add modified result issues to issues
+                                    for (const issue of result.issues) {
+                                        if (issue.path) {
+                                            issue.path.unshift(pathItem);
+                                        } else {
+                                            issue.path = [pathItem];
+                                        }
+                                        issues?.push(issue);
+                                    }
+                                    if (!issues) {
+                                        issues = result.issues;
+                                    }
 
-                    // If necessary, abort early
-                    if (info?.abortEarly) {
-                        break;
-                    }
+                                    // If necessary, abort early
+                                    if (info?.abortEarly) {
+                                        throw null;
+                                    }
 
-                    // Otherwise, add item to tuple
-                } else {
-                    output[key] = result.output;
-                }
-            }
-
-            // If necessary parse schema of each rest item
-            if (rest && !(info?.abortEarly && issues)) {
-                for (let key = items.length; key < input.length; key++) {
-                    const value = input[key];
-                    const result = rest._parse(value, info);
-
-                    // If there are issues, capture them
-                    if (result.issues) {
-                        // Create tuple path item
-                        const pathItem: TuplePathItem = {
-                            type: "tuple",
-                            input: input as [any, ...any[]],
-                            key,
-                            value,
-                        };
-
-                        // Add modified result issues to issues
-                        for (const issue of result.issues) {
-                            if (issue.path) {
-                                issue.path.unshift(pathItem);
-                            } else {
-                                issue.path = [pathItem];
+                                    // Otherwise, add item to tuple
+                                } else {
+                                    output[key] = result.output;
+                                }
                             }
-                            issues?.push(issue);
                         }
-                        if (!issues) {
-                            issues = result.issues;
-                        }
+                    })
+                ),
 
-                        // If necessary, abort early
-                        if (info?.abortEarly) {
-                            break;
-                        }
+                // If necessary parse schema of each rest item
+                rest &&
+                    Promise.all(
+                        input.slice(items.length).map(async (value, index) => {
+                            // If not aborted early, continue execution
+                            if (!(info?.abortEarly && issues)) {
+                                const key = items.length + index;
+                                const result = await rest._parse(value, info);
 
-                        // Otherwise, add item to tuple
-                    } else {
-                        output[key] = result.output;
-                    }
-                }
-            }
+                                // If not aborted early, continue execution
+                                if (!(info?.abortEarly && issues)) {
+                                    // If there are issues, capture them
+                                    if (result.issues) {
+                                        // Create tuple path item
+                                        const pathItem: TuplePathItem = {
+                                            type: "tuple",
+                                            input: input as [any, ...any[]],
+                                            key,
+                                            value,
+                                        };
+
+                                        // Add modified result issues to issues
+                                        for (const issue of result.issues) {
+                                            if (issue.path) {
+                                                issue.path.unshift(pathItem);
+                                            } else {
+                                                issue.path = [pathItem];
+                                            }
+                                            issues?.push(issue);
+                                        }
+                                        if (!issues) {
+                                            issues = result.issues;
+                                        }
+
+                                        // If necessary, abort early
+                                        if (info?.abortEarly) {
+                                            throw null;
+                                        }
+
+                                        // Otherwise, add item to tuple
+                                    } else {
+                                        output[key] = result.output;
+                                    }
+                                }
+                            }
+                        })
+                    ),
+            ]).catch(() => null);
 
             // Return issues or pipe result
             return issues

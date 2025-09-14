@@ -1,40 +1,56 @@
-import type { BaseSchema, ErrorMessage, Pipe } from "../../types";
+import type {
+    BaseSchema,
+    BaseSchemaAsync,
+    ErrorMessage,
+    PipeAsync,
+} from "../../types";
 import { executePipe, getDefaultArgs, getSchemaIssues } from "../../utils";
-
 /**
  * Bigint schema type.
  */
 export type BigintSchema<TOutput = bigint> = BaseSchema<bigint, TOutput> & {
     type: "bigint";
 };
+/**
+ * Bigint schema async type.
+ */
+export type BigintSchemaAsync<TOutput = bigint> = BaseSchemaAsync<
+    bigint,
+    TOutput
+> & {
+    type: "bigint";
+};
 
 /**
- * Creates a bigint schema.
+ * Creates an async bigint schema.
  *
  * @param pipe A validation and transformation pipe.
  *
- * @returns A bigint schema.
+ * @returns An async bigint schema.
  */
-export function bigint(pipe?: Pipe<bigint>): BigintSchema;
+export function bigint(pipe?: PipeAsync<bigint>): BigintSchemaAsync;
 
 /**
- * Creates a bigint schema.
+ * Creates an async bigint schema.
  *
  * @param error The error message.
  * @param pipe A validation and transformation pipe.
  *
- * @returns A bigint schema.
+ * @returns An async bigint schema.
  */
-export function bigint(error?: ErrorMessage, pipe?: Pipe<bigint>): BigintSchema;
+export function bigint(
+    error?: ErrorMessage,
+    pipe?: PipeAsync<bigint>
+): BigintSchemaAsync;
 
 export function bigint(
-    arg1?: ErrorMessage | Pipe<bigint>,
-    arg2?: Pipe<bigint>
-): BigintSchema {
+    arg1?: ErrorMessage | PipeAsync<bigint>,
+    arg2?: PipeAsync<bigint>
+): BigintSchemaAsync {
     // Get error and pipe argument
     const [error, pipe] = getDefaultArgs(arg1, arg2);
 
-    // Create and return bigint schema
+    // Create and return async bigint schema
     return {
         /**
          * The schema type.
@@ -44,7 +60,7 @@ export function bigint(
         /**
          * Whether it's async.
          */
-        async: false,
+        async: true,
 
         /**
          * Parses unknown input based on its schema.
@@ -54,14 +70,15 @@ export function bigint(
          *
          * @returns The parsed output.
          */
-        _parse(input, info) {
+        async _parse(input, info) {
             // Check type of input
             if (typeof input !== "bigint") {
                 return getSchemaIssues(
                     info,
                     "type",
                     "bigint",
-                    error || "Este campo solo permite números grandes (bigint).",
+                    error ||
+                        "Este campo solo permite números grandes (bigint).",
                     input
                 );
             }

@@ -1,6 +1,5 @@
-import type { BaseSchema, Pipe } from "../../types";
+import type { BaseSchema, BaseSchemaAsync, PipeAsync } from "../../types";
 import { executePipe } from "../../utils";
-
 /**
  * Unknown schema type.
  */
@@ -9,13 +8,23 @@ export type UnknownSchema<TOutput = unknown> = BaseSchema<unknown, TOutput> & {
 };
 
 /**
- * Creates a unknown schema.
+ * Unknown schema async type.
+ */
+export type UnknownSchemaAsync<TOutput = unknown> = BaseSchemaAsync<
+    unknown,
+    TOutput
+> & {
+    type: "unknown";
+};
+
+/**
+ * Creates an async unknown schema.
  *
  * @param pipe A validation and transformation pipe.
  *
- * @returns A unknown schema.
+ * @returns An async unknown schema.
  */
-export function unknown(pipe: Pipe<unknown> = []): UnknownSchema {
+export function unknown(pipe: PipeAsync<unknown> = []): UnknownSchemaAsync {
     return {
         /**
          * The schema type.
@@ -25,7 +34,7 @@ export function unknown(pipe: Pipe<unknown> = []): UnknownSchema {
         /**
          * Whether it's async.
          */
-        async: false,
+        async: true,
 
         /**
          * Parses unknown input based on its schema.
@@ -35,7 +44,7 @@ export function unknown(pipe: Pipe<unknown> = []): UnknownSchema {
          *
          * @returns The parsed output.
          */
-        _parse(input, info) {
+        async _parse(input, info) {
             return executePipe(input, pipe, info, "unknown");
         },
     };

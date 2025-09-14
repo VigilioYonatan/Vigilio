@@ -1,36 +1,40 @@
-import type { BaseSchema, Issues } from "../../types";
+import type { BaseSchema, BaseSchemaAsync, Issues } from "../../types";
 import { getIssues, getOutput, getSchemaIssues } from "../../utils";
 import type { IntersectInput, IntersectOutput } from "./types.js";
 import { mergeOutputs } from "./utils/index.js";
 
 /**
- * Intersect options type.
+ * Intersect options async type.
  */
-export type IntersectOptions = [BaseSchema, BaseSchema, ...BaseSchema[]];
+export type IntersectOptionsAsync = [
+    BaseSchema | BaseSchemaAsync,
+    BaseSchema | BaseSchemaAsync,
+    ...(BaseSchema[] | BaseSchemaAsync[])
+];
 
 /**
- * Intersect schema type.
+ * Intersect schema async type.
  */
-export type IntersectSchema<
-    TOptions extends IntersectOptions,
+export type IntersectSchemaAsync<
+    TOptions extends IntersectOptionsAsync,
     TOutput = IntersectOutput<TOptions>
-> = BaseSchema<IntersectInput<TOptions>, TOutput> & {
+> = BaseSchemaAsync<IntersectInput<TOptions>, TOutput> & {
     type: "intersect";
     options: TOptions;
 };
 
 /**
- * Creates an intersect schema.
+ * Creates an async intersect schema.
  *
  * @param options The intersect options.
  * @param error The error message.
  *
- * @returns An intersect schema.
+ * @returns An async intersect schema.
  */
-export function intersect<TOptions extends IntersectOptions>(
+export function intersect<TOptions extends IntersectOptionsAsync>(
     options: TOptions,
     error?: string
-): IntersectSchema<TOptions> {
+): IntersectSchemaAsync<TOptions> {
     return {
         /**
          * The schema type.
@@ -45,7 +49,7 @@ export function intersect<TOptions extends IntersectOptions>(
         /**
          * Whether it's async.
          */
-        async: false,
+        async: true,
 
         /**
          * Parses unknown input based on its schema.
@@ -55,39 +59,47 @@ export function intersect<TOptions extends IntersectOptions>(
          *
          * @returns The parsed output.
          */
-        _parse(input, info) {
+        async _parse(input, info) {
             // Create issues and outputs
             let issues: Issues | undefined;
             let outputs: [any, ...any] | undefined;
 
             // Parse schema of each option
-            for (const schema of options) {
-                const result = schema._parse(input, info);
+            await Promise.all(
+                options.map(async (schema) => {
+                    // If not aborted early, continue execution
+                    if (!(info?.abortEarly && issues)) {
+                        const result = await schema._parse(input, info);
 
-                // If there are issues, capture them
-                if (result.issues) {
-                    if (issues) {
-                        for (const issue of result.issues) {
-                            issues.push(issue);
+                        // If not aborted early, continue execution
+                        if (!(info?.abortEarly && issues)) {
+                            // If there are issues, capture them
+                            if (result.issues) {
+                                if (issues) {
+                                    for (const issue of result.issues) {
+                                        issues.push(issue);
+                                    }
+                                } else {
+                                    issues = result.issues;
+                                }
+
+                                // If necessary, abort early
+                                if (info?.abortEarly) {
+                                    throw null;
+                                }
+
+                                // Otherwise, add output to list
+                            } else {
+                                if (outputs) {
+                                    outputs.push(result.output);
+                                } else {
+                                    outputs = [result.output];
+                                }
+                            }
                         }
-                    } else {
-                        issues = result.issues;
                     }
-
-                    // If necessary, abort early
-                    if (info?.abortEarly) {
-                        break;
-                    }
-
-                    // Otherwise, add output to list
-                } else {
-                    if (outputs) {
-                        outputs.push(result.output);
-                    } else {
-                        outputs = [result.output];
-                    }
-                }
-            }
+                })
+            ).catch(() => null);
 
             // If there are issues, return them
             if (issues) {
@@ -123,8 +135,8 @@ export function intersect<TOptions extends IntersectOptions>(
 }
 
 /**
- * See {@link intersect}
+ * See {@link intersectAsync}
  *
- * @deprecated Use `intersect` instead.
+ * @deprecated Use `intersectAsync` instead.
  */
-export const intersection = intersect;
+export const intersectionAsync = intersect;

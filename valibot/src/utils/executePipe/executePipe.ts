@@ -3,7 +3,7 @@ import type {
     IssueReason,
     Issues,
     ParseInfo,
-    Pipe,
+    PipeAsync,
     PipeInfo,
 } from "../../types.js";
 import { getIssues } from "../getIssues/getIssues.js";
@@ -11,7 +11,7 @@ import { getOutput } from "../getOutput/getOutput.js";
 import { getIssue, getPipeInfo } from "./utils/index.js";
 
 /**
- * Executes the validation and transformation pipe.
+ * Executes the async validation and transformation pipe.
  *
  * @param input The input value.
  * @param pipe The pipe to be executed.
@@ -19,12 +19,12 @@ import { getIssue, getPipeInfo } from "./utils/index.js";
  *
  * @returns The output value.
  */
-export function executePipe<TValue>(
+export async function executePipe<TValue>(
     input: TValue,
-    pipe: Pipe<TValue> | undefined,
+    pipe: PipeAsync<TValue> | undefined,
     parseInfo: ParseInfo | undefined,
     reason: IssueReason
-): _ParseResult<TValue> {
+): Promise<_ParseResult<TValue>> {
     // If pipe is empty, return input as output
     if (!pipe || !pipe.length || parseInfo?.skipPipe) {
         return getOutput(input);
@@ -37,7 +37,7 @@ export function executePipe<TValue>(
 
     // Execute any action of pipe
     for (const action of pipe) {
-        const result = action(output);
+        const result = await action(output);
 
         // If there are issues, capture them
         if (result.issues) {
@@ -51,7 +51,7 @@ export function executePipe<TValue>(
             }
 
             // If necessary, abort early
-            if (pipeInfo.abortEarly || pipeInfo.abortPipeEarly) {
+            if (pipeInfo?.abortEarly || pipeInfo?.abortPipeEarly) {
                 break;
             }
 

@@ -1,5 +1,10 @@
 import { ValiError } from "../../error";
-import type { BaseSchema, Output, ParseInfo } from "../../types";
+import type {
+    BaseSchema,
+    BaseSchemaAsync,
+    Output,
+    ParseInfo,
+} from "../../types";
 
 /**
  * Parses unknown input based on a schema.
@@ -10,12 +15,12 @@ import type { BaseSchema, Output, ParseInfo } from "../../types";
  *
  * @returns The parsed output.
  */
-export function parse<TSchema extends BaseSchema>(
+export async function parse<TSchema extends BaseSchema | BaseSchemaAsync>(
     schema: TSchema,
     input: unknown,
     info?: Pick<ParseInfo, "abortEarly" | "abortPipeEarly" | "skipPipe">
-): Output<TSchema> {
-    const result = schema._parse(input, info);
+): Promise<Output<TSchema>> {
+    const result = await schema._parse(input, info);
     if (result.issues) {
         throw new ValiError(result.issues);
     }

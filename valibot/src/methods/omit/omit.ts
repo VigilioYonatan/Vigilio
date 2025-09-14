@@ -1,77 +1,89 @@
-import { object, type ObjectOutput, type ObjectSchema } from "../../schemas";
-import type { BaseSchema, ErrorMessage, Pipe } from "../../types";
+import {
+    object,
+    type ObjectOutput,
+    type ObjectSchema,
+    type ObjectSchemaAsync,
+} from "../../schemas";
+import type {
+    BaseSchema,
+    BaseSchemaAsync,
+    ErrorMessage,
+    PipeAsync,
+} from "../../types";
 import { getRestAndDefaultArgs } from "../../utils";
 import type { ObjectKeys } from "./types.js";
 
 /**
- * Creates an object schema that contains not the selected keys of an existing
- * schema.
+ * Creates an async object schema that contains only the selected keys of an
+ * existing schema.
  *
  * @param schema The schema to omit from.
  * @param keys The selected keys
  * @param pipe A validation and transformation pipe.
  *
- * @returns An object schema.
+ * @returns An async object schema.
  */
 export function omit<
-    TSchema extends ObjectSchema<any, any>,
+    TSchema extends ObjectSchema<any, any> | ObjectSchemaAsync<any, any>,
     TKeys extends ObjectKeys<TSchema>
 >(
     schema: TSchema,
     keys: TKeys,
-    pipe?: Pipe<
+    pipe?: PipeAsync<
         ObjectOutput<Omit<TSchema["entries"], TKeys[number]>, undefined>
     >
-): ObjectSchema<Omit<TSchema["entries"], TKeys[number]>>;
+): ObjectSchemaAsync<Omit<TSchema["entries"], TKeys[number]>>;
 
 /**
- * Creates an object schema that contains not the selected keys of an existing
- * schema.
+ * Creates an async object schema that contains only the selected keys of an
+ * existing schema.
  *
  * @param schema The schema to omit from.
  * @param keys The selected keys
  * @param error The error message.
  * @param pipe A validation and transformation pipe.
  *
- * @returns An object schema.
+ * @returns An async object schema.
  */
 export function omit<
-    TSchema extends ObjectSchema<any, any>,
+    TSchema extends ObjectSchema<any, any> | ObjectSchemaAsync<any, any>,
     TKeys extends ObjectKeys<TSchema>
 >(
     schema: TSchema,
     keys: TKeys,
     error?: ErrorMessage,
-    pipe?: Pipe<
+    pipe?: PipeAsync<
         ObjectOutput<Omit<TSchema["entries"], TKeys[number]>, undefined>
     >
-): ObjectSchema<Omit<TSchema["entries"], TKeys[number]>>;
+): ObjectSchemaAsync<Omit<TSchema["entries"], TKeys[number]>>;
 
 /**
- * Creates an object schema that contains not the selected keys of an existing
- * schema.
+ * Creates an async object schema that contains only the selected keys of an
+ * existing schema.
  *
  * @param schema The schema to omit from.
  * @param keys The selected keys
  * @param rest The object rest.
  * @param pipe A validation and transformation pipe.
  *
- * @returns An object schema.
+ * @returns An async object schema.
  */
 export function omit<
-    TSchema extends ObjectSchema<any, any>,
+    TSchema extends ObjectSchema<any, any> | ObjectSchemaAsync<any, any>,
     TKeys extends ObjectKeys<TSchema>,
-    TRest extends BaseSchema | undefined
+    TRest extends BaseSchema | BaseSchemaAsync | undefined
 >(
     schema: TSchema,
     keys: TKeys,
     rest: TRest,
-    pipe?: Pipe<ObjectOutput<Omit<TSchema["entries"], TKeys[number]>, TRest>>
-): ObjectSchema<Omit<TSchema["entries"], TKeys[number]>, TRest>;
+    pipe?: PipeAsync<
+        ObjectOutput<Omit<TSchema["entries"], TKeys[number]>, TRest>
+    >
+): ObjectSchemaAsync<Omit<TSchema["entries"], TKeys[number]>, TRest>;
 
 /**
- * Creates an object schema that contains not the selected keys of an existing
- * schema.
+ * Creates an async object schema that contains only the selected keys of an
+ * existing schema.
  *
  * @param schema The schema to omit from.
  * @param keys The selected keys
@@ -79,40 +91,48 @@ export function omit<
  * @param error The error message.
  * @param pipe A validation and transformation pipe.
  *
- * @returns An object schema.
+ * @returns An async object schema.
  */
 export function omit<
-    TSchema extends ObjectSchema<any, any>,
+    TSchema extends ObjectSchema<any, any> | ObjectSchemaAsync<any, any>,
     TKeys extends ObjectKeys<TSchema>,
-    TRest extends BaseSchema | undefined
+    TRest extends BaseSchema | BaseSchemaAsync | undefined
 >(
     schema: TSchema,
     keys: TKeys,
     rest: TRest,
     error?: ErrorMessage,
-    pipe?: Pipe<ObjectOutput<Omit<TSchema["entries"], TKeys[number]>, TRest>>
-): ObjectSchema<Omit<TSchema["entries"], TKeys[number]>, TRest>;
+    pipe?: PipeAsync<
+        ObjectOutput<Omit<TSchema["entries"], TKeys[number]>, TRest>
+    >
+): ObjectSchemaAsync<Omit<TSchema["entries"], TKeys[number]>, TRest>;
 
 export function omit<
-    TSchema extends ObjectSchema<any, any>,
+    TSchema extends ObjectSchema<any, any> | ObjectSchemaAsync<any, any>,
     TKeys extends ObjectKeys<TSchema>,
-    TRest extends BaseSchema | undefined = undefined
+    TRest extends BaseSchema | BaseSchemaAsync | undefined = undefined
 >(
     schema: TSchema,
     keys: TKeys,
     arg3?:
-        | Pipe<ObjectOutput<Omit<TSchema["entries"], TKeys[number]>, TRest>>
+        | PipeAsync<
+              ObjectOutput<Omit<TSchema["entries"], TKeys[number]>, TRest>
+          >
         | ErrorMessage
         | TRest,
     arg4?:
-        | Pipe<ObjectOutput<Omit<TSchema["entries"], TKeys[number]>, TRest>>
+        | PipeAsync<
+              ObjectOutput<Omit<TSchema["entries"], TKeys[number]>, TRest>
+          >
         | ErrorMessage,
-    arg5?: Pipe<ObjectOutput<Omit<TSchema["entries"], TKeys[number]>, TRest>>
-): ObjectSchema<Omit<TSchema["entries"], TKeys[number]>, TRest> {
+    arg5?: PipeAsync<
+        ObjectOutput<Omit<TSchema["entries"], TKeys[number]>, TRest>
+    >
+): ObjectSchemaAsync<Omit<TSchema["entries"], TKeys[number]>, TRest> {
     // Get rest, error and pipe argument
     const [rest, error, pipe] = getRestAndDefaultArgs<
         TRest,
-        Pipe<ObjectOutput<Omit<TSchema["entries"], TKeys[number]>, TRest>>
+        PipeAsync<ObjectOutput<Omit<TSchema["entries"], TKeys[number]>, TRest>>
     >(arg3, arg4, arg5);
 
     // Create and return object schema

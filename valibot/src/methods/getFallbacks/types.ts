@@ -9,10 +9,7 @@ import type {
     TupleItemsAsync,
 } from "../../schemas";
 import type { BaseSchema, BaseSchemaAsync } from "../../types";
-import type {
-    SchemaWithFallback,
-    SchemaWithFallbackAsync,
-} from "../fallback/index.js";
+import type { SchemaWithFallbackAsync } from "../fallback/index.js";
 import type {
     SchemaWithMaybeFallback,
     SchemaWithMaybeFallbackAsync,
@@ -33,9 +30,7 @@ export type FallbackValues<
               | ObjectSchemaAsync<ObjectEntriesAsync, any>
               | TupleSchemaAsync<TupleItemsAsync, any>
           >
-> = TSchema extends
-    | SchemaWithFallback<BaseSchema, infer TFallback>
-    | SchemaWithFallbackAsync<BaseSchemaAsync, infer TFallback>
+> = TSchema extends SchemaWithFallbackAsync<BaseSchemaAsync, infer TFallback>
     ? TFallback
     : TSchema extends ObjectSchema<infer TEntries extends ObjectEntries>
     ? { [TKey in keyof TEntries]: FallbackValues<TEntries[TKey]> }

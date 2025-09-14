@@ -1,6 +1,10 @@
-import type { BaseSchema, ErrorMessage, Pipe } from "../../types";
+import type {
+    BaseSchema,
+    BaseSchemaAsync,
+    ErrorMessage,
+    PipeAsync,
+} from "../../types";
 import { executePipe, getDefaultArgs, getSchemaIssues } from "../../utils";
-
 /**
  * Boolean schema type.
  */
@@ -9,35 +13,45 @@ export type BooleanSchema<TOutput = boolean> = BaseSchema<boolean, TOutput> & {
 };
 
 /**
- * Creates a boolean schema.
+ * Boolean schema async type.
+ */
+export type BooleanSchemaAsync<TOutput = boolean> = BaseSchemaAsync<
+    boolean,
+    TOutput
+> & {
+    type: "boolean";
+};
+
+/**
+ * Creates an async boolean schema.
  *
  * @param pipe A validation and transformation pipe.
  *
- * @returns A boolean schema.
+ * @returns An async boolean schema.
  */
-export function boolean(pipe?: Pipe<boolean>): BooleanSchema;
+export function boolean(pipe?: PipeAsync<boolean>): BooleanSchemaAsync;
 
 /**
- * Creates a boolean schema.
+ * Creates an async boolean schema.
  *
  * @param error The error message.
  * @param pipe A validation and transformation pipe.
  *
- * @returns A boolean schema.
+ * @returns An async boolean schema.
  */
 export function boolean(
     error?: ErrorMessage,
-    pipe?: Pipe<boolean>
-): BooleanSchema;
+    pipe?: PipeAsync<boolean>
+): BooleanSchemaAsync;
 
 export function boolean(
-    arg1?: ErrorMessage | Pipe<boolean>,
-    arg2?: Pipe<boolean>
-): BooleanSchema {
+    arg1?: ErrorMessage | PipeAsync<boolean>,
+    arg2?: PipeAsync<boolean>
+): BooleanSchemaAsync {
     // Get error and pipe argument
     const [error, pipe] = getDefaultArgs(arg1, arg2);
 
-    // Create and return boolean schema
+    // Create and return async boolean schema
     return {
         /**
          * The schema type.
@@ -47,7 +61,7 @@ export function boolean(
         /**
          * Whether it's async.
          */
-        async: false,
+        async: true,
 
         /**
          * Parses unknown input based on its schema.
@@ -57,7 +71,7 @@ export function boolean(
          *
          * @returns The parsed output.
          */
-        _parse(input, info) {
+        async _parse(input, info) {
             // Check type of input
             if (typeof input !== "boolean") {
                 return getSchemaIssues(

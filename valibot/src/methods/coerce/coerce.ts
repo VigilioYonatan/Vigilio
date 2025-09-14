@@ -1,14 +1,14 @@
-import type { BaseSchema } from "../../types";
+import type { BaseSchemaAsync } from "../../types";
 
 /**
- * Coerces the input of a schema to match the required type.
+ * Coerces the input of a async schema to match the required type.
  *
  * @param schema The affected schema.
  * @param action The coerceation action.
  *
  * @returns The passed schema.
  */
-export function coerce<TSchema extends BaseSchema>(
+export function coerce<TSchema extends BaseSchemaAsync>(
     schema: TSchema,
     action: (value: unknown) => unknown
 ): TSchema {
@@ -23,8 +23,8 @@ export function coerce<TSchema extends BaseSchema>(
          *
          * @returns The parsed output.
          */
-        _parse(input, info) {
-            return schema._parse(action(input), info);
+        async _parse(input, info) {
+            return schema._parse(await action(input), info);
         },
     };
 }

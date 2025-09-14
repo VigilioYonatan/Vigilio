@@ -1,11 +1,15 @@
-import type { BaseSchema, ErrorMessage, Input, Output } from "../../types";
+import type {
+    BaseSchema,
+    BaseSchemaAsync,
+    ErrorMessage,
+    Input,
+    Output,
+} from "../../types";
 import { getSchemaIssues } from "../../utils";
-
 /**
  * Non nullable type.
  */
 export type NonNullable<T> = T extends null ? never : T;
-
 /**
  * Non nullable schema type.
  */
@@ -16,19 +20,29 @@ export type NonNullableSchema<
     type: "non_nullable";
     wrapped: TWrapped;
 };
+/**
+ * Non nullable schema async type.
+ */
+export type NonNullableSchemaAsync<
+    TWrapped extends BaseSchema | BaseSchemaAsync,
+    TOutput = NonNullable<Output<TWrapped>>
+> = BaseSchemaAsync<NonNullable<Input<TWrapped>>, TOutput> & {
+    type: "non_nullable";
+    wrapped: TWrapped;
+};
 
 /**
- * Creates a non nullable schema.
+ * Creates an async non nullable schema.
  *
  * @param wrapped The wrapped schema.
  * @param error The error message.
  *
- * @returns A non nullable schema.
+ * @returns An async non nullable schema.
  */
-export function nonNullable<TWrapped extends BaseSchema>(
+export function nonNullable<TWrapped extends BaseSchema | BaseSchemaAsync>(
     wrapped: TWrapped,
     error?: ErrorMessage
-): NonNullableSchema<TWrapped> {
+): NonNullableSchemaAsync<TWrapped> {
     return {
         /**
          * The schema type.
@@ -43,7 +57,7 @@ export function nonNullable<TWrapped extends BaseSchema>(
         /**
          * Whether it's async.
          */
-        async: false,
+        async: true,
 
         /**
          * Parses unknown input based on its schema.
@@ -53,7 +67,7 @@ export function nonNullable<TWrapped extends BaseSchema>(
          *
          * @returns The parsed output.
          */
-        _parse(input, info) {
+        async _parse(input, info) {
             // Allow `null` values not to pass
             if (input === null) {
                 return getSchemaIssues(

@@ -1,6 +1,5 @@
-import type { BaseSchema, Input, Output } from "../../types";
+import type { BaseSchema, BaseSchemaAsync, Input, Output } from "../../types";
 import { getOutput } from "../../utils";
-
 /**
  * Nullable schema type.
  */
@@ -15,22 +14,42 @@ export type NullableSchema<
     wrapped: TWrapped;
     getDefault: () => TDefault;
 };
+/**
+ * Nullable schema async type.
+ */
+export type NullableSchemaAsync<
+    TWrapped extends BaseSchema | BaseSchemaAsync,
+    TDefault extends
+        | Input<TWrapped>
+        | undefined
+        | Promise<Input<TWrapped> | undefined> = undefined,
+    TOutput = Awaited<TDefault> extends Input<TWrapped>
+        ? Output<TWrapped>
+        : Output<TWrapped> | null
+> = BaseSchemaAsync<Input<TWrapped> | null, TOutput> & {
+    type: "nullable";
+    wrapped: TWrapped;
+    getDefault: () => Promise<TDefault>;
+};
 
 /**
- * Creates a nullable schema.
+ * Creates an async nullable schema.
  *
  * @param wrapped The wrapped schema.
  * @param default_ The default value.
  *
- * @returns A nullable schema.
+ * @returns An async nullable schema.
  */
 export function nullable<
-    TWrapped extends BaseSchema,
-    TDefault extends Input<TWrapped> | undefined = undefined
+    TWrapped extends BaseSchema | BaseSchemaAsync,
+    TDefault extends
+        | Input<TWrapped>
+        | undefined
+        | Promise<Input<TWrapped> | undefined> = undefined
 >(
     wrapped: TWrapped,
     default_?: TDefault | (() => TDefault)
-): NullableSchema<TWrapped, TDefault> {
+): NullableSchemaAsync<TWrapped, TDefault> {
     return {
         /**
          * The schema type.
@@ -45,7 +64,7 @@ export function nullable<
         /**
          * Returns the default value.
          */
-        getDefault() {
+        async getDefault() {
             return typeof default_ === "function"
                 ? (default_ as () => TDefault)()
                 : (default_ as TDefault);
@@ -54,7 +73,7 @@ export function nullable<
         /**
          * Whether it's async.
          */
-        async: false,
+        async: true,
 
         /**
          * Parses unknown input based on its schema.
@@ -64,17 +83,17 @@ export function nullable<
          *
          * @returns The parsed output.
          */
-        _parse(input, info) {
+        async _parse(input, info) {
             // Allow `null` to pass or override it with default value
             if (input === null) {
-                const override = this.getDefault();
+                const override = await this.getDefault();
                 if (override === undefined) {
                     return getOutput(input);
                 }
                 input = override;
             }
 
-            // Otherwise, return result of wrapped schema
+            // Return result of wrapped schema
             return wrapped._parse(input, info);
         },
     };

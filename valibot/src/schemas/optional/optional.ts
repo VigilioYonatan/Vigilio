@@ -1,6 +1,5 @@
-import type { BaseSchema, Input, Output } from "../../types";
+import type { BaseSchema, BaseSchemaAsync, Input, Output } from "../../types";
 import { getOutput } from "../../utils";
-
 /**
  * Optional schema type.
  */
@@ -17,20 +16,41 @@ export type OptionalSchema<
 };
 
 /**
- * Creates a optional schema.
+ * Optional schema async type.
+ */
+export type OptionalSchemaAsync<
+    TWrapped extends BaseSchema | BaseSchemaAsync,
+    TDefault extends
+        | Input<TWrapped>
+        | undefined
+        | Promise<Input<TWrapped> | undefined> = undefined,
+    TOutput = Awaited<TDefault> extends Input<TWrapped>
+        ? Output<TWrapped>
+        : Output<TWrapped> | undefined
+> = BaseSchemaAsync<Input<TWrapped> | undefined, TOutput> & {
+    type: "optional";
+    wrapped: TWrapped;
+    getDefault: () => Promise<TDefault>;
+};
+
+/**
+ * Creates an async optional schema.
  *
  * @param wrapped The wrapped schema.
  * @param default_ The default value.
  *
- * @returns A optional schema.
+ * @returns An async optional schema.
  */
 export function optional<
-    TWrapped extends BaseSchema,
-    TDefault extends Input<TWrapped> | undefined = undefined
+    TWrapped extends BaseSchema | BaseSchemaAsync,
+    TDefault extends
+        | Input<TWrapped>
+        | undefined
+        | Promise<Input<TWrapped> | undefined> = undefined
 >(
     wrapped: TWrapped,
     default_?: TDefault | (() => TDefault)
-): OptionalSchema<TWrapped, TDefault> {
+): OptionalSchemaAsync<TWrapped, TDefault> {
     return {
         /**
          * The schema type.
@@ -45,7 +65,7 @@ export function optional<
         /**
          * Returns the default value.
          */
-        getDefault() {
+        async getDefault() {
             return typeof default_ === "function"
                 ? (default_ as () => TDefault)()
                 : (default_ as TDefault);
@@ -54,7 +74,7 @@ export function optional<
         /**
          * Whether it's async.
          */
-        async: false,
+        async: true,
 
         /**
          * Parses unknown input based on its schema.
@@ -64,17 +84,17 @@ export function optional<
          *
          * @returns The parsed output.
          */
-        _parse(input, info) {
+        async _parse(input, info) {
             // Allow `undefined` to pass or override it with default value
             if (input === undefined) {
-                const override = this.getDefault();
+                const override = await this.getDefault();
                 if (override === undefined) {
                     return getOutput(input);
                 }
                 input = override;
             }
 
-            // Otherwise, return result of wrapped schema
+            // Return result of wrapped schema
             return wrapped._parse(input, info);
         },
     };

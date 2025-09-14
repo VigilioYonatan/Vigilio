@@ -2,8 +2,7 @@ import { toNestErrors } from "@hookform/resolvers";
 import type { Resolver } from "./types";
 import { FieldErrors, FieldError, appendErrors } from "react-hook-form";
 import { ValiError } from "../error";
-import { BaseSchema, BaseSchemaAsync } from "../types";
-import { parse, parseAsync } from "../methods";
+import { parse } from "../methods";
 const parseErrors = (
     valiErrors: ValiError,
     validateAllFieldCriteria: boolean
@@ -57,18 +56,11 @@ export const valibotResolver: Resolver =
                 schemaOptions
             );
 
-            const parsed =
-                resolverOptions.mode === "sync"
-                    ? parse(schema as BaseSchema, values, schemaOpts)
-                    : await parseAsync(
-                          schema as BaseSchema | BaseSchemaAsync,
-                          values,
-                          schemaOpts
-                      );
+            const parsed = parse(schema, values, schemaOpts);
 
             return {
                 values: resolverOptions.raw ? values : parsed,
-                errors: {} as FieldErrors,
+                errors: {} as FieldErrors<any>,
             };
         } catch (error) {
             if (error instanceof ValiError) {

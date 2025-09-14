@@ -1,7 +1,7 @@
 import { FieldValues, ResolverResult, ResolverOptions } from "react-hook-form";
-import { BaseSchema, BaseSchemaAsync, ParseInfo } from "../types";
+import { BaseSchemaAsync, ParseInfo } from "../types";
 
-export type Resolver = <T extends BaseSchema | BaseSchemaAsync>(
+export type Resolver = <T extends BaseSchemaAsync>(
     schema: T,
     schemaOptions?: Partial<Pick<ParseInfo, "abortEarly" | "abortPipeEarly">>,
     resolverOptions?: {

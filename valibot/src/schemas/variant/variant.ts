@@ -1,12 +1,13 @@
 import type {
     BaseSchema,
+    BaseSchemaAsync,
     ErrorMessage,
     Input,
     Issues,
     Output,
 } from "../../types";
 import { getSchemaIssues, getOutput, getIssues } from "../../utils";
-import type { ObjectSchema } from "../object/index.js";
+import type { ObjectSchema, ObjectSchemaAsync } from "../object/index.js";
 
 /**
  * Variant option type.
@@ -38,24 +39,55 @@ export type VariantSchema<
     type: "variant";
     options: TOptions;
 };
+/**
+ * Variant option async type.
+ */
+export type VariantOptionAsync<TKey extends string> =
+    | ObjectSchema<Record<TKey, BaseSchema>, any>
+    | ObjectSchemaAsync<Record<TKey, BaseSchema | BaseSchemaAsync>, any>
+    | ((BaseSchema | BaseSchemaAsync) & {
+          type: "variant";
+          options: VariantOptionsAsync<TKey>;
+      });
 
 /**
- * Creates a variant (aka discriminated union) schema.
+ * Variant options async type.
+ */
+export type VariantOptionsAsync<TKey extends string> = [
+    VariantOptionAsync<TKey>,
+    VariantOptionAsync<TKey>,
+    ...VariantOptionAsync<TKey>[]
+];
+
+/**
+ * Variant schema async type.
+ */
+export type VariantSchemaAsync<
+    TKey extends string,
+    TOptions extends VariantOptionsAsync<TKey>,
+    TOutput = Output<TOptions[number]>
+> = BaseSchemaAsync<Input<TOptions[number]>, TOutput> & {
+    type: "variant";
+    options: TOptions;
+};
+
+/**
+ * Creates an async variant (aka discriminated union) schema.
  *
  * @param key The discriminator key.
  * @param options The variant options.
  * @param error The error message.
  *
- * @returns A variant schema.
+ * @returns An async variant schema.
  */
 export function variant<
     TKey extends string,
-    TOptions extends VariantOptions<TKey>
+    TOptions extends VariantOptionsAsync<TKey>
 >(
     key: TKey,
     options: TOptions,
     error?: ErrorMessage
-): VariantSchema<TKey, TOptions> {
+): VariantSchemaAsync<TKey, TOptions> {
     return {
         /**
          * The schema type.
@@ -70,7 +102,7 @@ export function variant<
         /**
          * Whether it's async.
          */
-        async: false,
+        async: true,
 
         /**
          * Parses unknown input based on its schema.
@@ -80,7 +112,7 @@ export function variant<
          *
          * @returns The parsed output.
          */
-        _parse(input, info) {
+        async _parse(input, info) {
             // Check type of input
             if (!input || typeof input !== "object" || !(key in input)) {
                 return getSchemaIssues(
@@ -97,18 +129,18 @@ export function variant<
             let output: [Record<string, any>] | undefined;
 
             // Create function to parse options recursively
-            const parseOptions = (options: VariantOptions<TKey>) => {
+            const parseOptions = async (options: VariantOptionsAsync<TKey>) => {
                 for (const schema of options) {
                     // If it is an object schema, parse discriminator key
                     if (schema.type === "object") {
-                        const result = schema.entries[key]._parse(
+                        const result = await schema.entries[key]._parse(
                             (input as Record<TKey, unknown>)[key],
                             info
                         );
 
                         // If right variant option was found, parse it
                         if (!result.issues) {
-                            const result = schema._parse(input, info);
+                            const result = await schema._parse(input, info);
 
                             // If there are issues, capture them
                             if (result.issues) {
@@ -128,7 +160,7 @@ export function variant<
                         // Otherwise, if it is a variant parse its options
                         // recursively
                     } else if (schema.type === "variant") {
-                        parseOptions(schema.options);
+                        await parseOptions(schema.options);
 
                         // If variant option was found, break loop to end execution
                         if (issues || output) {
@@ -139,7 +171,7 @@ export function variant<
             };
 
             // Parse options recursively
-            parseOptions(options);
+            await parseOptions(options);
 
             // Return output or issues
             return output
@@ -150,7 +182,8 @@ export function variant<
                       info,
                       "type",
                       "variant",
-                      error || "Este campo solo permite valores discriminados según la clave especificada.",
+                      error ||
+                          "Este campo solo permite valores discriminados según la clave especificada.",
                       input
                   );
         },
@@ -158,8 +191,8 @@ export function variant<
 }
 
 /**
- * See {@link variant}
+ * See {@link variantAsync}
  *
- * @deprecated Use `variant` instead.
+ * @deprecated Use `variantAsync` instead.
  */
-export const discriminatedUnion = variant;
+export const discriminatedUnionAsync = variant;

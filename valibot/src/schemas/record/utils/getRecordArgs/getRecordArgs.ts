@@ -8,7 +8,7 @@ import type {
 import { getDefaultArgs } from "../../../../utils";
 import { string } from "../../../string/index.js";
 import type { RecordKey } from "../../record.js";
-import type { RecordKeyAsync } from "../../recordAsync.js";
+import type { RecordKeyAsync } from "../../record.js";
 
 /**
  * Returns key, value, error and pipe from dynamic arguments.

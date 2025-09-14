@@ -7,7 +7,7 @@ import type {
 } from "../../types";
 import type { NeverSchema, NeverSchemaAsync } from "../never/index.js";
 import type { ObjectEntries } from "./object.js";
-import type { ObjectEntriesAsync } from "./objectAsync.js";
+import type { ObjectEntriesAsync } from "./object.js";
 
 /**
  * Object path item type.

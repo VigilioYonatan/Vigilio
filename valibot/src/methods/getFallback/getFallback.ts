@@ -1,12 +1,20 @@
-import type { BaseSchema, Output } from "../../types";
+import type { BaseSchema, BaseSchemaAsync, Output } from "../../types";
 import type { FallbackInfo } from "../fallback/types.js";
 import type { FallbackValue } from "./types.js";
-
 /**
  * Schema with maybe fallback type.
  */
 export type SchemaWithMaybeFallback<TSchema extends BaseSchema = BaseSchema> =
     TSchema & { getFallback?: (info?: FallbackInfo) => Output<TSchema> };
+
+/**
+ * Schema with maybe fallback async type.
+ */
+export type SchemaWithMaybeFallbackAsync<
+    TSchema extends BaseSchemaAsync = BaseSchemaAsync
+> = TSchema & {
+    getFallback?: (info?: FallbackInfo) => Promise<Output<TSchema>>;
+};
 
 /**
  * Returns the fallback value of the schema.
@@ -16,9 +24,8 @@ export type SchemaWithMaybeFallback<TSchema extends BaseSchema = BaseSchema> =
  *
  * @returns The fallback value.
  */
-export function getFallback<TSchema extends SchemaWithMaybeFallback>(
-    schema: TSchema,
-    info?: FallbackInfo
-): FallbackValue<TSchema> {
+export async function getFallback<
+    TSchema extends SchemaWithMaybeFallback | SchemaWithMaybeFallbackAsync
+>(schema: TSchema, info?: FallbackInfo): Promise<FallbackValue<TSchema>> {
     return schema.getFallback?.(info);
 }

@@ -1,109 +1,119 @@
 import {
     nonOptional,
-    type NonOptionalSchema,
     object,
-    type ObjectEntries,
+    type NonOptionalSchemaAsync,
+    type ObjectEntriesAsync,
     type ObjectOutput,
     type ObjectSchema,
+    type ObjectSchemaAsync,
 } from "../../schemas";
-import type { BaseSchema, ErrorMessage, Pipe } from "../../types";
+import type {
+    BaseSchema,
+    BaseSchemaAsync,
+    ErrorMessage,
+    PipeAsync,
+} from "../../types";
 import { getRestAndDefaultArgs } from "../../utils";
 
 /**
  * Required object schema type.
  */
-type Required<TEntries extends ObjectEntries> = {
-    [TKey in keyof TEntries]: NonOptionalSchema<TEntries[TKey]>;
+type Required<TEntries extends ObjectEntriesAsync> = {
+    [TKey in keyof TEntries]: NonOptionalSchemaAsync<TEntries[TKey]>;
 };
 
 /**
- * Creates an object schema consisting of all properties of an existing object
- * schema set to none optional.
+ * Creates an async object schema consisting of all properties of an existing
+ * object schema set to none optional.
  *
  * @param schema The affected schema.
  * @param pipe A validation and transformation pipe.
  *
- * @returns An object schema.
+ * @returns An async object schema.
  */
-export function required<TSchema extends ObjectSchema<any, any>>(
+export function required<
+    TSchema extends ObjectSchema<any, any> | ObjectSchemaAsync<any, any>
+>(
     schema: TSchema,
-    pipe?: Pipe<ObjectOutput<Required<TSchema["entries"]>, undefined>>
-): ObjectSchema<Required<TSchema["entries"]>>;
+    pipe?: PipeAsync<ObjectOutput<Required<TSchema["entries"]>, undefined>>
+): ObjectSchemaAsync<Required<TSchema["entries"]>>;
 
 /**
- * Creates an object schema consisting of all properties of an existing object
- * schema set to none optional.
+ * Creates an async object schema consisting of all properties of an existing
+ * object schema set to none optional.
  *
  * @param schema The affected schema.
  * @param error The error message.
  * @param pipe A validation and transformation pipe.
  *
- * @returns An object schema.
+ * @returns An async object schema.
  */
-export function required<TSchema extends ObjectSchema<any, any>>(
+export function required<
+    TSchema extends ObjectSchema<any, any> | ObjectSchemaAsync<any, any>
+>(
     schema: TSchema,
     error?: ErrorMessage,
-    pipe?: Pipe<ObjectOutput<Required<TSchema["entries"]>, undefined>>
-): ObjectSchema<Required<TSchema["entries"]>>;
+    pipe?: PipeAsync<ObjectOutput<Required<TSchema["entries"]>, undefined>>
+): ObjectSchemaAsync<Required<TSchema["entries"]>>;
 
 /**
- * Creates an object schema consisting of all properties of an existing object
- * schema set to none optional.
+ * Creates an async object schema consisting of all properties of an existing
+ * object schema set to none optional.
  *
  * @param schema The affected schema.
  * @param rest The object rest.
  * @param pipe A validation and transformation pipe.
  *
- * @returns An object schema.
+ * @returns An async object schema.
  */
 export function required<
-    TSchema extends ObjectSchema<any, any>,
-    TRest extends BaseSchema | undefined
+    TSchema extends ObjectSchema<any, any> | ObjectSchemaAsync<any, any>,
+    TRest extends BaseSchema | BaseSchemaAsync | undefined
 >(
     schema: TSchema,
     rest: TRest,
-    pipe?: Pipe<ObjectOutput<Required<TSchema["entries"]>, TRest>>
-): ObjectSchema<Required<TSchema["entries"]>, TRest>;
+    pipe?: PipeAsync<ObjectOutput<Required<TSchema["entries"]>, TRest>>
+): ObjectSchemaAsync<Required<TSchema["entries"]>, TRest>;
 
 /**
- * Creates an object schema consisting of all properties of an existing object
- * schema set to none optional.
+ * Creates an async object schema consisting of all properties of an existing
+ * object schema set to none optional.
  *
  * @param schema The affected schema.
  * @param rest The object rest.
  * @param error The error message.
  * @param pipe A validation and transformation pipe.
  *
- * @returns An object schema.
+ * @returns An async object schema.
  */
 export function required<
-    TSchema extends ObjectSchema<any, any>,
-    TRest extends BaseSchema | undefined
+    TSchema extends ObjectSchema<any, any> | ObjectSchemaAsync<any, any>,
+    TRest extends BaseSchema | BaseSchemaAsync | undefined
 >(
     schema: TSchema,
     rest: TRest,
     error?: ErrorMessage,
-    pipe?: Pipe<ObjectOutput<Required<TSchema["entries"]>, TRest>>
-): ObjectSchema<Required<TSchema["entries"]>, TRest>;
+    pipe?: PipeAsync<ObjectOutput<Required<TSchema["entries"]>, TRest>>
+): ObjectSchemaAsync<Required<TSchema["entries"]>, TRest>;
 
 export function required<
-    TSchema extends ObjectSchema<any, any>,
-    TRest extends BaseSchema | undefined = undefined
+    TSchema extends ObjectSchema<any, any> | ObjectSchemaAsync<any, any>,
+    TRest extends BaseSchema | BaseSchemaAsync | undefined = undefined
 >(
     schema: TSchema,
     arg2?:
-        | Pipe<ObjectOutput<Required<TSchema["entries"]>, TRest>>
+        | PipeAsync<ObjectOutput<Required<TSchema["entries"]>, TRest>>
         | ErrorMessage
         | TRest,
     arg3?:
-        | Pipe<ObjectOutput<Required<TSchema["entries"]>, TRest>>
+        | PipeAsync<ObjectOutput<Required<TSchema["entries"]>, TRest>>
         | ErrorMessage,
-    arg4?: Pipe<ObjectOutput<Required<TSchema["entries"]>, TRest>>
-): ObjectSchema<Required<TSchema["entries"]>, TRest> {
+    arg4?: PipeAsync<ObjectOutput<Required<TSchema["entries"]>, TRest>>
+): ObjectSchemaAsync<Required<TSchema["entries"]>, TRest> {
     // Get rest, error and pipe argument
     const [rest, error, pipe] = getRestAndDefaultArgs<
         TRest,
-        Pipe<ObjectOutput<Required<TSchema["entries"]>, TRest>>
+        PipeAsync<ObjectOutput<Required<TSchema["entries"]>, TRest>>
     >(arg2, arg3, arg4);
 
     // Create and return object schema
@@ -111,7 +121,7 @@ export function required<
         Object.entries(schema.entries).reduce(
             (entries, [key, schema]) => ({
                 ...entries,
-                [key]: nonOptional(schema as BaseSchema),
+                [key]: nonOptional(schema as BaseSchema | BaseSchemaAsync),
             }),
             {}
         ) as Required<TSchema["entries"]>,

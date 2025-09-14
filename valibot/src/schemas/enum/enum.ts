@@ -1,4 +1,4 @@
-import type { BaseSchema, ErrorMessage } from "../../types";
+import type { BaseSchema, BaseSchemaAsync, ErrorMessage } from "../../types";
 import { getSchemaIssues, getOutput } from "../../utils";
 
 /**
@@ -21,17 +21,28 @@ export type EnumSchema<
 };
 
 /**
- * Creates a enum schema.
+ * Native enum schema async type.
+ */
+export type EnumSchemaAsync<
+    TEnum extends Enum,
+    TOutput = TEnum[keyof TEnum]
+> = BaseSchemaAsync<TEnum[keyof TEnum], TOutput> & {
+    type: "enum";
+    enum: TEnum;
+};
+
+/**
+ * Creates an async enum schema.
  *
  * @param enum_ The enum value.
  * @param error The error message.
  *
- * @returns A enum schema.
+ * @returns An async enum schema.
  */
 export function enum_<TEnum extends Enum>(
     enum_: TEnum,
     error?: ErrorMessage
-): EnumSchema<TEnum> {
+): EnumSchemaAsync<TEnum> {
     return {
         /**
          * The schema type.
@@ -46,7 +57,7 @@ export function enum_<TEnum extends Enum>(
         /**
          * Whether it's async.
          */
-        async: false,
+        async: true,
 
         /**
          * Parses unknown input based on its schema.
@@ -56,14 +67,15 @@ export function enum_<TEnum extends Enum>(
          *
          * @returns The parsed output.
          */
-        _parse(input, info) {
+        async _parse(input, info) {
             // Check type of input
             if (!Object.values(enum_).includes(input as any)) {
                 return getSchemaIssues(
                     info,
                     "type",
                     "enum",
-                    error || "Este campo solo permite valores del enum especificado.",
+                    error ||
+                        "Este campo solo permite valores del enum especificado.",
                     input
                 );
             }
@@ -75,8 +87,8 @@ export function enum_<TEnum extends Enum>(
 }
 
 /**
- * See {@link enum_}
+ * See {@link enumAsync}
  *
- * @deprecated Use `enum_` instead.
+ * @deprecated Use `enumAsync` instead.
  */
-export const nativeEnum = enum_;
+export const nativeEnumAsync = enum_;

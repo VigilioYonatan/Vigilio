@@ -5,7 +5,7 @@ import type {
     RecordPathItem,
     SetPathItem,
     TuplePathItem,
-} from "./schemas/";
+} from "./schemas/index.js";
 
 /**
  * Issue reason type.

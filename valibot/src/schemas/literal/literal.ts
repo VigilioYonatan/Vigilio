@@ -1,7 +1,6 @@
-import type { BaseSchema, ErrorMessage } from "../../types";
+import type { BaseSchema, BaseSchemaAsync, ErrorMessage } from "../../types";
 import { getSchemaIssues, getOutput } from "../../utils";
 import type { Literal } from "./types.js";
-
 /**
  * Literal schema type.
  */
@@ -14,17 +13,28 @@ export type LiteralSchema<
 };
 
 /**
- * Creates a literal schema.
+ * Literal schema async type.
+ */
+export type LiteralSchemaAsync<
+    TLiteral extends Literal,
+    TOutput = TLiteral
+> = BaseSchemaAsync<TLiteral, TOutput> & {
+    type: "literal";
+    literal: TLiteral;
+};
+
+/**
+ * Creates an async literal schema.
  *
  * @param literal The literal value.
  * @param error The error message.
  *
- * @returns A literal schema.
+ * @returns An async literal schema.
  */
 export function literal<TLiteral extends Literal>(
     literal: TLiteral,
     error?: ErrorMessage
-): LiteralSchema<TLiteral> {
+): LiteralSchemaAsync<TLiteral> {
     return {
         /**
          * The schema type.
@@ -39,7 +49,7 @@ export function literal<TLiteral extends Literal>(
         /**
          * Whether it's async.
          */
-        async: false,
+        async: true,
 
         /**
          * Parses unknown input based on its schema.
@@ -49,7 +59,7 @@ export function literal<TLiteral extends Literal>(
          *
          * @returns The parsed output.
          */
-        _parse(input, info) {
+        async _parse(input, info) {
             // Check type of input
             if (input !== literal) {
                 return getSchemaIssues(

@@ -1,11 +1,15 @@
-import type { BaseSchema, ErrorMessage, Pipe } from "../../types";
+import type {
+    BaseSchema,
+    BaseSchemaAsync,
+    ErrorMessage,
+    PipeAsync,
+} from "../../types";
 import { executePipe, getDefaultArgs, getSchemaIssues } from "../../utils";
 
 /**
  * Class enum type.
  */
 export type Class = abstract new (...args: any) => any;
-
 /**
  * Instance schema type.
  */
@@ -18,38 +22,49 @@ export type InstanceSchema<
 };
 
 /**
- * Creates an instance schema.
+ * Instance schema type.
+ */
+export type InstanceSchemaAsync<
+    TClass extends Class,
+    TOutput = InstanceType<TClass>
+> = BaseSchemaAsync<InstanceType<TClass>, TOutput> & {
+    type: "instance";
+    class: TClass;
+};
+
+/**
+ * Creates an async instance schema.
  *
  * @param of The class of the instance.
  * @param pipe A validation and transformation pipe.
  *
- * @returns An instance schema.
+ * @returns An async instance schema.
  */
-export function instance<TClass extends Class>(
+export function instanceAsync<TClass extends Class>(
     of: TClass,
-    pipe?: Pipe<InstanceType<TClass>>
-): InstanceSchema<TClass>;
+    pipe?: PipeAsync<InstanceType<TClass>>
+): InstanceSchemaAsync<TClass>;
 
 /**
- * Creates an instance schema.
+ * Creates an async instance schema.
  *
  * @param of The class of the instance.
  * @param error The error message.
  * @param pipe A validation and transformation pipe.
  *
- * @returns An instance schema.
+ * @returns An async instance schema.
  */
-export function instance<TClass extends Class>(
+export function instanceAsync<TClass extends Class>(
     of: TClass,
     error?: ErrorMessage,
-    pipe?: Pipe<InstanceType<TClass>>
-): InstanceSchema<TClass>;
+    pipe?: PipeAsync<InstanceType<TClass>>
+): InstanceSchemaAsync<TClass>;
 
-export function instance<TClass extends Class>(
+export function instanceAsync<TClass extends Class>(
     of: TClass,
-    arg2?: Pipe<InstanceType<TClass>> | ErrorMessage,
-    arg3?: Pipe<InstanceType<TClass>>
-): InstanceSchema<TClass> {
+    arg2?: PipeAsync<InstanceType<TClass>> | ErrorMessage,
+    arg3?: PipeAsync<InstanceType<TClass>>
+): InstanceSchemaAsync<TClass> {
     // Get error and pipe argument
     const [error, pipe] = getDefaultArgs(arg2, arg3);
 
@@ -68,7 +83,7 @@ export function instance<TClass extends Class>(
         /**
          * Whether it's async.
          */
-        async: false,
+        async: true,
 
         /**
          * Parses unknown input based on its schema.
@@ -78,15 +93,14 @@ export function instance<TClass extends Class>(
          *
          * @returns The parsed output.
          */
-        _parse(input, info) {
+        async _parse(input, info) {
             // Check type of input
             if (!(input instanceof of)) {
                 return getSchemaIssues(
                     info,
                     "type",
                     "instance",
-                    error ||
-                        "Este campo solo permite instancias de la clase especificada.",
+                    error || "Invalid type",
                     input
                 );
             }

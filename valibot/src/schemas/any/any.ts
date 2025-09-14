@@ -1,4 +1,4 @@
-import type { BaseSchema, Pipe } from "../../types";
+import type { BaseSchema, BaseSchemaAsync, PipeAsync } from "../../types";
 import { executePipe } from "../../utils";
 
 /**
@@ -7,15 +7,21 @@ import { executePipe } from "../../utils";
 export type AnySchema<TOutput = any> = BaseSchema<any, TOutput> & {
     type: "any";
 };
+/**
+ * Any schema type.
+ */
+export type AnySchemaAsync<TOutput = any> = BaseSchemaAsync<any, TOutput> & {
+    type: "any";
+};
 
 /**
- * Creates a any schema.
+ * Creates an async any schema.
  *
  * @param pipe A validation and transformation pipe.
  *
- * @returns A any schema.
+ * @returns An async any schema.
  */
-export function any(pipe: Pipe<any> = []): AnySchema {
+export function any(pipe: PipeAsync<any> = []): AnySchemaAsync {
     return {
         /**
          * The schema type.
@@ -25,7 +31,7 @@ export function any(pipe: Pipe<any> = []): AnySchema {
         /**
          * Whether it's async.
          */
-        async: false,
+        async: true,
 
         /**
          * Parses unknown input based on its schema.
@@ -35,7 +41,7 @@ export function any(pipe: Pipe<any> = []): AnySchema {
          *
          * @returns The parsed output.
          */
-        _parse(input, info) {
+        async _parse(input, info) {
             return executePipe(input, pipe, info, "any");
         },
     };

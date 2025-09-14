@@ -1,4 +1,4 @@
-import type { BaseSchema, ErrorMessage } from "../../types";
+import type { BaseSchema, BaseSchemaAsync, ErrorMessage } from "../../types";
 import { getSchemaIssues, getOutput } from "../../utils";
 
 /**
@@ -10,15 +10,24 @@ export type UndefinedSchema<TOutput = undefined> = BaseSchema<
 > & {
     type: "undefined";
 };
+/**
+ * Undefined schema async type.
+ */
+export type UndefinedSchemaAsync<TOutput = undefined> = BaseSchemaAsync<
+    undefined,
+    TOutput
+> & {
+    type: "undefined";
+};
 
 /**
- * Creates a undefined schema.
+ * Creates an async undefined schema.
  *
  * @param error The error message.
  *
- * @returns A undefined schema.
+ * @returns An async undefined schema.
  */
-export function undefined_(error?: ErrorMessage): UndefinedSchema {
+export function undefined(error?: ErrorMessage): UndefinedSchemaAsync {
     return {
         /**
          * The schema type.
@@ -28,7 +37,7 @@ export function undefined_(error?: ErrorMessage): UndefinedSchema {
         /**
          * Whether it's async.
          */
-        async: false,
+        async: true,
 
         /**
          * Parses unknown input based on its schema.
@@ -38,7 +47,7 @@ export function undefined_(error?: ErrorMessage): UndefinedSchema {
          *
          * @returns The parsed output.
          */
-        _parse(input, info) {
+        async _parse(input, info) {
             // Check type of input
             if (typeof input !== "undefined") {
                 return getSchemaIssues(
@@ -57,8 +66,8 @@ export function undefined_(error?: ErrorMessage): UndefinedSchema {
 }
 
 /**
- * See {@link undefined_}
+ * See {@link undefinedAsync}
  *
- * @deprecated Use `undefined_` instead.
+ * @deprecated Use `undefinedAsync` instead.
  */
-export const undefinedType = undefined_;
+export const undefinedTypeAsync = undefined;

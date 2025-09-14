@@ -1,5 +1,6 @@
 import type {
     BaseSchema,
+    BaseSchemaAsync,
     ErrorMessage,
     Input,
     Issues,
@@ -22,19 +23,38 @@ export type UnionSchema<
     type: "union";
     options: TOptions;
 };
+/**
+ * Union options async type.
+ */
+export type UnionOptionsAsync = [
+    BaseSchema | BaseSchemaAsync,
+    BaseSchema | BaseSchemaAsync,
+    ...(BaseSchema[] | BaseSchemaAsync[])
+];
 
 /**
- * Creates a union schema.
+ * Union schema async type.
+ */
+export type UnionSchemaAsync<
+    TOptions extends UnionOptionsAsync,
+    TOutput = Output<TOptions[number]>
+> = BaseSchemaAsync<Input<TOptions[number]>, TOutput> & {
+    type: "union";
+    options: TOptions;
+};
+
+/**
+ * Creates an async union schema.
  *
- * @param options The union options.
+ * @param union The union options.
  * @param error The error message.
  *
- * @returns A union schema.
+ * @returns An async union schema.
  */
-export function union<TOptions extends UnionOptions>(
+export function union<TOptions extends UnionOptionsAsync>(
     options: TOptions,
     error?: ErrorMessage
-): UnionSchema<TOptions> {
+): UnionSchemaAsync<TOptions> {
     return {
         /**
          * The schema type.
@@ -49,7 +69,7 @@ export function union<TOptions extends UnionOptions>(
         /**
          * Whether it's async.
          */
-        async: false,
+        async: true,
 
         /**
          * Parses unknown input based on its schema.
@@ -59,14 +79,14 @@ export function union<TOptions extends UnionOptions>(
          *
          * @returns The parsed output.
          */
-        _parse(input, info) {
+        async _parse(input, info) {
             // Create issues and output
             let issues: Issues | undefined;
             let output: [Output<TOptions[number]>] | undefined;
 
             // Parse schema of each option
             for (const schema of options) {
-                const result = schema._parse(input, info);
+                const result = await schema._parse(input, info);
 
                 // If there are issues, capture them
                 if (result.issues) {
@@ -94,7 +114,8 @@ export function union<TOptions extends UnionOptions>(
                       info,
                       "type",
                       "union",
-                      error || "l valor proporcionado no coincide con ninguna de las opciones permitidas.",
+                      error ||
+                          "l valor proporcionado no coincide con ninguna de las opciones permitidas.",
                       input,
                       issues
                   );

@@ -1,6 +1,6 @@
 import type { Output } from "../../types";
 import type { SchemaWithMaybeDefault } from "./getDefault.js";
-import type { SchemaWithMaybeDefaultAsync } from "./getDefaultAsync.js";
+import type { SchemaWithMaybeDefaultAsync } from "./getDefault.js";
 
 /**
  * Default value type.

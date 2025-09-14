@@ -1,12 +1,17 @@
-import type { BaseSchema, ErrorMessage, Issues, Pipe } from "../../types";
+import type {
+    BaseSchema,
+    BaseSchemaAsync,
+    ErrorMessage,
+    Issues,
+    PipeAsync,
+} from "../../types";
 import {
     executePipe,
     getIssues,
     getRestAndDefaultArgs,
     getSchemaIssues,
 } from "../../utils";
-import type { ObjectOutput, ObjectInput, ObjectPathItem } from "./types.js";
-
+import type { ObjectInput, ObjectOutput, ObjectPathItem } from "./types.js";
 /**
  * Object entries type.
  */
@@ -26,90 +31,108 @@ export type ObjectSchema<
 };
 
 /**
- * Creates an object schema.
+ * Object entries async type.
+ */
+export type ObjectEntriesAsync = Record<string, BaseSchema | BaseSchemaAsync>;
+
+/**
+ * Object schema async type.
+ */
+export type ObjectSchemaAsync<
+    TEntries extends ObjectEntriesAsync,
+    TRest extends BaseSchema | BaseSchemaAsync | undefined = undefined,
+    TOutput = ObjectOutput<TEntries, TRest>
+> = BaseSchemaAsync<ObjectInput<TEntries, TRest>, TOutput> & {
+    type: "object";
+    entries: TEntries;
+    rest: TRest;
+};
+
+/**
+ * Creates an async object schema.
  *
  * @param entries The object entries.
  * @param pipe A validation and transformation pipe.
  *
- * @returns An object schema.
+ * @returns An async object schema.
  */
-export function object<TEntries extends ObjectEntries>(
+export function object<TEntries extends ObjectEntriesAsync>(
     entries: TEntries,
-    pipe?: Pipe<ObjectOutput<TEntries, undefined>>
-): ObjectSchema<TEntries>;
+    pipe?: PipeAsync<ObjectOutput<TEntries, undefined>>
+): ObjectSchemaAsync<TEntries>;
 
 /**
- * Creates an object schema.
+ * Creates an async object schema.
  *
  * @param entries The object entries.
  * @param error The error message.
  * @param pipe A validation and transformation pipe.
  *
- * @returns An object schema.
+ * @returns An async object schema.
  */
-export function object<TEntries extends ObjectEntries>(
+export function object<TEntries extends ObjectEntriesAsync>(
     entries: TEntries,
     error?: ErrorMessage,
-    pipe?: Pipe<ObjectOutput<TEntries, undefined>>
-): ObjectSchema<TEntries>;
+    pipe?: PipeAsync<ObjectOutput<TEntries, undefined>>
+): ObjectSchemaAsync<TEntries>;
 
 /**
- * Creates an object schema.
+ * Creates an async object schema.
  *
  * @param entries The object entries.
  * @param rest The object rest.
  * @param pipe A validation and transformation pipe.
  *
- * @returns An object schema.
+ * @returns An async object schema.
  */
 export function object<
-    TEntries extends ObjectEntries,
-    TRest extends BaseSchema | undefined
+    TEntries extends ObjectEntriesAsync,
+    TRest extends BaseSchema | BaseSchemaAsync | undefined
 >(
     entries: TEntries,
     rest: TRest,
-    pipe?: Pipe<ObjectOutput<TEntries, TRest>>
-): ObjectSchema<TEntries, TRest>;
+    pipe?: PipeAsync<ObjectOutput<TEntries, TRest>>
+): ObjectSchemaAsync<TEntries, TRest>;
 
 /**
- * Creates an object schema.
+ * Creates an async object schema.
  *
  * @param entries The object entries.
  * @param rest The object rest.
  * @param error The error message.
  * @param pipe A validation and transformation pipe.
  *
- * @returns An object schema.
+ * @returns An async object schema.
  */
 export function object<
-    TEntries extends ObjectEntries,
-    TRest extends BaseSchema | undefined
+    TEntries extends ObjectEntriesAsync,
+    TRest extends BaseSchema | BaseSchemaAsync | undefined
 >(
     entries: TEntries,
     rest: TRest,
     error?: ErrorMessage,
-    pipe?: Pipe<ObjectOutput<TEntries, TRest>>
-): ObjectSchema<TEntries, TRest>;
+    pipe?: PipeAsync<ObjectOutput<TEntries, TRest>>
+): ObjectSchemaAsync<TEntries, TRest>;
 
 export function object<
-    TEntries extends ObjectEntries,
-    TRest extends BaseSchema | undefined = undefined
+    TEntries extends ObjectEntriesAsync,
+    TRest extends BaseSchema | BaseSchemaAsync | undefined = undefined
 >(
     entries: TEntries,
-    arg2?: Pipe<ObjectOutput<TEntries, TRest>> | ErrorMessage | TRest,
-    arg3?: Pipe<ObjectOutput<TEntries, TRest>> | ErrorMessage,
-    arg4?: Pipe<ObjectOutput<TEntries, TRest>>
-): ObjectSchema<TEntries, TRest> {
+    arg2?: PipeAsync<ObjectOutput<TEntries, TRest>> | ErrorMessage | TRest,
+    arg3?: PipeAsync<ObjectOutput<TEntries, TRest>> | ErrorMessage,
+    arg4?: PipeAsync<ObjectOutput<TEntries, TRest>>
+): ObjectSchemaAsync<TEntries, TRest> {
     // Get rest, error and pipe argument
     const [rest, error, pipe] = getRestAndDefaultArgs<
         TRest,
-        Pipe<ObjectOutput<TEntries, TRest>>
+        PipeAsync<ObjectOutput<TEntries, TRest>>
     >(arg2, arg3, arg4);
 
     // Create cached entries
-    let cachedEntries: [string, BaseSchema][];
+    let cachedEntries: [string, BaseSchema | BaseSchemaAsync][];
 
-    // Create and return object schema
+    // Create and return async object schema
     return {
         /**
          * The schema type.
@@ -129,7 +152,7 @@ export function object<
         /**
          * Whether it's async.
          */
-        async: false,
+        async: true,
 
         /**
          * Parses unknown input based on its schema.
@@ -139,7 +162,7 @@ export function object<
          *
          * @returns The parsed output.
          */
-        _parse(input, info) {
+        async _parse(input, info) {
             // Check type of input
             if (!input || typeof input !== "object") {
                 return getSchemaIssues(
@@ -159,86 +182,115 @@ export function object<
             const output: Record<string, any> = {};
 
             // Parse schema of each key
-            for (const [key, schema] of cachedEntries) {
-                const value = (input as Record<string, unknown>)[key];
-                const result = schema._parse(value, info);
+            await Promise.all([
+                Promise.all(
+                    cachedEntries.map(async ([key, schema]) => {
+                        // If not aborted early, continue execution
+                        if (!(info?.abortEarly && issues)) {
+                            // Get value by key
+                            const value = (input as Record<string, unknown>)[
+                                key
+                            ];
 
-                // If there are issues, capture them
-                if (result.issues) {
-                    // Create object path item
-                    const pathItem: ObjectPathItem = {
-                        type: "object",
-                        input,
-                        key,
-                        value,
-                    };
+                            // Get parse result of value
+                            const result = await schema._parse(value, info);
 
-                    // Add modified result issues to issues
-                    for (const issue of result.issues) {
-                        if (issue.path) {
-                            issue.path.unshift(pathItem);
-                        } else {
-                            issue.path = [pathItem];
-                        }
-                        issues?.push(issue);
-                    }
-                    if (!issues) {
-                        issues = result.issues;
-                    }
+                            // If not aborted early, continue execution
+                            if (!(info?.abortEarly && issues)) {
+                                // If there are issues, capture them
+                                if (result.issues) {
+                                    // Create object path item
+                                    const pathItem: ObjectPathItem = {
+                                        type: "object",
+                                        input,
+                                        key,
+                                        value,
+                                    };
 
-                    // If necessary, abort early
-                    if (info?.abortEarly) {
-                        break;
-                    }
+                                    // Add modified result issues to issues
+                                    for (const issue of result.issues) {
+                                        if (issue.path) {
+                                            issue.path.unshift(pathItem);
+                                        } else {
+                                            issue.path = [pathItem];
+                                        }
+                                        issues?.push(issue);
+                                    }
+                                    if (!issues) {
+                                        issues = result.issues;
+                                    }
 
-                    // Otherwise, add value to object
-                } else if (result.output !== undefined || key in input) {
-                    output[key] = result.output;
-                }
-            }
+                                    // If necessary, abort early
+                                    if (info?.abortEarly) {
+                                        throw null;
+                                    }
 
-            // If necessary parse schema of each rest entry
-            if (rest && !(info?.abortEarly && issues)) {
-                for (const key in input) {
-                    if (!(key in entries)) {
-                        const value = (input as Record<string, unknown>)[key];
-                        const result = rest._parse(value, info);
-
-                        // If there are issues, capture them
-                        if (result.issues) {
-                            // Create object path item
-                            const pathItem: ObjectPathItem = {
-                                type: "object",
-                                input,
-                                key,
-                                value,
-                            };
-
-                            // Add modified result issues to issues
-                            for (const issue of result.issues) {
-                                if (issue.path) {
-                                    issue.path.unshift(pathItem);
-                                } else {
-                                    issue.path = [pathItem];
+                                    // Otherwise, add value to object
+                                } else if (
+                                    result.output !== undefined ||
+                                    key in input
+                                ) {
+                                    output[key] = result.output;
                                 }
-                                issues?.push(issue);
                             }
-                            if (!issues) {
-                                issues = result.issues;
-                            }
-
-                            // If necessary, abort early
-                            if (info?.abortEarly) {
-                                break;
-                            }
-
-                            // Otherwise, add value to object
-                        } else {
-                            output[key] = result.output;
                         }
-                    }
-                }
-            }
+                    })
+                ),
+
+                rest &&
+                    Promise.all(
+                        Object.entries(input).map(async ([key, value]) => {
+                            // If not aborted early, continue execution
+                            if (!(info?.abortEarly && issues)) {
+                                if (!(key in entries)) {
+                                    // Get parse result of value
+                                    const result = await rest._parse(
+                                        value,
+                                        info
+                                    );
+
+                                    // If not aborted early, continue execution
+                                    if (!(info?.abortEarly && issues)) {
+                                        // If there are issues, capture them
+                                        if (result.issues) {
+                                            // Create object path item
+                                            const pathItem: ObjectPathItem = {
+                                                type: "object",
+                                                input,
+                                                key,
+                                                value,
+                                            };
+
+                                            // Add modified result issues to issues
+                                            for (const issue of result.issues) {
+                                                if (issue.path) {
+                                                    issue.path.unshift(
+                                                        pathItem
+                                                    );
+                                                } else {
+                                                    issue.path = [pathItem];
+                                                }
+                                                issues?.push(issue);
+                                            }
+                                            if (!issues) {
+                                                issues = result.issues;
+                                            }
+
+                                            // If necessary, abort early
+                                            if (info?.abortEarly) {
+                                                throw null;
+                                            }
+
+                                            // Otherwise, add value to object
+                                        } else {
+                                            output[key] = result.output;
+                                        }
+                                    }
+                                }
+                            }
+                        })
+                    ),
+            ]).catch(() => null);
 
             // Return issues or pipe result
             return issues

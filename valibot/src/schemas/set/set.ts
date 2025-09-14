@@ -1,4 +1,10 @@
-import type { BaseSchema, ErrorMessage, Issues, Pipe } from "../../types";
+import type {
+    BaseSchema,
+    BaseSchemaAsync,
+    ErrorMessage,
+    Issues,
+    PipeAsync,
+} from "../../types";
 import {
     executePipe,
     getDefaultArgs,
@@ -6,7 +12,6 @@ import {
     getSchemaIssues,
 } from "../../utils";
 import type { SetInput, SetOutput, SetPathItem } from "./types.js";
-
 /**
  * Set schema type.
  */
@@ -19,42 +24,53 @@ export type SetSchema<
 };
 
 /**
- * Creates a set schema.
+ * Set schema async type.
+ */
+export type SetSchemaAsync<
+    TValue extends BaseSchema | BaseSchemaAsync,
+    TOutput = SetOutput<TValue>
+> = BaseSchemaAsync<SetInput<TValue>, TOutput> & {
+    type: "set";
+    value: TValue;
+};
+
+/**
+ * Creates an async set schema.
  *
  * @param value The value schema.
  * @param pipe A validation and transformation pipe.
  *
- * @returns A set schema.
+ * @returns An async set schema.
  */
-export function set<TValue extends BaseSchema>(
+export function set<TValue extends BaseSchema | BaseSchemaAsync>(
     value: TValue,
-    pipe?: Pipe<SetOutput<TValue>>
-): SetSchema<TValue>;
+    pipe?: PipeAsync<SetOutput<TValue>>
+): SetSchemaAsync<TValue>;
 
 /**
- * Creates a set schema.
+ * Creates an async set schema.
  *
  * @param value The value schema.
  * @param error The error message.
  * @param pipe A validation and transformation pipe.
  *
- * @returns A set schema.
+ * @returns An async set schema.
  */
-export function set<TValue extends BaseSchema>(
+export function set<TValue extends BaseSchema | BaseSchemaAsync>(
     value: TValue,
     error?: ErrorMessage,
-    pipe?: Pipe<SetOutput<TValue>>
-): SetSchema<TValue>;
+    pipe?: PipeAsync<SetOutput<TValue>>
+): SetSchemaAsync<TValue>;
 
-export function set<TValue extends BaseSchema>(
+export function set<TValue extends BaseSchema | BaseSchemaAsync>(
     value: TValue,
-    arg2?: Pipe<SetOutput<TValue>> | ErrorMessage,
-    arg3?: Pipe<SetOutput<TValue>>
-): SetSchema<TValue> {
+    arg2?: PipeAsync<SetOutput<TValue>> | ErrorMessage,
+    arg3?: PipeAsync<SetOutput<TValue>>
+): SetSchemaAsync<TValue> {
     // Get error and pipe argument
     const [error, pipe] = getDefaultArgs(arg2, arg3);
 
-    // Create and return set schema
+    // Create and return async set schema
     return {
         /**
          * The schema type.
@@ -69,7 +85,7 @@ export function set<TValue extends BaseSchema>(
         /**
          * Whether it's async.
          */
-        async: false,
+        async: true,
 
         /**
          * Parses unknown input based on its schema.
@@ -79,7 +95,7 @@ export function set<TValue extends BaseSchema>(
          *
          * @returns The parsed output.
          */
-        _parse(input, info) {
+        async _parse(input, info) {
             // Check type of input
             if (!(input instanceof Set)) {
                 return getSchemaIssues(
@@ -91,57 +107,61 @@ export function set<TValue extends BaseSchema>(
                 );
             }
 
-            // Create key, output and issues
-            let key = 0;
+            // Create index, output and issues
             let issues: Issues | undefined;
             const output: SetOutput<TValue> = new Set();
 
             // Parse each value by schema
-            for (const inputValue of Array.from(input)) {
-                // Get parse result of input value
-                const result = value._parse(inputValue, info);
+            await Promise.all(
+                Array.from(input.values()).map(async (inputValue, key) => {
+                    // If not aborted early, continue execution
+                    if (!(info?.abortEarly && issues)) {
+                        // Get parse result of input value
+                        const result = await value._parse(inputValue, info);
 
-                // If there are issues, capture them
-                if (result.issues) {
-                    // Create set path item
-                    const pathItem: SetPathItem = {
-                        type: "set",
-                        input,
-                        key,
-                        value: inputValue,
-                    };
+                        // If not aborted early, continue execution
+                        if (!(info?.abortEarly && issues)) {
+                            // If there are issues, capture them
+                            if (result.issues) {
+                                // Create set path item
+                                const pathItem: SetPathItem = {
+                                    type: "set",
+                                    input,
+                                    key,
+                                    value: inputValue,
+                                };
 
-                    // Add modified result issues to issues
-                    for (const issue of result.issues) {
-                        if (issue.path) {
-                            issue.path.unshift(pathItem);
-                        } else {
-                            issue.path = [pathItem];
+                                // Add modified result issues to issues
+                                for (const issue of result.issues) {
+                                    if (issue.path) {
+                                        issue.path.unshift(pathItem);
+                                    } else {
+                                        issue.path = [pathItem];
+                                    }
+                                    issues?.push(issue);
+                                }
+                                if (!issues) {
+                                    issues = result.issues;
+                                }
+
+                                // If necessary, abort early
+                                if (info?.abortEarly) {
+                                    throw null;
+                                }
+
+                                // Otherwise, add item to set
+                            } else {
+                                output.add(result.output);
+                            }
                         }
-                        issues?.push(issue);
                     }
-                    if (!issues) {
-                        issues = result.issues;
-                    }
-
-                    // If necessary, abort early
-                    if (info?.abortEarly) {
-                        break;
-                    }
-
-                    // Otherwise, add item to set
-                } else {
-                    output.add(result.output);
-                }
-
-                // Increment key
-                key++;
-            }
+                })
+            ).catch(() => null);
 
             // Return issues or pipe result
             return issues
                 ? getIssues(issues)
-                : executePipe(output, pipe, info, "set");
+                : executePipe(input, pipe, info, "set");
         },
     };
 }

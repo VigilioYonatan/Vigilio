@@ -1,8 +1,8 @@
 import {
+    picklist,
+    PicklistSchemaAsync,
     type ObjectSchema,
     type ObjectSchemaAsync,
-    picklist,
-    type PicklistSchema,
 } from "../../schemas";
 
 /**
@@ -39,7 +39,7 @@ export function keyof<
     TSchema extends ObjectSchema<any, any> | ObjectSchemaAsync<any, any>
 >(
     schema: TSchema
-): PicklistSchema<TupleOrNever<UnionToTuple<keyof TSchema["entries"]>>> {
+): PicklistSchemaAsync<TupleOrNever<UnionToTuple<keyof TSchema["entries"]>>> {
     return picklist(
         Object.keys(schema.entries) as TupleOrNever<
             UnionToTuple<keyof TSchema["entries"]>
