@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "module": "commonjs" /* Specify what module code is generated. */,
+        "module": "ESNext" /* Specify what module code is generated. */,
         "resolveJsonModule": true /* Enable importing .json files. */,
         "outDir": "./dist/esm",
         "declaration": true,

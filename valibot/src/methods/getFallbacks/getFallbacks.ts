@@ -9,10 +9,10 @@ import type {
     TupleSchemaAsync,
 } from "../../schemas";
 import type { BaseSchema, BaseSchemaAsync } from "../../types";
-import {
+import type {
     SchemaWithMaybeFallback,
     SchemaWithMaybeFallbackAsync,
-} from "../getFallback/getFallback";
+} from "../getFallback/getFallback.js";
 import type { FallbackValues } from "./types.js";
 
 /**

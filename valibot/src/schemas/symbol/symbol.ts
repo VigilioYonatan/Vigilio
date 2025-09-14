@@ -51,7 +51,7 @@ export function symbol(error?: ErrorMessage): SymbolSchemaAsync {
                     info,
                     "type",
                     "symbol",
-                    error || "Invalid type",
+                    error || "Este campo es obligatorio.",
                     input
                 );
             }

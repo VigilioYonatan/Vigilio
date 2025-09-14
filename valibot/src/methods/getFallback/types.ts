@@ -1,9 +1,9 @@
 import type { BaseSchemaAsync } from "../../types";
 import type { SchemaWithFallbackAsync } from "../fallback/index.js";
-import {
+import type {
     SchemaWithMaybeFallback,
     SchemaWithMaybeFallbackAsync,
-} from "./getFallback";
+} from "./getFallback.js";
 
 /**
  * Fallback value type.

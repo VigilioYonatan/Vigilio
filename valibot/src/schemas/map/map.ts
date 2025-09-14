@@ -1,6 +1,18 @@
-import { BaseSchema, BaseSchemaAsync, ErrorMessage, Issues, Output, PipeAsync } from "../../types";
-import { executePipe, getDefaultArgs, getIssues, getSchemaIssues } from "../../utils";
-import { MapInput, MapOutput, MapPathItem } from "./types";
+import type {
+    BaseSchema,
+    BaseSchemaAsync,
+    ErrorMessage,
+    Issues,
+    Output,
+    PipeAsync,
+} from "../../types";
+import {
+    executePipe,
+    getDefaultArgs,
+    getIssues,
+    getSchemaIssues,
+} from "../../utils";
+import type { MapInput, MapOutput, MapPathItem } from "./types";
 
 /**
  * Map schema type.
@@ -114,7 +126,7 @@ export function map<
                     info,
                     "type",
                     "map",
-                    error || "Invalid type",
+                    error || "Este campo es obligatorio.",
                     input
                 );
             }

@@ -54,7 +54,7 @@ export function undefined(error?: ErrorMessage): UndefinedSchemaAsync {
                     info,
                     "type",
                     "undefined",
-                    error || "Invalid type",
+                    error || "Este campo es obligatorio.",
                     input
                 );
             }

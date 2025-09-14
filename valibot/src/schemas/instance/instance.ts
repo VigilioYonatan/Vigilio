@@ -100,7 +100,7 @@ export function instanceAsync<TClass extends Class>(
                     info,
                     "type",
                     "instance",
-                    error || "Invalid type",
+                    error || "Este campo es obligatorio.",
                     input
                 );
             }

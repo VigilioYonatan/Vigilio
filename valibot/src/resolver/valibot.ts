@@ -1,6 +1,10 @@
 import { toNestErrors } from "@hookform/resolvers";
 import type { Resolver } from "./types";
-import { FieldErrors, FieldError, appendErrors } from "react-hook-form";
+import {
+    appendErrors,
+    type FieldError,
+    type FieldErrors,
+} from "react-hook-form";
 import { ValiError } from "../error";
 import { parse } from "../methods";
 const parseErrors = (
@@ -42,6 +46,21 @@ const parseErrors = (
 
     return errors;
 };
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+export function serializeValue(values: any) {
+    return Object.fromEntries(
+        Object.entries(values).map(([key, value]) => {
+            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+            const updatedValue: any =
+                value === ""
+                    ? null
+                    : value instanceof Object && !Array.isArray(value) //si es objeto y no array
+                    ? serializeValue(value)
+                    : value;
+            return [key, updatedValue];
+        })
+    );
+}
 
 export const valibotResolver: Resolver =
     (schema, schemaOptions, resolverOptions = {}) =>
@@ -56,10 +75,14 @@ export const valibotResolver: Resolver =
                 schemaOptions
             );
 
-            const parsed = parse(schema, values, schemaOpts);
+            const parsed = await parse(
+                schema,
+                serializeValue(values),
+                schemaOpts
+            );
 
             return {
-                values: resolverOptions.raw ? values : parsed,
+                values: resolverOptions.raw ? serializeValue(values) : parsed,
                 errors: {} as FieldErrors<any>,
             };
         } catch (error) {

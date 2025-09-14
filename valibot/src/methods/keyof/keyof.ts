@@ -1,8 +1,8 @@
 import {
     picklist,
-    PicklistSchemaAsync,
     type ObjectSchema,
     type ObjectSchemaAsync,
+    type PicklistSchemaAsync,
 } from "../../schemas";
 
 /**

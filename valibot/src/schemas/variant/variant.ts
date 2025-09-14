@@ -119,7 +119,7 @@ export function variant<
                     info,
                     "type",
                     "variant",
-                    error || "Invalid type",
+                    error || "Este campo es obligatorio.",
                     input
                 );
             }

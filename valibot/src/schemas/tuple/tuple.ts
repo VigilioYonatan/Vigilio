@@ -169,7 +169,7 @@ export function tuple<
                     info,
                     "type",
                     "tuple",
-                    error || "Invalid type",
+                    error || "Este campo es obligatorio.",
                     input
                 );
             }

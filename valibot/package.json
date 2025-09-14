@@ -1,18 +1,18 @@
 {
     "name": "@vigilio/valibot",
-    "version": "0.2.3",
+    "version": "0.2.11",
     "description": "form validation valibot - spanish.",
-    "main": "./dist/index.js",
-    "types": "./dist/index.d.ts",
+    "main": "./dist/esm/index.mjs",
+    "types": "./dist/esm/index.d.mts",
     "exports": {
         ".": {
             "import": {
-                "types": "./dist/esm/index.d.ts",
-                "default": "./dist/esm/index.js"
+                "types": "./dist/esm/index.d.mts",
+                "default": "./dist/esm/index.mjs"
             },
             "require": {
-                "types": "./dist/cjs/index.d.cts",
-                "default": "./dist/cjs/index.cjs"
+                "types": "./dist/cjs/index.d.ts",
+                "default": "./dist/cjs/index.js"
             }
         },
         "./resolver": {
@@ -48,7 +48,7 @@
     "scripts": {
         "build:esm": "tsc",
         "build:cjs": "tsc --module commonjs --outDir dist/cjs",
-        "build": "rm -rf dist && bun run build:esm && bun run build:cjs",
+        "build": "bunx tsup",
         "public": "bun run build && npm publish"
     },
     "author": "Vigilio",

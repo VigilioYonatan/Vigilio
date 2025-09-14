@@ -1,5 +1,9 @@
-import { FieldValues, ResolverResult, ResolverOptions } from "react-hook-form";
-import { BaseSchemaAsync, ParseInfo } from "../types";
+import type {
+    FieldValues,
+    ResolverOptions,
+    ResolverResult,
+} from "react-hook-form";
+import type { BaseSchemaAsync, ParseInfo } from "../types";
 
 export type Resolver = <T extends BaseSchemaAsync>(
     schema: T,

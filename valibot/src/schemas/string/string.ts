@@ -79,7 +79,7 @@ export function string(
                     info,
                     "type",
                     "string",
-                    error || "Invalid type",
+                    error || "Este campo es obligatorio.",
                     input
                 );
             }

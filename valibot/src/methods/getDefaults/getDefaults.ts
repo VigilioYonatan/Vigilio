@@ -9,10 +9,10 @@ import type {
     TupleSchemaAsync,
 } from "../../schemas";
 import type { BaseSchema, BaseSchemaAsync } from "../../types";
-import {
+import type {
     SchemaWithMaybeDefault,
     SchemaWithMaybeDefaultAsync,
-} from "../getDefault/getDefault";
+} from "../getDefault/getDefault.js";
 import type { DefaultValues } from "./types.js";
 
 /**

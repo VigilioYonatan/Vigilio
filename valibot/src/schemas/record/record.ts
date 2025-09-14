@@ -179,7 +179,7 @@ export function record<
                     info,
                     "type",
                     "record",
-                    error || "Invalid type",
+                    error || "Este campo es obligatorio.",
                     input
                 );
             }

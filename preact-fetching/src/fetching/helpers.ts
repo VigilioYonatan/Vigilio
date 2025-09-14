@@ -14,7 +14,7 @@ class SimpleCache {
     private cache: Record<
         string,
         {
-            value: unknown;
+            value: any;
             expire: number | null;
             max_count: number | null;
             count: number;
@@ -27,9 +27,7 @@ class SimpleCache {
         this.isCache = isCache;
     }
     all() {
-        return this.isCache
-            ? JSON.parse(localStorage.getItem("cache_api") || "{}")
-            : this.cache;
+        return this.cache;
     }
     set(
         key: string,
@@ -61,9 +59,6 @@ class SimpleCache {
 
     get(key: string) {
         const item = this.all()?.[key];
-        if (item && (!item.expire || Date.now() < item.expire)) {
-            return item.value;
-        }
         if (item?.max_count) {
             const newAccessCount = (item.count || 0) + 1;
             // Actualizar el contador en el cache
@@ -91,22 +86,29 @@ class SimpleCache {
                 this.delete(key);
                 return item.value; // Devolver el valor antes de eliminarlo
             }
+            if (item && (!item.expire || Date.now() < item.expire)) {
+                return item.value;
+            }
+            this.delete(key);
             return item.value;
         }
+        if (item && (!item.expire || Date.now() < item.expire)) {
+            return item.value;
+        }
+
         this.delete(key);
         return null;
     }
 
     delete(key: string, isStart = false) {
-        const items = this.all();
         if (isStart) {
-            for (const cache of Object.keys(items)) {
-                if (cache.startsWith(key)) {
-                    delete items[key];
+            for (const cacheKey of Object.keys(this.cache)) {
+                if (cacheKey.startsWith(key)) {
+                    delete this.cache[cacheKey];
                     if (this.isCache) {
                         localStorage.setItem(
                             "cache_api",
-                            JSON.stringify(items || {})
+                            JSON.stringify(this.cache || {})
                         );
                     }
                 }
@@ -114,9 +116,12 @@ class SimpleCache {
             return;
         }
         if (key in this.cache) {
-            delete items[key];
+            delete this.cache[key];
             if (this.isCache) {
-                localStorage.setItem("cache_api", JSON.stringify(items || {}));
+                localStorage.setItem(
+                    "cache_api",
+                    JSON.stringify(this.cache || {})
+                );
             }
         }
     }

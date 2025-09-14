@@ -65,7 +65,7 @@ export function picklist<
                     info,
                     "type",
                     "picklist",
-                    error || "Invalid type",
+                    error || "Este campo es obligatorio.",
                     input
                 );
             }

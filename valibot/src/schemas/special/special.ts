@@ -88,7 +88,7 @@ export function special<TInput>(
                     info,
                     "type",
                     "special",
-                    error || "Invalid type",
+                    error || "Este campo es obligatorio.",
                     input
                 );
             }

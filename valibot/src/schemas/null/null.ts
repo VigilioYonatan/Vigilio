@@ -20,7 +20,7 @@ export type NullSchema<TOutput = null> = BaseSchema<null, TOutput> & {
  *
  * @returns An async null schema.
  */
-export function null_(error?: ErrorMessage) {
+export function null_(error?: ErrorMessage): any {
     return {
         /**
          * The schema type.

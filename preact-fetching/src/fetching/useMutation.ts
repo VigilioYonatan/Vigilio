@@ -90,7 +90,7 @@ function useMutation<Data, Body, Error>(
         try {
             const cche = cache.get(url);
             if (cche) {
-                let transform: Data = cche;
+                let transform: Data = cche as Data;
                 if (moreOption?.transformData) {
                     transform = moreOption?.transformData(transform);
                 }

@@ -119,7 +119,7 @@ export function intersect<TOptions extends IntersectOptionsAsync>(
                         info,
                         "type",
                         "intersect",
-                        error || "Invalid type",
+                        error || "Este campo es obligatorio.",
                         input
                     );
                 }

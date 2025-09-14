@@ -136,7 +136,7 @@ function useQuery<Data, Error>(
         try {
             const cche = isMemory ? memory.get(url) : cache.get(url);
             if (cche) {
-                let transform: Data = cche;
+                let transform: Data = cche as Data;
                 if (transformData) {
                     transform = transformData(transform);
                 }
@@ -340,7 +340,14 @@ function useQuery<Data, Error>(
             count: number;
         }) => Data
     ) {
-        const data = cb(cache.get(url));
+        const data = cb(
+            cache.get(url) as {
+                value: Data | null;
+                expire: number | null;
+                max_count: number | null;
+                count: number;
+            }
+        );
         cache.set(url, data);
     }
     function setMemory(
@@ -351,7 +358,14 @@ function useQuery<Data, Error>(
             count: number;
         }) => Data
     ) {
-        const data = cb(memory.get(url));
+        const data = cb(
+            memory.get(url) as {
+                value: Data | null;
+                expire: number | null;
+                max_count: number | null;
+                count: number;
+            }
+        );
         memory.set(url, data);
     }
     function getMemory() {

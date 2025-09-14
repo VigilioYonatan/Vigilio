@@ -102,7 +102,7 @@ export function set<TValue extends BaseSchema | BaseSchemaAsync>(
                     info,
                     "type",
                     "set",
-                    error || "Invalid type",
+                    error || "Este campo es obligatorio.",
                     input
                 );
             }
