@@ -1,3 +1,4 @@
+import { modalProps } from ".";
 import {
     bottomBackground,
     colorIcon,
@@ -13,31 +14,26 @@ function sweetModal(
     props: SwalProps | ((onClose: () => void) => SwalProps)
 ): Promise<{ isConfirmed: boolean }> {
     return new Promise((res) => {
-        let properties = props;
-        if (props instanceof Function) {
-            properties = props(onClose);
-        } else {
-            properties = props;
-        }
+        let properties = props instanceof Function ? props(onClose) : props;
         const {
-            icon = "info",
-            text = "¡No podrás revertir esto!",
-            html,
-            title = "¿Estas seguro?",
-            showCancelButton = false,
-            cancelButtonText = "Cancelar",
-            showCloseButton = false,
-            showConfirmButton = true,
-            confirmButtonText = "OK!",
-            cancelButtonAriaLabel = "cancel",
-            confirmButtonAriaLabel = "ok",
-            position = "center",
-            customIcon,
-            sweetWidth = "28rem",
-            timer,
-            hiddeBackground = false,
-            isCloseInBackground = true,
-            backgroundStyle = "background-color: #0006;",
+            icon = modalProps.icon,
+            text = modalProps.text,
+            html = modalProps.html,
+            title = modalProps.title,
+            showCancelButton = modalProps.showCancelButton,
+            cancelButtonText = modalProps.cancelButtonText,
+            showCloseButton = modalProps.showCloseButton,
+            showConfirmButton = modalProps.showConfirmButton,
+            confirmButtonText = modalProps.confirmButtonText,
+            cancelButtonAriaLabel = modalProps.cancelButtonAriaLabel,
+            confirmButtonAriaLabel = modalProps.confirmButtonAriaLabel,
+            position = modalProps.position,
+            customIcon = modalProps.customIcon,
+            sweetWidth = modalProps.sweetWidth,
+            timer = modalProps.timer,
+            hiddeBackground = modalProps.hiddeBackground,
+            isCloseInBackground = modalProps.isCloseInBackground,
+            backgroundStyle = modalProps.backgroundStyle,
         } = properties;
         const htmlModal = h(
             "div",
@@ -92,7 +88,7 @@ function sweetModal(
                               className: "vigilio-loader",
                               style: {
                                   cssText: `--bg-loader:${colorIcon(
-                                      icon
+                                      icon!
                                   )}; display:${timer ? "block" : "none"};`,
                               } as CSSStyleDeclaration,
                           }),
@@ -115,7 +111,9 @@ function sweetModal(
                               },
                               "x"
                           ),
-                          customIcon ? h("div", null, customIcon) : isIco(icon),
+                          customIcon
+                              ? h("div", null, customIcon)
+                              : isIco(icon!),
                           h(
                               "span",
                               {
@@ -184,7 +182,7 @@ function sweetModal(
                                       className: "vigilio-loader",
                                       style: {
                                           cssText: `--bg-loader:${colorIcon(
-                                              icon
+                                              icon!
                                           )}; display:${
                                               timer ? "block" : "none"
                                           };`,

@@ -1,18 +1,19 @@
+import { alertProps } from ".";
 import { bottomBackground, colorIcon, h } from "./helpers";
 import { type Icon, type SwalAlertProps } from "./types";
 
 function sweetAlert({
-    icon = "info",
-    html,
-    title = "",
-    showCloseButton = false,
-    customIcon,
-    timer = 3,
-    height = 50,
-    width = 350,
-    position,
-    hiddenBottomAnimation = false,
-    colorAnimation,
+    icon = alertProps.icon,
+    html = alertProps.html,
+    title = alertProps.title,
+    showCloseButton = alertProps.showCloseButton,
+    customIcon = alertProps.customIcon,
+    timer = alertProps.timer,
+    height = alertProps.height,
+    width = alertProps.width,
+    position = alertProps.position,
+    hiddenBottomAnimation = alertProps.hiddenBottomAnimation,
+    colorAnimation = alertProps.colorAnimation,
 }: SwalAlertProps): Promise<{ isConfirmed: boolean }> {
     return new Promise((res) => {
         const htmlModal = h(
@@ -51,7 +52,7 @@ function sweetAlert({
                               cssText: `--bg-loader:${
                                   colorAnimation
                                       ? colorAnimation
-                                      : colorIcon(icon)
+                                      : colorIcon(icon!)
                               }`,
                               display: `${hiddenBottomAnimation ? "none" : ""}`,
                           } as CSSStyleDeclaration,
@@ -73,7 +74,7 @@ function sweetAlert({
                       customIcon
                           ? (h("div", null, customIcon)
                                 .firstElementChild as HTMLElement)
-                          : isIco(icon),
+                          : isIco(icon!),
                       h(
                           "span",
                           {
@@ -87,7 +88,7 @@ function sweetAlert({
                               cssText: `--bg-loader:${
                                   colorAnimation
                                       ? colorAnimation
-                                      : colorIcon(icon)
+                                      : colorIcon(icon!)
                               }`,
                               display: `${hiddenBottomAnimation ? "none" : ""}`,
                           } as CSSStyleDeclaration,
@@ -157,7 +158,7 @@ function sweetAlert({
         const loader = htmlModal.querySelector(
             ".vigilio-loader"
         ) as HTMLDivElement;
-        const timeTotal = timer * 1000;
+        const timeTotal = timer! * 1000;
         bottomBackground(timeTotal, loader);
         setTimeout(() => {
             onClose();
