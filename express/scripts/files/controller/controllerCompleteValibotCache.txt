@@ -1,6 +1,6 @@
-import { Injectable } from "@vigilio/express-core";
 import { ${Props}ApiService } from "../services/${props}.api.service";
 import {
+    Injectable,
     Body,
     Controller,
     Delete,
@@ -10,10 +10,9 @@ import {
     Put,
     Status,
 } from "@decorators/express";
-import { Pipe, Validator } from "@vigilio/express-core/valibot";
-import { ${Props}StoreDto, ${props}StoreDto } from "../dtos/${props}.store.dto";
-import { ${Props}UpdateDto, ${props}UpdateDto } from "../dtos/${props}.update.dto";
-import { objectAsync, string } from "valibot";
+import { Pipe, Validator } from "~/libs/server/custom.decorator";
+import { type ${Props}StoreDto, ${props}StoreDto, type ${Props}UpdateDto, ${props}UpdateDto  } from "../dtos/${props}.store.dto";
+import { object, string } from "@vigilio/valibot";
 
 @Injectable()
 @Controller("/${props}")

@@ -1,10 +1,10 @@
-import { numberAsync, minLength, Input, stringAsync,transformAsync, objectAsync } from "valibot";
+import { number, minLength, Input, string,transform, object } from "valibot";
 import { slug } from "@vigilio/express-core/helpers";
 
-export const ${props}Schema = objectAsync({
-    id: numberAsync(),
-    name: stringAsync("Este campo es obligatorio", [minLength(1,"Este campo es obligatorio"),minLength(3,"Este campo requiere mínimo 3 carácteres")]),
-    slug: transformAsync(stringAsync("Este campo es obligatorio", [minLength(1,"Este campo es obligatorio"),minLength(3,"Este campo requiere mínimo 3 carácteres")]),slug),
+export const ${props}Schema = object({
+    id: number(),
+    name: string("Este campo es obligatorio", [minLength(1,"Este campo es obligatorio"),minLength(3,"Este campo requiere mínimo 3 carácteres")]),
+    slug: transform(string("Este campo es obligatorio", [minLength(1,"Este campo es obligatorio"),minLength(3,"Este campo requiere mínimo 3 carácteres")]),slug),
 });
 
 export type ${Props}Schema = Input<typeof ${props}Schema>;

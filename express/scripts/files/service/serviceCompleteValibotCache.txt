@@ -4,8 +4,7 @@ import {
     BadRequestException,
     NotFoundException,
 } from "@vigilio/express-core/handler";
-import { ${Props}StoreDto } from "../dtos/${props}.store.dto";
-import { ${Props}UpdateDto } from "../dtos/${props}.update.dto";
+import { ${Props}StoreDto,${Props}UpdateDto } from "../dtos/${props}.dto";
 import { Op } from "sequelize";
 import cache from "@vigilio/express-core/cache";
 

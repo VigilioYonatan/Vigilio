@@ -20,7 +20,7 @@ function create(mode, name, createDir) {
         process.exit(1);
     }
 
-    let dir = path.resolve(process.cwd(), "app", "services", trimName);
+    let dir = path.resolve(process.cwd(), "src", "services", trimName);
 
     if (!fs.existsSync(dir)) {
         console.log(
@@ -41,7 +41,7 @@ function create(mode, name, createDir) {
     for (const pro of process.argv) {
         if (pro.startsWith("--path=")) {
             const pathDir = pro.replace("--path=", "").split(".");
-            dir = path.resolve(process.cwd(), "app", ...pathDir);
+            dir = path.resolve(process.cwd(), "src", ...pathDir);
         }
         let type = "zod";
         if (pro.startsWith("zod")) {

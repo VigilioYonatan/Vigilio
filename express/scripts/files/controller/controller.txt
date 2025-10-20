@@ -1,12 +1,10 @@
-import { Injectable } from "@vigilio/express-core";
-import {
-    Controller,
+import { Injectable,Controller,
     Delete,
     Get,
     Post,
     Put,
-    Status,
-} from "@decorators/express";
+    Status } from "@vigilio/express-core";
+
 
 @Injectable()
 @Controller("/${props}")
