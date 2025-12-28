@@ -1,4 +1,4 @@
-import { type Icon } from "./types";
+import { type Icon } from "./types.js";
 
 export function icoInfo() {
     return h(

@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "preact/hooks";
-import { cache, delayFetch, memory, timer } from "./helpers";
+import { cache, delayFetch, memory, timer } from "./helpers.js";
 import { useSignal } from "@preact/signals";
 export interface OptionsQuery<Data, Error> {
     skipFetching?: boolean;

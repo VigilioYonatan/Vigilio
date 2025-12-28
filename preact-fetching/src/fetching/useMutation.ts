@@ -1,5 +1,5 @@
 import { useRef } from "preact/hooks";
-import { cache, delayFetch, timer } from "./helpers";
+import { cache, delayFetch, timer } from "./helpers.js";
 import { useSignal } from "@preact/signals";
 
 export interface OptionsQuery {

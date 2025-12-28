@@ -1,5 +1,5 @@
 import { computed, effect, useSignal } from "@preact/signals";
-import { useDebounce } from "./useDebounce";
+import { useDebounce } from "./useDebounce.js";
 export interface Pagination {
     limit?: number;
     offset?: number;

@@ -22,6 +22,7 @@ export interface SwalProps {
 export interface SwalAlertProps {
     title?: string;
     icon?: Icon;
+    text?: string;
     customIcon?: string | HTMLElement;
     html?: string | HTMLElement;
     showCloseButton?: boolean;

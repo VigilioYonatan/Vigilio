@@ -1,6 +1,6 @@
-import useQuery, { UseQuery, OptionsQuery } from "./fetching/useQuery";
-import useMutation, { UseMutation } from "./fetching/useMutation";
-import { memory, cache } from "./fetching/helpers";
+import useQuery, { UseQuery, OptionsQuery } from "./fetching/useQuery.js";
+import useMutation, { UseMutation } from "./fetching/useMutation.js";
+import { memory, cache } from "./fetching/helpers.js";
 
 export {
     useMutation,

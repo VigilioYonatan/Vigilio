@@ -1,4 +1,4 @@
-import { modalProps } from ".";
+import { modalProps } from "./index.js";
 import {
     bottomBackground,
     colorIcon,

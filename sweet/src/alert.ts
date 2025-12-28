@@ -1,9 +1,10 @@
-import { alertProps } from ".";
-import { bottomBackground, colorIcon, h } from "./helpers";
-import { type Icon, type SwalAlertProps } from "./types";
+import { alertProps } from "./index.js";
+import { bottomBackground, colorIcon, h } from "./helpers.js";
+import { type Icon, type SwalAlertProps } from "./types.js";
 
 function sweetAlert({
     icon = alertProps.icon,
+    text = alertProps.text,
     html = alertProps.html,
     title = alertProps.title,
     showCloseButton = alertProps.showCloseButton,
@@ -76,11 +77,38 @@ function sweetAlert({
                                 .firstElementChild as HTMLElement)
                           : isIco(icon!),
                       h(
-                          "span",
+                          "div",
                           {
-                              className: "vigilio-title",
+                              style: {
+                                  display: "flex",
+                                  flexDirection: "column",
+                                  alignItems: "start",
+                                  justifyContent: "start",
+                                  margin: "0.5rem",
+                              } as CSSStyleDeclaration,
                           },
-                          title
+                          [
+                              h(
+                                  "span",
+                                  {
+                                      style: {
+                                          fontSize: "1rem",
+                                          fontWeight: "normal",
+                                      } as CSSStyleDeclaration,
+                                  },
+                                  title
+                              ),
+                              h(
+                                  "span",
+                                  {
+                                      style: {
+                                          fontSize: "0.8rem",
+                                          fontWeight: "thin",
+                                      } as CSSStyleDeclaration,
+                                  },
+                                  text
+                              ),
+                          ]
                       ),
                       h("div", {
                           className: "vigilio-loader",

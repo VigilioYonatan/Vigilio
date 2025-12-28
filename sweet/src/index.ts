@@ -1,7 +1,7 @@
-import sweetModal from "./sweet";
-import sweetAlert from "./alert";
-import { h as c } from "./helpers";
-import { type Icon, type SwalProps, type SwalAlertProps } from "./types";
+import sweetModal from "./sweet.js";
+import sweetAlert from "./alert.js";
+import { h as c } from "./helpers.js";
+import { type Icon, type SwalProps, type SwalAlertProps } from "./types.js";
 export { Icon, SwalProps, c, SwalAlertProps };
 export { sweetModal, sweetAlert };
 export let modalProps: SwalProps = {
@@ -32,6 +32,7 @@ function modalConfig(props: SwalProps) {
 export let alertProps: SwalAlertProps = {
     icon: "info",
     html: undefined,
+    text: "",
     title: "",
     showCloseButton: false,
     customIcon: undefined,
@@ -47,12 +48,12 @@ function alertConfig(props: SwalAlertProps) {
         alertProps = { ...alertProps, ...props };
     }
 }
-const ChatAI = {
+const Sweet = {
     modalConfig,
     alertConfig,
 };
 if (typeof window !== "undefined") {
-    (window as any).ChatAI = { modalConfig, alertConfig };
+    (window as any).Sweet = { modalConfig, alertConfig };
 }
 
-export default ChatAI;
+export default Sweet;
