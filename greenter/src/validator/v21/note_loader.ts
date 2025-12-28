@@ -1,0 +1,36 @@
+import {
+	array,
+	type Input,
+	maxLength,
+	number,
+	object,
+	optional,
+	string,
+} from "@vigilio/valibot";
+
+export const invoice_loader = object({
+	tipoOperacion: string(),
+	tipoDoc: string(),
+	serie: string([maxLength(4)]),
+	correlativo: string([maxLength(8)]),
+	fechaEmision: string(),
+	tipoMoneda: string(),
+	totalImpuestos: number(),
+	valorVenta: number(),
+	mtoImpVenta: number(),
+	client: object({}),
+	company: object({}),
+	formaPago: object({}),
+	cuotas: optional(array(object({}))),
+	seller: optional(object({})),
+	details: array(object({})),
+	legends: array(object({})),
+	guias: optional(array(object({}))),
+	anticipos: optional(array(object({}))),
+	detraccion: optional(object({})),
+	relDocs: optional(array(object({}))),
+	perception: optional(object({})),
+	cargos: optional(array(object({}))),
+	descuentos: optional(array(object({}))),
+});
+export type InvoiceLoader = Input<typeof invoice_loader>;
