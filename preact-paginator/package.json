@@ -1,6 +1,6 @@
 {
     "name": "@vigilio/preact-paginator",
-    "version": "0.0.11",
+    "version": "0.0.12",
     "description": "this is a paginator library to preact",
     "main": "./dist/cjs/index.js",
     "module": "./dist/esm/index.js",
@@ -25,12 +25,8 @@
     "scripts": {
         "build:esm": "tsc",
         "build:cjs": "tsc --module commonjs --outDir dist/cjs",
-        "build": "pnpm build:esm && pnpm build:cjs"
+        "build": "bun run build:esm && bun run build:cjs"
     },
     "author": "Vigilio",
-    "license": "ISC",
-    "dependencies": {
-        "@preact/signals": "^2.2.0",
-        "tslib": "^2.8.1"
-    }
+    "license": "ISC"
 }

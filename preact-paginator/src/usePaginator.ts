@@ -5,6 +5,7 @@ export interface Pagination {
     offset?: number;
     maxPagesShown?: number;
     page?: number;
+    cursor?: string | number | null;
 }
 export type UpdateDate = Pagination & { total: number | null };
 export type UsePaginator = {
@@ -46,11 +47,13 @@ export function usePaginator(
         offset = 0,
         maxPagesShown = 5,
         page: pages = 1,
+        cursor = null,
     } = props || {
         limit: 10,
         offset: 0,
         maxPagesShown: 5,
         page: 1,
+        cursor: null,
     };
     const url = new URL(window.location.href);
     const params = new URLSearchParams(url.search);
@@ -70,6 +73,7 @@ export function usePaginator(
         offset: (page.value - 1) * limit + offset,
         maxPagesShown,
         total: null,
+        cursor,
     });
 
     function updateData(paginate?: UpdateDate) {

@@ -1,8 +1,6 @@
-import usePaginator, {
-    type Pagination,
-    UsePaginator,
-} from "@vigilio/preact-paginator";
+
 import { useSignal } from "@preact/signals";
+import usePaginator,{ type Pagination, type UsePaginator } from "@vigilio/preact-paginator";
 
 type KeyColumn<T, K extends string> = keyof (T & {
     [A in K]: string;
@@ -41,6 +39,7 @@ export type UseTableMethods<T, K extends string = ""> = {
                   result: T[];
                   count: number;
                   methods?: UseTableMethods<T, K>;
+                  cursor?: string | number | null;
               }
             | ((
                   data: T[],
@@ -49,6 +48,7 @@ export type UseTableMethods<T, K extends string = ""> = {
                   result: T[];
                   count: number;
                   methods?: UseTableMethods<T, K>;
+                  cursor?: string | number | null;
               })
     ): void;
 };
@@ -60,6 +60,7 @@ export interface UseTableProps<
     columns: Columns<T, K, Y>;
     pagination?: Pagination;
     methods?: Y;
+    filters?: Record<string, string | number | boolean | null>;
 }
 export interface UseTable<
     T extends object,
@@ -89,6 +90,7 @@ export interface UseTable<
                   result: T[];
                   count: number;
                   methods?: Y;
+                  cursor?: string | number | null;
               }
             | ((
                   data: T[],
@@ -97,6 +99,7 @@ export interface UseTable<
                   result: T[];
                   count: number;
                   methods?: Y;
+                  cursor?: string | number | null;
               })
     ) => void;
     pagination: UsePaginator["pagination"];
@@ -105,6 +108,11 @@ export interface UseTable<
             [x: string]: string;
         };
         sorting: (key: keyof T | K) => void;
+    };
+    filters: {
+        value: Record<string, string | number | boolean | null>;
+        update: (name: string, value: string | number | boolean | null) => void;
+        clear: () => void;
     };
     search: {
         value: string;
@@ -129,6 +137,7 @@ function useTable<T extends object, K extends string, Y extends object>(
     const data = useSignal<T[]>([]);
     const methods = useSignal(props.methods || {});
     const checks = useSignal<number[]>([]);
+    const filters = useSignal(props.filters || {});
 
     const {
         pagination,
@@ -146,6 +155,7 @@ function useTable<T extends object, K extends string, Y extends object>(
                   result: T[];
                   count: number;
                   methods?: Y;
+                  cursor?: string | number | null;
               }
             | ((
                   data: T[],
@@ -154,6 +164,7 @@ function useTable<T extends object, K extends string, Y extends object>(
                   result: T[];
                   count: number;
                   methods?: Y;
+                  cursor?: string | number | null;
               })
     ) {
         if (typeof props === "function") {
@@ -161,16 +172,17 @@ function useTable<T extends object, K extends string, Y extends object>(
                 result,
                 count,
                 methods: m,
+                cursor,
             } = props(data.value, pagination.value.total || 0);
             data.value = result;
-            update({ total: count, });
+            update({ total: count, cursor: cursor ?? null });
             if (m) {
                 methods.value = { ...methods.value, ...m };
             }
         } else {
-            const { result, count, methods: m } = props;
+            const { result, count, methods: m, cursor } = props;
             data.value = result;
-            update({ total: count });
+            update({ total: count, cursor: cursor ?? null });
             if (m) {
                 methods.value = { ...methods.value, ...m };
             }
@@ -268,6 +280,20 @@ function useTable<T extends object, K extends string, Y extends object>(
     function clearChecks() {
         checks.value = [];
     }
+    
+    /* FILTERS */
+    function updateFilters(name: string, value: string | number | boolean | null) {
+        if (pagination.page > 1) {
+            pagination.onChangePage(1);
+        }
+        filters.value = { ...filters.value, [name]: value };
+    }
+    function clearFilters() {
+         if (pagination.page > 1) {
+            pagination.onChangePage(1);
+        }
+        filters.value = {};
+    }
 
     return {
         table: {
@@ -280,12 +306,23 @@ function useTable<T extends object, K extends string, Y extends object>(
         updateData,
         pagination,
         sort: {
-            value: sort.value,
+            get value() {
+                return sort.value;
+            },
             sorting,
+        },
+        filters: {
+            get value() {
+                return filters.value;
+            },
+            update: updateFilters,
+            clear: clearFilters,
         },
         search,
         checks: {
-            value: checks.value,
+            get value() {
+                return checks.value;
+            },
             onCheck,
             existCheck,
             isEmptyCheck,

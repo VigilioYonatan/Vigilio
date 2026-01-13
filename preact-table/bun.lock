@@ -1,10 +1,11 @@
 {
   "lockfileVersion": 1,
+  "configVersion": 0,
   "workspaces": {
     "": {
       "name": "@vigilio/preact-table",
-      "devDependencies": {
-        "typescript": "^5.8.3",
+      "dependencies": {
+        "@vigilio/preact-paginator": "0.0.12",
       },
       "peerDependencies": {
         "preact": ">=10",
@@ -12,8 +13,8 @@
     },
   },
   "packages": {
-    "preact": ["preact@10.26.9", "", {}, "sha512-SSjF9vcnF27mJK1XyFMNJzFd5u3pQiATFqoaDy03XuN00u4ziveVVEGt5RKJrDR8MHE/wJo9Nnad56RLzS2RMA=="],
+    "@vigilio/preact-paginator": ["@vigilio/preact-paginator@0.0.12", "", { "peerDependencies": { "preact": ">=10" } }, "sha512-Lb+YEmuQHzO00vLbmWv48RKnGL/qtyw61aZIGKmRGIpOvquDIlZbf3jgCQV0t59qcIpod7ANkrZ2zwhZ2mA0Ig=="],
 
-    "typescript": ["typescript@5.8.3", "", { "bin": { "tsc": "bin/tsc", "tsserver": "bin/tsserver" } }, "sha512-p1diW6TqL9L07nNxvRMM7hMMw4c5XOo/1ibL4aAIGmSAt9slTE1Xgw5KWuof2uTOvCg9BY7ZRi+GaF+7sfgPeQ=="],
+    "preact": ["preact@10.26.9", "", {}, "sha512-SSjF9vcnF27mJK1XyFMNJzFd5u3pQiATFqoaDy03XuN00u4ziveVVEGt5RKJrDR8MHE/wJo9Nnad56RLzS2RMA=="],
   }
 }
