@@ -1,230 +1,298 @@
 import { computed, effect, useSignal } from "@preact/signals";
 import { useDebounce } from "./useDebounce.js";
 export interface Pagination {
-    limit?: number;
-    offset?: number;
-    maxPagesShown?: number;
-    page?: number;
-    cursor?: string | number | null;
+  limit?: number;
+  offset?: number;
+  maxPagesShown?: number;
+  page?: number;
+  cursor?: string | number | null;
+  filters?: Record<string, string | number | boolean | null>;
 }
 export type UpdateDate = Pagination & { total: number | null };
 export type UsePaginator = {
-    updateData: (paginate?: UpdateDate) => void;
-    pagination: {
-        value: Required<Omit<Pagination, "page">> & { total: number | null };
-        page: number;
-        paginator: {
-            totalItems: number | null;
-            currentPage: number;
-            totalPages: number;
-            startPage: number;
-            endPage: number;
-            pages: number[];
-        };
-        startingBreakPointButtonIfCondition: boolean;
-        endingBreakPointButtonIfCondition: boolean;
-        currentPage: number;
-        totalPages: number;
-        onNextPage: (pemittion?: boolean) => void;
-        onBackPage: (pemittion?: boolean) => void;
-        onchangeLimit: (limit?: number) => void;
-        onChangePage: (pag: number) => void;
-        onFinalPage: () => void;
-        backInitialPage: () => void;
+  updateData: (paginate?: UpdateDate) => void;
+  pagination: {
+    value: Required<Omit<Pagination, "page" | "filters">> & {
+      total: number | null;
     };
-    search: {
-        value: string;
-        debounceTerm: string;
-        onSearchByName: (term: string) => void;
+    page: number;
+    paginator: {
+      totalItems: number | null;
+      currentPage: number;
+      totalPages: number;
+      startPage: number;
+      endPage: number;
+      pages: number[];
     };
+    startingBreakPointButtonIfCondition: boolean;
+    endingBreakPointButtonIfCondition: boolean;
+    currentPage: number;
+    totalPages: number;
+    onNextPage: (pemittion?: boolean) => void;
+    onBackPage: (pemittion?: boolean) => void;
+    onchangeLimit: (limit?: number) => void;
+    onChangePage: (pag: number) => void;
+    onFinalPage: () => void;
+    backInitialPage: () => void;
+  };
+  search: {
+    value: string;
+    debounceTerm: string;
+    onSearchByName: (term: string) => void;
+  };
+  sort: {
+    value: {
+      [x: string]: string;
+    };
+    sorting: (key: string) => void;
+  };
+  filters: {
+    value: Record<string, string | number | boolean | null>;
+    update: (name: string, value: string | number | boolean | null) => void;
+    set: (values: Record<string, string | number | boolean | null>) => void;
+    clear: () => void;
+  };
 };
 export function usePaginator(
-    props?: Pagination,
-    isQueryPage = false
+  props?: Pagination,
+  isQueryPage = false,
 ): UsePaginator {
-    const {
-        limit = 10,
-        offset = 0,
-        maxPagesShown = 5,
-        page: pages = 1,
-        cursor = null,
-    } = props || {
-        limit: 10,
-        offset: 0,
-        maxPagesShown: 5,
-        page: 1,
-        cursor: null,
+  const {
+    limit = 10,
+    offset = 0,
+    maxPagesShown = 5,
+    page: pages = 1,
+    cursor = null,
+    filters: initialFilters = {},
+  } = props || {
+    limit: 10,
+    offset: 0,
+    maxPagesShown: 5,
+    page: 1,
+    cursor: null,
+    filters: {},
+  };
+  const url = new URL(window.location.href);
+  const params = new URLSearchParams(url.search);
+
+  const page = useSignal(
+    isQueryPage ? Number(params.get("page")) || pages : pages,
+  );
+  const search = useSignal("");
+
+  const debounceTerm = useDebounce(search.value);
+  const pagination = useSignal<
+    Required<Omit<Pagination, "page" | "filters">> & {
+      total: number | null;
+    }
+  >({
+    limit,
+    offset: (page.value - 1) * limit + offset,
+    maxPagesShown,
+    total: null,
+    cursor,
+  });
+
+  function updateData(paginate?: UpdateDate) {
+    pagination.value = { ...pagination.value, ...paginate };
+  }
+  effect(() => {
+    if (isQueryPage && page.value > 1) {
+      params.set("page", String(page.value));
+      const nuevaURL = `${url.origin}${url.pathname}?${params.toString()}`;
+      window.history.pushState({}, "", nuevaURL);
+    }
+  });
+
+  /* SORTING */
+  const sort = useSignal<{
+    [x: string]: string;
+  }>({});
+  function sorting(key: string) {
+    if (page.value > 1) {
+      onChangePage(1);
+    }
+    const sorted = {
+      [key]: (sort as any).value[key] === "ASC" ? "DESC" : "ASC",
     };
-    const url = new URL(window.location.href);
-    const params = new URLSearchParams(url.search);
+    sort.value = sorted;
+  }
 
-    const page = useSignal(
-        isQueryPage ? Number(params.get("page")) || pages : pages
+  /* FILTERS */
+  const filters = useSignal(initialFilters);
+  function updateFilters(
+    name: string,
+    value: string | number | boolean | null,
+  ) {
+    if (page.value > 1) {
+      onChangePage(1);
+    }
+    filters.value = { ...filters.value, [name]: value };
+  }
+  function setFilters(
+    values: Record<string, string | number | boolean | null>,
+  ) {
+    if (page.value > 1) {
+      onChangePage(1);
+    }
+    filters.value = values;
+  }
+  function clearFilters() {
+    if (page.value > 1) {
+      onChangePage(1);
+    }
+    filters.value = {};
+  }
+
+  /* PAGINATION */
+  function onNextPage(pemittion = true) {
+    if (page.value === totalPages.value && pemittion) return;
+    pagination.value = {
+      ...pagination.value,
+      offset: pagination.value.offset + pagination.value.limit,
+    };
+    page.value = page.value + 1;
+  }
+  function onBackPage(pemittion = true) {
+    if (page.value === 1 && pemittion) return;
+    pagination.value = {
+      ...pagination.value,
+      offset: pagination.value.offset - pagination.value.limit,
+    };
+
+    page.value = page.value - 1;
+  }
+  function onchangeLimit(limit = 10) {
+    if (page.value > 1) {
+      onChangePage(1);
+    }
+    pagination.value = {
+      ...pagination.value,
+      limit,
+    };
+  }
+
+  function onChangePage(pag: number) {
+    pagination.value = {
+      ...pagination.value,
+      offset: (pag - 1) * pagination.value.limit,
+    };
+    page.value = pag;
+  }
+  function onFinalPage() {
+    pagination.value = {
+      ...pagination.value,
+      offset: (totalPages.value - 1) * pagination.value.limit,
+    };
+    page.value = totalPages.value;
+  }
+
+  function backInitialPage() {
+    pagination.value = {
+      ...pagination.value,
+      offset: (page.value - 1) * pagination.value.limit,
+    };
+    page.value = 1;
+  }
+  const currentPage = computed(
+    () => Math.floor(pagination.value.offset / pagination.value.limit) + 1,
+  );
+
+  const totalPages = computed(() =>
+    // biome-ignore lint/style/noNonNullAssertion: <explanation>
+    Math.ceil(pagination.value.total! / pagination.value.limit),
+  );
+  /*  paginator */
+  const paginator = computed(() => {
+    let startPage: number;
+    let endPage: number;
+
+    if (totalPages.value <= pagination.value.maxPagesShown) {
+      startPage = 1;
+      endPage = totalPages.value;
+    } else {
+      const maxPagesShownBeforeCurrentPage = Math.floor(
+        pagination.value.maxPagesShown / 2,
+      );
+      const maxPagesShownAfterCurrentPage =
+        Math.ceil(pagination.value.maxPagesShown / 2) - 1;
+      if (currentPage.value <= maxPagesShownBeforeCurrentPage) {
+        startPage = 1;
+        endPage = pagination.value.maxPagesShown;
+      } else if (
+        currentPage.value + maxPagesShownAfterCurrentPage >=
+        totalPages.value
+      ) {
+        startPage = totalPages.value - pagination.value.maxPagesShown + 1;
+        endPage = totalPages.value;
+      } else {
+        startPage = currentPage.value - maxPagesShownBeforeCurrentPage;
+        endPage = currentPage.value + maxPagesShownAfterCurrentPage;
+      }
+    }
+    const pages = Array.from(Array(endPage + 1 - startPage).keys()).map(
+      (i) => startPage + i,
     );
-    const search = useSignal("");
 
-    const debounceTerm = useDebounce(search.value);
-    const pagination = useSignal<
-        Required<Omit<Pagination, "page">> & {
-            total: number | null;
-        }
-    >({
-        limit,
-        offset: (page.value - 1) * limit + offset,
-        maxPagesShown,
-        total: null,
-        cursor,
-    });
-
-    function updateData(paginate?: UpdateDate) {
-        pagination.value = { ...pagination.value, ...paginate };
-    }
-    effect(() => {
-        if (isQueryPage && page.value > 1) {
-            params.set("page", String(page.value));
-            const nuevaURL = `${url.origin}${
-                url.pathname
-            }?${params.toString()}`;
-            window.history.pushState({}, "", nuevaURL);
-        }
-    });
-
-    /* PAGINATION */
-    function onNextPage(pemittion = true) {
-        if (page.value === totalPages.value && pemittion) return;
-        pagination.value = {
-            ...pagination.value,
-            offset: pagination.value.offset + pagination.value.limit,
-        };
-        page.value = page.value + 1;
-    }
-    function onBackPage(pemittion = true) {
-        if (page.value === 1 && pemittion) return;
-        pagination.value = {
-            ...pagination.value,
-            offset: pagination.value.offset - pagination.value.limit,
-        };
-
-        page.value = page.value - 1;
-    }
-    function onchangeLimit(limit = 10) {
-        if (page.value > 1) {
-            onChangePage(1);
-        }
-        pagination.value = {
-            ...pagination.value,
-            limit,
-        };
-    }
-
-    function onChangePage(pag: number) {
-        pagination.value = {
-            ...pagination.value,
-            offset: (pag - 1) * pagination.value.limit,
-        };
-        page.value = pag;
-    }
-    function onFinalPage() {
-        pagination.value = {  
-            ...pagination.value,
-            offset: (totalPages.value - 1) * pagination.value.limit,
-        };
-        page.value = totalPages.value;
-    }
-
-    function backInitialPage() {
-        pagination.value = {
-            ...pagination.value,
-            offset: (page.value - 1) * pagination.value.limit,
-        };
-        page.value = 1;
-    }
-    const currentPage = computed(
-        () => Math.floor(pagination.value.offset / pagination.value.limit) + 1
-    );
-
-    const totalPages = computed(() =>
-        // biome-ignore lint/style/noNonNullAssertion: <explanation>
-        Math.ceil(pagination.value.total! / pagination.value.limit)
-    );
-    /*  paginator */
-    const paginator = computed(() => {
-        let startPage: number;
-        let endPage: number;
-
-        if (totalPages.value <= pagination.value.maxPagesShown) {
-            startPage = 1;
-            endPage = totalPages.value;
-        } else {
-            const maxPagesShownBeforeCurrentPage = Math.floor(
-                pagination.value.maxPagesShown / 2
-            );
-            const maxPagesShownAfterCurrentPage =
-                Math.ceil(pagination.value.maxPagesShown / 2) - 1;
-            if (currentPage.value <= maxPagesShownBeforeCurrentPage) {
-                startPage = 1;
-                endPage = pagination.value.maxPagesShown;
-            } else if (
-                currentPage.value + maxPagesShownAfterCurrentPage >=
-                totalPages.value
-            ) {
-                startPage =
-                    totalPages.value - pagination.value.maxPagesShown + 1;
-                endPage = totalPages.value;
-            } else {
-                startPage = currentPage.value - maxPagesShownBeforeCurrentPage;
-                endPage = currentPage.value + maxPagesShownAfterCurrentPage;
-            }
-        }
-        const pages = Array.from(Array(endPage + 1 - startPage).keys()).map(
-            (i) => startPage + i
-        );
-
-        return {
-            totalItems: pagination.value.total,
-            currentPage: currentPage.value,
-            totalPages: totalPages.value,
-            startPage: startPage,
-            endPage: endPage,
-            pages: pages,
-        };
-    });
-
-    const startingBreakPointButtonIfCondition = computed(() => {
-        return paginator.value.pages[0] >= 3;
-    });
-
-    const endingBreakPointButtonIfCondition = computed(() => {
-        return (
-            paginator.value.pages[paginator.value.pages.length - 1] <
-            totalPages.value - 1
-        );
-    });
-    function onSearchByName(term: string) {
-        if (page.value > 1) {
-            onChangePage(1);
-        }
-        search.value = term;
-    }
     return {
-        updateData,
-        pagination: {
-            value: pagination.value,
-            page: page.value,
-            paginator: paginator.value,
-            startingBreakPointButtonIfCondition:
-                startingBreakPointButtonIfCondition.value,
-            endingBreakPointButtonIfCondition:
-                endingBreakPointButtonIfCondition.value,
-            currentPage: currentPage.value,
-            totalPages: totalPages.value,
-            onNextPage,
-            onBackPage,
-            onchangeLimit,
-            onChangePage,
-            onFinalPage,
-            backInitialPage,
-        },
-        search: { value: search.value, debounceTerm, onSearchByName },
+      totalItems: pagination.value.total,
+      currentPage: currentPage.value,
+      totalPages: totalPages.value,
+      startPage: startPage,
+      endPage: endPage,
+      pages: pages,
     };
+  });
+
+  const startingBreakPointButtonIfCondition = computed(() => {
+    return paginator.value.pages[0] >= 3;
+  });
+
+  const endingBreakPointButtonIfCondition = computed(() => {
+    return (
+      paginator.value.pages[paginator.value.pages.length - 1] <
+      totalPages.value - 1
+    );
+  });
+  function onSearchByName(term: string) {
+    if (page.value > 1) {
+      onChangePage(1);
+    }
+    search.value = term;
+  }
+  return {
+    updateData,
+    pagination: {
+      value: pagination.value,
+      page: page.value,
+      paginator: paginator.value,
+      startingBreakPointButtonIfCondition:
+        startingBreakPointButtonIfCondition.value,
+      endingBreakPointButtonIfCondition:
+        endingBreakPointButtonIfCondition.value,
+      currentPage: currentPage.value,
+      totalPages: totalPages.value,
+      onNextPage,
+      onBackPage,
+      onchangeLimit,
+      onChangePage,
+      onFinalPage,
+      backInitialPage,
+    },
+    search: { value: search.value, debounceTerm, onSearchByName },
+    sort: {
+      get value() {
+        return sort.value;
+      },
+      sorting,
+    },
+    filters: {
+      get value() {
+        return filters.value;
+      },
+      update: updateFilters,
+      set: setFilters,
+      clear: clearFilters,
+    },
+  };
 }

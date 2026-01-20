@@ -38,10 +38,17 @@ API REFERENCE
             page,
             currentPage,
         },
-        sort: {
-            sort,
-            sorting,
-        },
+         sort: {
+        value,
+      sorting,
+    },
+    checks: {
+      value,
+      onCheck,
+      existCheck,
+      isEmptyCheck,
+      clearChecks,
+    },
     }}=useTable({
     columns: columns,
     pagination: { limit: 10, offset: 0 },
@@ -118,15 +125,58 @@ const { refetch, isLoading } = useQuery(
     <div>
         <table >
                     <thead >
-                        <tr>
-                            {table.Thead().map((val) => (
+                      {table.table.Thead().map((row, rowIndex) => (
+                        <tr key={rowIndex} >
+                            {row.map(
+                            ({ isSort, key, value, methods, colSpan, rowSpan }: any) => (
                                 <th
-                                    key={val.key}
+                                scope="col"
+                                key={key}
+                                colSpan={colSpan ?? 1}
+                                rowSpan={rowSpan ?? 1}
                                 >
-                                    {val.value}
+                                <div
+                                    onClick={() => {
+                                    if (isSort) {
+                                        if (typeof isSort === "string") {
+                                        methods.sorting(isSort);
+                                        return;
+                                        }
+                                        methods.sorting(key);
+                                    }
+                                    }}
+                                >
+                                    <button
+                                    type="button"
+                                    aria-label="button to sort"
+                                    >
+                                    {isSort ? (
+                                        <ArrowUpDown
+                                        className={
+                                            (() => {
+                                            const activeSortKey = Object.keys(
+                                                table.sort.value,
+                                            )[0];
+                                            return (
+                                                activeSortKey === key ||
+                                                (typeof isSort === "string" &&
+                                                activeSortKey === isSort)
+                                            );
+                                            })()
+                                            ? "text-primary"
+                                            : ""
+                                        }
+                                        size={12}
+                                        />
+                                    ) : null}
+                                    {value}
+                                    </button>
+                                </div>
                                 </th>
-                            ))}
+                            ),
+                            )}
                         </tr>
+                        ))}
                     </thead>
                     <tbody>
                         {table.TBody.Row().map((data) => (
@@ -211,4 +261,10 @@ const { refetch, isLoading } = useQuery(
                     </div>
                 </nav>
     </div>
+```
+
+### ADVANCED
+
+```tsx
+
 ```

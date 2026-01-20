@@ -5,7 +5,8 @@
     "": {
       "name": "@vigilio/preact-table",
       "dependencies": {
-        "@vigilio/preact-paginator": "0.0.12",
+        "@preact/signals": "^2.6.0",
+        "@vigilio/preact-paginator": "0.0.13",
       },
       "peerDependencies": {
         "preact": ">=10",
@@ -13,7 +14,11 @@
     },
   },
   "packages": {
-    "@vigilio/preact-paginator": ["@vigilio/preact-paginator@0.0.12", "", { "peerDependencies": { "preact": ">=10" } }, "sha512-Lb+YEmuQHzO00vLbmWv48RKnGL/qtyw61aZIGKmRGIpOvquDIlZbf3jgCQV0t59qcIpod7ANkrZ2zwhZ2mA0Ig=="],
+    "@preact/signals": ["@preact/signals@2.6.0", "", { "dependencies": { "@preact/signals-core": "^1.12.2" }, "peerDependencies": { "preact": ">= 10.25.0 || >=11.0.0-0" } }, "sha512-a22Mh1CCA+PaqobdV2YfeZ30PGywp/QnhCBNVDIsHUdkuqpYcbxt0vgC78JYaicBqWxAOGXLoExj5WHaZ/VKvg=="],
+
+    "@preact/signals-core": ["@preact/signals-core@1.12.2", "", {}, "sha512-5Yf8h1Ke3SMHr15xl630KtwPTW4sYDFkkxS0vQ8UiQLWwZQnrF9IKaVG1mN5VcJz52EcWs2acsc/Npjha/7ysA=="],
+
+    "@vigilio/preact-paginator": ["@vigilio/preact-paginator@0.0.13", "", { "peerDependencies": { "preact": ">=10" } }, "sha512-MkKS/COvPvCb9Ql0ksyjQA5kCYKv70UWFV8SbW47bsIZG1PquTdupN3coognmqtPp/OEtOCCSsS5DUi0p8nRzg=="],
 
     "preact": ["preact@10.26.9", "", {}, "sha512-SSjF9vcnF27mJK1XyFMNJzFd5u3pQiATFqoaDy03XuN00u4ziveVVEGt5RKJrDR8MHE/wJo9Nnad56RLzS2RMA=="],
   }
